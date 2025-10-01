@@ -60,7 +60,7 @@ namespace ToDoList.Server
         services.AddAutoMapper(cfg => { }, typeof(MappingProfile));
         services.AddOpenApi();
         
-        //this adds support for WebApi and controllers with views.
+        //This adds support for WebApi and Controllers with Views.
         services.AddRazorPages();
     }
 

@@ -10,7 +10,7 @@ namespace ToDoList.Server.Helpers
             {
                 Console.WriteLine("Creating Seed Data...");
 
-                context.ToDoItems.AddRange(ToDoListGenerator.GenerateRandomItems(15));
+                context.ToDoItems.AddRange(ToDoListGenerator.GenerateRandomItems());
                 context.SaveChanges();
             }
             else

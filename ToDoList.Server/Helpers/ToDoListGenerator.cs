@@ -8,7 +8,7 @@ namespace ToDoList.Server.Helpers
     private static readonly List<ToDoItem> lstToDoItems = [];
 
    
-    public static List<ToDoItem> GenerateRandomItems(int numItems)
+    public static List<ToDoItem> GenerateRandomItems()
     {
       return lstToDoItems;
     }
