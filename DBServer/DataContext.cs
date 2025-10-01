@@ -3,13 +3,8 @@ using Microsoft.EntityFrameworkCore;
 
 namespace DBServer
 {
-  public class DataContext : DbContext
+  public class DataContext(DbContextOptions<DataContext> options) : DbContext(options)
   {
-    public DataContext() { }
-
-    public DataContext(DbContextOptions<DataContext> options)
-         : base(options) { }
-
     public DbSet<ToDoItem> ToDoItems { get; set; }
 
     protected override void OnModelCreating(ModelBuilder builder)

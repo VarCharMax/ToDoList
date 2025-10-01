@@ -3,7 +3,9 @@ using DBServer.Helpers;
 using DBServer.Interfaces;
 using Microsoft.AspNetCore.SpaServices.AngularCli;
 using Microsoft.AspNetCore.SpaServices.StaticFiles;
+using Microsoft.Extensions.Options;
 using ToDoList.Server.Helpers;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace ToDoList.Server
 {
@@ -41,7 +43,7 @@ namespace ToDoList.Server
               .AddNewtonsoftJson();
 
         services.AddSingleton<IConfiguration>(Configuration);
-        services.AddSqlite<DataContext>("DataSource=webApi.db");
+        services.AddSqlite<DataContext>("DataSource=webApi.db", b => b.MigrationsAssembly("DBServer"));
         services.AddScoped<IToDoListRepository, ToDoListRepository>();
 
         services.Configure<SpaStaticFilesOptions>(options =>
