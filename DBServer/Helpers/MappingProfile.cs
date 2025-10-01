@@ -6,7 +6,7 @@ namespace DBServer.Helpers
   {
     public MappingProfile()
     {
-      // CreateMap<Entity.User, DTO.User>().ReverseMap();
+      CreateMap<DTO.ToDoItem, Entity.ToDoItem>().ReverseMap();
       CreateMap<Entity.ToDoItem, DTO.ToDoItem>().ReverseMap();
     }
   }
