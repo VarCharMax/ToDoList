@@ -1,14 +1,10 @@
 ﻿using AutoMapper;
 using DBServer.Entity;
 using DBServer.Interfaces;
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
+using Models.BindingTargets;
 using System.Data;
-using System.Linq;
-using System.Numerics;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DBServer
 {
@@ -18,12 +14,12 @@ namespace DBServer
     private readonly DataContext context = ctx;
     private readonly IMapper _mapper = mapper;
 
-    public Task<DTO.ToDoItem> AddItemAsync(DTO.ToDoItem item)
+    public Task<Models.DTO.ToDoItem> AddItemAsync(Models.DTO.ToDoItem item)
     {
       throw new NotImplementedException();
     }
 
-    public async Task<bool> DeleteItemAsync(int id)
+    public async Task<bool> DeleteItemAsync(long id)
     {
       try
       {
@@ -53,29 +49,29 @@ namespace DBServer
       }
     }
 
-    public Task<bool> DeleteItemAsync(DTO.ToDoItem item)
+    public Task<bool> DeleteItemAsync(Models.DTO.ToDoItem item)
     {
       throw new NotImplementedException();
     }
 
-    public Task<bool> DeleteItemAsync(List<DTO.ToDoItem> items)
+    public Task<bool> DeleteItemAsync(List<Models.DTO.ToDoItem> items)
     {
       throw new NotImplementedException();
     }
 
-    public async Task<List<DTO.ToDoItem>> GetAllItemsAsync()
+    public async Task<List<Models.DTO.ToDoItem>> GetAllItemsAsync()
     {
-      var list = await context.Set<Entity.ToDoItem>().Select(p => _mapper.Map<DTO.ToDoItem>(p)).ToListAsync();
+      var list = await context.Set<Entity.ToDoItem>().Select(p => _mapper.Map<Models.DTO.ToDoItem>(p)).ToListAsync();
 
       return list;
     }
 
-    public async Task<DTO.ToDoItem?> GetItemByIdAsync(int id)
+    public async Task<Models.DTO.ToDoItem?> GetItemByIdAsync(long id)
     {
       ToDoItem? result = await context.ToDoItems
                .FirstOrDefaultAsync(p => p.Id == id);
       
-      var model = _mapper.Map<DTO.ToDoItem>(result);
+      var model = _mapper.Map<Models.DTO.ToDoItem >(result);
       
        return model;
     }
@@ -85,44 +81,41 @@ namespace DBServer
       throw new NotImplementedException();
     }
 
-    public Task<bool> MarkItemAsCompletedAsync(int id)
+    public async Task<Models.DTO.ToDoItem?> ReplaceItemAsync(long id, Models.DTO.ToDoItem item)
     {
-      throw new NotImplementedException();
-    }
+      ToDoItem updateItem = _mapper.Map<ToDoItem>(item);
 
-    public Task<bool> MarkItemAsCompletedAsync(DTO.ToDoItem item)
-    {
-      throw new NotImplementedException();
-    }
+      context.Update(updateItem);
+      await context.SaveChangesAsync();
 
-    public Task<bool> MarkItemAsCompletedAsync(List<DTO.ToDoItem> items)
-    {
-      throw new NotImplementedException();
-    }
+      ToDoItem? result = await context.ToDoItems
+               .FirstOrDefaultAsync(p => p.Id == id);
 
-    public Task<bool> MarkItemAsNotCompletedAsync(int id)
-    {
-      throw new NotImplementedException();
-    }
+      var model = _mapper.Map<Models.DTO.ToDoItem>(result);
 
-    public Task<bool> MarkItemAsNotCompletedAsync(DTO.ToDoItem item)
-    {
-      throw new NotImplementedException();
+      return model;
     }
-
-    public Task<bool> MarkItemAsNotCompletedAsync(ToDoItem item)
+    
+    public async Task<Models.DTO.ToDoItem?> UpdateItemAsync(long id, JsonPatchDocument<ToDoItemData> patch)
     {
-      throw new NotImplementedException();
-    }
+      var toDoItem = await context.ToDoItems.FindAsync(id);
+      if (toDoItem == null)
+      {
+        return null;
+      }
 
-    public Task<bool> MarkItemAsNotCompletedAsync(List<DTO.ToDoItem> items)
-    {
-      throw new NotImplementedException();
-    }
+      //Map entity to DTO
+      ToDoItemData itemData = new() { ToDoItem = _mapper.Map<Models.DTO.ToDoItem>(toDoItem) };
 
-    public Task<DTO.ToDoItem?> UpdateItemAsync(int id, DTO.ToDoItem item)
-    {
-      throw new NotImplementedException();
+      //Apply patch to Binding target.
+      patch.ApplyTo(itemData);
+
+      //Map changes back to entity
+      _mapper.Map<ToDoItem>(itemData);
+
+      await context.SaveChangesAsync();
+
+      return itemData.ToDoItem;
     }
 
     protected virtual void Dispose(bool disposing)
@@ -146,7 +139,5 @@ namespace DBServer
       Dispose(disposing: true);
       GC.SuppressFinalize(this);
     }
-
-    
   }
 }

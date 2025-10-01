@@ -1,8 +1,8 @@
-﻿namespace DBServer.DTO
+﻿namespace Models.DTO
 {
   public class ToDoItem
   {
-    public int Id { get; set; }
+    public long Id { get; set; }
 
     public DateTime? CreationDate { get; set; }
 

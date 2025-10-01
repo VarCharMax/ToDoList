@@ -1,7 +1,7 @@
-﻿using DBServer.DTO;
+﻿using Models.DTO;
 using System.ComponentModel.DataAnnotations;
 
-namespace ToDoList.Server.Models.BindingTargets
+namespace Models.BindingTargets
 {
   public class ToDoItemData
   {

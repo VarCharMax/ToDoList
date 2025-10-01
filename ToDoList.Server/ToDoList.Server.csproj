@@ -24,6 +24,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\DBServer\DBServer.csproj" />
+    <ProjectReference Include="..\Models\Models.csproj" />
     <ProjectReference Include="..\todolist.client\todolist.client.esproj">
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
     </ProjectReference>

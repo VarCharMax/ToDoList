@@ -3,9 +3,7 @@ using DBServer.Helpers;
 using DBServer.Interfaces;
 using Microsoft.AspNetCore.SpaServices.AngularCli;
 using Microsoft.AspNetCore.SpaServices.StaticFiles;
-using Microsoft.Extensions.Options;
 using ToDoList.Server.Helpers;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace ToDoList.Server
 {

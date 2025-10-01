@@ -6,7 +6,7 @@ namespace DBServer.Entity
   public class ToDoItem
   {
     [Key]
-    public int Id { get; set; }
+    public long Id { get; set; }
 
     [NotNull]
     public DateTime CreationDate { get; set; }

@@ -1,6 +1,8 @@
-﻿using DBServer.DTO;
-using DBServer.Interfaces;
+﻿using DBServer.Interfaces;
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
+using Models.BindingTargets;
+using Models.DTO;
 using System.Data;
 
 namespace ToDoList.Server.Controllers
@@ -55,20 +57,26 @@ namespace ToDoList.Server.Controllers
     }
 
     [HttpPost]
-    public async Task<ActionResult<ToDoItem>> PostItem(ToDoItem item)
+    public async Task<ActionResult<ToDoItem>> PostItem([FromBody]ToDoItemData item)
     {
-      if (item is not ToDoItem newItem)
+      ToDoItem newItem;
+
+      if (ModelState.IsValid)
+      {
+        newItem = item.ToDoItem;
+
+        try
+        {
+          newItem = await repos.AddItemAsync(newItem);
+        }
+        catch (DataException)
+        {
+          return BadRequest("message: a database error occurred.");
+        }
+      }
+      else
       {
         return BadRequest("message: the data was invalid.");
-      }
-
-      try
-      {
-        newItem = await repos.AddItemAsync(newItem);
-      }
-      catch (DataException)
-      {
-        return BadRequest("message: a database error occurred.");
       }
 
       //The framework returns JSON by default, but might return XML in some situations (which is the REST standard), so we use an explicit wrapper.
@@ -76,30 +84,48 @@ namespace ToDoList.Server.Controllers
     }
 
     [HttpPut("{id}")]
-    public async Task<IActionResult> PutPlayer(int id, ToDoItem item)
+    public async Task<IActionResult> ReplaceItem(int id, [FromBody]ToDoItemData item)
     {
-      if (item is not ToDoItem uItem)
+      ToDoItem? updateItem;
+
+      if (ModelState.IsValid)
+      {
+        updateItem = item.ToDoItem;
+        updateItem.Id = id;
+
+        try
+        {
+          updateItem = await repos.ReplaceItemAsync(id, updateItem);
+        }
+        catch (Exception)
+        {
+          return BadRequest("message: a database error occurred.");
+        }
+      }
+      else
       {
         return BadRequest();
       }
 
-      ToDoItem? updatedItem;
-
-      try
-      {
-        updatedItem = await repos.UpdateItemAsync(id, uItem);
-      }
-      catch (Exception)
+      if (updateItem is null)
       {
         return BadRequest("message: a database error occurred.");
       }
 
-      if (updatedItem is null)
+      return new JsonResult(updateItem);
+    }
+
+    [HttpPatch("{id}")]
+    public async Task<IActionResult> UpdateItem(long id, [FromBody] JsonPatchDocument<ToDoItemData> patch)
+    {
+      ToDoItem? item = await repos.UpdateItemAsync(id, patch);
+
+      if (item is null)
       {
-        return BadRequest("message: a database error occurred.");
+        return NotFound();
       }
 
-      return new JsonResult(updatedItem);
+      return new JsonResult(item);
     }
 
     [HttpDelete("{id}")]

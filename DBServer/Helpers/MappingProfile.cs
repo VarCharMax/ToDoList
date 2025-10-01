@@ -1,4 +1,5 @@
-﻿using AutoMapper;
+﻿using Models.DTO;
+using AutoMapper;
 
 namespace DBServer.Helpers
 {
@@ -6,8 +7,8 @@ namespace DBServer.Helpers
   {
     public MappingProfile()
     {
-      CreateMap<DTO.ToDoItem, Entity.ToDoItem>().ReverseMap();
-      CreateMap<Entity.ToDoItem, DTO.ToDoItem>().ReverseMap();
+      CreateMap<ToDoItem, Entity.ToDoItem>().ReverseMap();
+      CreateMap<Entity.ToDoItem, ToDoItem>().ReverseMap();
     }
   }
 }
