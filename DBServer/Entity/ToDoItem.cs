@@ -1,0 +1,21 @@
+﻿using System.ComponentModel.DataAnnotations;
+using System.Diagnostics.CodeAnalysis;
+
+namespace DBServer.Entity
+{
+  public class ToDoItem
+  {
+    [Key]
+    public int Id { get; set; }
+
+    [NotNull]
+    public DateTime CreationDate { get; set; }
+
+    public DateTime? CompletedDate { get; set; }
+
+    [NotNull]
+    public bool IsCompleted { get; set; }
+  }
+}
+
+
