@@ -1,7 +1,9 @@
 ﻿using DBServer;
 using DBServer.Helpers;
 using DBServer.Interfaces;
+using Microsoft.AspNetCore.SpaServices.AngularCli;
 using Microsoft.AspNetCore.SpaServices.StaticFiles;
+using ToDoList.Server.Helpers;
 
 namespace ToDoList.Server
 {
@@ -32,6 +34,12 @@ namespace ToDoList.Server
         builder.Logging.AddFilter("Microsoft.EntityFrameworkCore.Infrastructure", LogLevel.Warning);
         builder.Logging.AddFilter("Microsoft.AspNetCore", LogLevel.Warning);
 
+        services.AddControllersWithViews()
+              .AddJsonOptions(opts => {
+                opts.JsonSerializerOptions.DefaultIgnoreCondition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull;
+              })
+              .AddNewtonsoftJson();
+
         services.AddSingleton<IConfiguration>(Configuration);
         services.AddSqlite<DataContext>("DataSource=webApi.db");
         services.AddScoped<IToDoListRepository, ToDoListRepository>();
@@ -49,8 +57,10 @@ namespace ToDoList.Server
         });
         services.AddAutoMapper(cfg => { }, typeof(MappingProfile));
         services.AddOpenApi();
-        services.AddControllers();
-      }
+        
+        //this adds support for WebApi and controllers with views.
+        services.AddRazorPages();
+    }
 
       public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
       {
@@ -91,12 +101,36 @@ namespace ToDoList.Server
           endpoints.MapStaticAssets();
           endpoints.MapControllers();
           endpoints.MapFallbackToFile("/index.html");
+          endpoints.MapControllerRoute(
+                   name: "default",
+                   pattern: "{controller=Home}/{action=Index}/{id?}");
+          endpoints.MapRazorPages();
+
           if (env.IsDevelopment())
           {
             endpoints.MapOpenApi();
           }
         });
-      
+
+        app.UseSpa(spa =>
+        {
+          string strategy = Configuration.GetValue<string>("DevTools:ConnectionStrategy") ?? "proxy";
+
+          spa.Options.SourcePath = "ClientApp";
+
+          if (env.IsDevelopment())
+          {
+            if (strategy == "proxy")
+            {
+              spa.UseProxyToSpaDevelopmentServer("http://127.0.0.1:58170");
+            }
+            else if (strategy == "managed")
+            {
+              spa.UseAngularCliServer(npmScript: "start");
+            }
+          }
+        });
+
         app.UseForwardedHeaders(new ForwardedHeadersOptions
         {
           //Forward client IP and originating scheme (HTTP/HTTPS). This is to support HTTPS redirects.

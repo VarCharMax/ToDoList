@@ -1,7 +1,6 @@
 ﻿using DBServer;
-using ToDoList.Server.Helpers;
 
-namespace ToDoList.Server
+namespace ToDoList.Server.Helpers
 {
     public static class SeedData
     {
