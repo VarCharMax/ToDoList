@@ -30,5 +30,4 @@
     <ProjectReference Include="..\DBServer\DBServer.csproj" />
     <ProjectReference Include="..\Models\Models.csproj" />
   </ItemGroup>
-
 </Project>
