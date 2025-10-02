@@ -1,0 +1,78 @@
+﻿"use strict";
+
+import gulp from "gulp";
+import { task, src, dest, watch } from "gulp";
+import concat from "gulp-concat";
+import cssmin from "gulp-cssmin";
+import htmlmin from "gulp-htmlmin";
+import uglify from "gulp-uglify";
+import merge from "merge-stream";
+import { deleteAsync } from "del";
+// import filter from "gulp-filter";
+// import map from "gulp-map";
+
+var regex = {
+    css: /\.css$/,
+    html: /\.(html|htm)$/,
+    js: /\.js$/
+};
+
+task("min", gulp.series(min_js, min_css, min_html));
+task("finish", gulp.series(clean_code, watch_code));
+
+function min_js () {
+    var tasks = getBundles(regex.js).map(function (bundle) {
+        return src(bundle.inputFiles, { base: "." })
+            .pipe(concat(bundle.outputFileName))
+            .pipe(uglify())
+            .pipe(dest("."));
+    });
+    return merge(tasks);
+};
+
+function min_css () {
+    var tasks = getBundles(regex.css).map(function (bundle) {
+        return src(bundle.inputFiles, { base: "." })
+            .pipe(concat(bundle.outputFileName))
+            .pipe(cssmin())
+            .pipe(dest("."));
+    });
+    return merge(tasks);
+};
+
+function min_html () {
+    var tasks = getBundles(regex.html).map(function (bundle) {
+        return src(bundle.inputFiles, { base: "." })
+            .pipe(concat(bundle.outputFileName))
+            .pipe(htmlmin({ collapseWhitespace: true, minifyCSS: true, minifyJS: true }))
+            .pipe(dest("."));
+    });
+    return merge(tasks);
+};
+function clean_code () {
+    var files = map(function (bundle) {
+        return bundle.outputFileName;
+    });
+
+    return deleteAsync(files);
+};
+
+function watch_code () {
+    getBundles(regex.js).forEach(function (bundle) {
+        watch(bundle.inputFiles, ["min:js"]);
+    });
+
+    getBundles(regex.css).forEach(function (bundle) {
+        watch(bundle.inputFiles, ["min:css"]);
+    });
+
+    getBundles(regex.html).forEach(function (bundle) {
+        watch(bundle.inputFiles, ["min:html"]);
+    });
+};
+
+function getBundles(regexPattern) {
+    return filter(function (bundle) {
+        return regexPattern.test(bundle.outputFileName);
+    });
+}
