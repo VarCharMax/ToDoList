@@ -9,6 +9,9 @@ namespace DBServer.Entity
     public long Id { get; set; }
 
     [NotNull]
+    public string? Title { get; set; }
+
+    [NotNull]
     public DateTime CreationDate { get; set; }
 
     public DateTime? CompletedDate { get; set; }

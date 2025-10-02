@@ -4,10 +4,12 @@
   {
     public long Id { get; set; }
 
-    public DateTime? CreationDate { get; set; }
+    public string Title { get; set; } = string.Empty;
 
-    public DateTime? CompletedDate { get; set; }
+    public DateTime? CreationDate { get; set; } = DateTime.Now.Date;
 
-    public bool IsCompleted { get; set; }
+    public DateTime? CompletedDate { get; set; } = null;
+
+    public bool IsCompleted { get; set; } = false;
   }
 }
