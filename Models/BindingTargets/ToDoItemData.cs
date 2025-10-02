@@ -6,6 +6,13 @@ namespace Models.BindingTargets
   public class ToDoItemData
   {
     [Required]
+    public string Title
+    {
+      get => ToDoItem.Title ?? string.Empty;
+      set => ToDoItem.Title = value;
+    } 
+
+    [Required]
     public DateTime CreationDate
     {
       get => ToDoItem.CreationDate ?? default;
