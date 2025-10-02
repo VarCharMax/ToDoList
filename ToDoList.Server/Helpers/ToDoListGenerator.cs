@@ -1,5 +1,4 @@
 ﻿using DBServer.Entity;
-using System.Collections;
 
 namespace ToDoList.Server.Helpers
 {
@@ -10,6 +9,12 @@ namespace ToDoList.Server.Helpers
    
     public static List<ToDoItem> GenerateRandomItems()
     {
+      lstToDoItems.Add(new ToDoItem { Title = "Buy groceries", IsCompleted = false });
+      lstToDoItems.Add(new ToDoItem { Title = "Walk the dog", IsCompleted = true, CompletedDate = DateTime.Now.AddDays(-1) });
+      lstToDoItems.Add(new ToDoItem { Title = "Finish project report", IsCompleted = false });
+      lstToDoItems.Add(new ToDoItem { Title = "Call mom", IsCompleted = true, CompletedDate = DateTime.Now.AddDays(-2) });
+      lstToDoItems.Add(new ToDoItem { Title = "Schedule dentist appointment", IsCompleted = false });
+
       return lstToDoItems;
     }
   }
