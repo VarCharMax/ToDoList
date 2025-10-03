@@ -61,7 +61,10 @@ namespace ToDoList.Server
       //This adds support for WebApi and Controllers with Views.
       services.AddRazorPages();
 
-      services.AddOpenApi();
+      if (env.IsDevelopment())
+      {
+        services.AddOpenApi();
+      }
     }
 
     public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -109,9 +112,18 @@ namespace ToDoList.Server
 
         if (env.IsDevelopment())
         {
-          endpoints.MapOpenApi();
+          endpoints.MapOpenApi( );
+          
         }
       });
+
+      if (env.IsDevelopment())
+      {
+        app.UseSwaggerUI(options =>
+        {
+          options.SwaggerEndpoint("/openapi/v1.json", "v1");
+        });
+      }
 
       app.UseSpa(spa =>
       {
