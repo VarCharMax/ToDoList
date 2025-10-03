@@ -2,7 +2,6 @@
 using DBServer.Helpers;
 using DBServer.Interfaces;
 using Microsoft.AspNetCore.SpaServices.AngularCli;
-using Microsoft.AspNetCore.SpaServices.StaticFiles;
 using System.Text.Json.Serialization;
 using ToDoList.Server.Helpers;
 
@@ -48,8 +47,8 @@ namespace ToDoList.Server
       services.AddAutoMapper(cfg =>
       {
         cfg.LicenseKey = builder.Configuration["AutoMapper:Key"];
-      });
-      services.AddAutoMapper(cfg => { }, typeof(MappingProfile));
+
+      }, typeof(MappingProfile));
 
       /*
        * TODO: This is for Bundler & Minifier support.
@@ -59,10 +58,10 @@ namespace ToDoList.Server
         });
       */
 
-      services.AddOpenApi();
-
       //This adds support for WebApi and Controllers with Views.
       services.AddRazorPages();
+
+      services.AddOpenApi();
     }
 
     public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -118,8 +117,6 @@ namespace ToDoList.Server
       {
         string strategy = Configuration.GetValue<string>("DevTools:ConnectionStrategy") ?? "proxy";
 
-        spa.Options.SourcePath = "../ClientApp";
-
         if (env.IsDevelopment())
         {
           if (strategy == "proxy")
@@ -128,11 +125,11 @@ namespace ToDoList.Server
           }
           else if (strategy == "managed")
           {
+            spa.Options.SourcePath = "../ClientApp";
             spa.UseAngularCliServer(npmScript: "start");
           }
         }
       });
-
     }
   }
 }
