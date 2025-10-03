@@ -8,6 +8,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ToDoItemResolver } from './resolvers/todoitem-resolver.service';
 import { ToDoItemsResolver } from './resolvers/todoitems-resolver.service';
 import { environment } from './environments/environment';
+import { HomeComponent } from './screens/home/home.component';
 
 export const MY_DATE_FORMATS = {
     parse: {
@@ -23,7 +24,8 @@ export const MY_DATE_FORMATS = {
 
 @NgModule({
   declarations: [
-    AppComponent
+        AppComponent,
+        HomeComponent
   ],
     imports: [
         BrowserModule,
@@ -35,8 +37,9 @@ export const MY_DATE_FORMATS = {
     ],
     providers: [
         ToDoItemResolver,
-        ToDoItemsResolver
-    { provide: "BASE_API_URL", useValue: environment.apiUrl },],
+        ToDoItemsResolver,
+        { provide: "BASE_API_URL", useValue: environment.apiUrl }
+    ],
     bootstrap: [AppComponent]
 })
 export class AppModule { }
