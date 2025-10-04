@@ -9,6 +9,7 @@ import { ToDoItemResolver } from './resolvers/todoitem-resolver.service';
 import { ToDoItemsResolver } from './resolvers/todoitems-resolver.service';
 import { environment } from './environments/environment';
 import { HomeComponent } from './screens/home/home.component';
+import { MaterialModule } from './modules/material-module';
 
 export const MY_DATE_FORMATS = {
     parse: {
@@ -34,6 +35,7 @@ export const MY_DATE_FORMATS = {
         FormsModule,
         ReactiveFormsModule,
         BrowserAnimationsModule,
+        MaterialModule
     ],
     providers: [
         ToDoItemResolver,

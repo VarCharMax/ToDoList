@@ -2,6 +2,8 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { HomeComponent } from './screens/home/home.component';
 import { ErrorPageComponent } from './screens/error-page/error-page.component';
+import { ToDoItemsResolver } from './resolvers/todoitems-resolver.service';
+import { ToDoItemResolver } from './resolvers/todoitem-resolver.service';
 
 const routes: Routes = [
     {
@@ -12,8 +14,16 @@ const routes: Routes = [
     {
         path: 'todoitems',
         component: HomeComponent,
-        children: [
-        ],
+        resolve: {
+        ToDoItemsResolver: ToDoItemsResolver,
+}       ,
+    },
+    {
+        path: 'todoitem',
+        component: HomeComponent,
+        resolve: {
+        ToDoItemsResolver: ToDoItemResolver,
+}       ,
     },
     {
         path: 'not-found',
