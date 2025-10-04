@@ -3,7 +3,7 @@ import { Injectable, OnDestroy } from '@angular/core';
 import { Observable, Subscription } from 'rxjs';
 
 import { ToDoItem } from '../models/todoitem.model';
-import { Repository } from '../modules/repository';
+import { Repository } from '../services/repository';
 
 @Injectable()
 export class ToDoItemsResolver implements Resolve<ToDoItem[]>, OnDestroy {

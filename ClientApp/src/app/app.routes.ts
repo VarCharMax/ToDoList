@@ -1,12 +1,10 @@
-import { NgModule } from '@angular/core';
-import { RouterModule, Routes } from '@angular/router';
+import { Routes } from '@angular/router';
 import { HomeComponent } from './screens/home/home.component';
-import { ErrorPageComponent } from './screens/error-page/error-page.component';
 import { ToDoItemsResolver } from './resolvers/todoitems-resolver.service';
 import { ToDoItemResolver } from './resolvers/todoitem-resolver.service';
+import { ErrorPageComponent } from './screens/error-page/error-page.component';
 
-const routes: Routes = [
-    {
+export const routes: Routes = [{
         path: '',
         redirectTo: '/todoitems',
         pathMatch: 'full',
@@ -32,9 +30,3 @@ const routes: Routes = [
     },
     { path: '**', redirectTo: '/not-found' },
 ];
-
-@NgModule({
-  imports: [RouterModule.forRoot(routes)],
-  exports: [RouterModule]
-})
-export class AppRoutingModule { }

@@ -8,11 +8,13 @@ import {MatIconModule} from '@angular/material/icon';
 import {MatInputModule} from '@angular/material/input';
 import {MatRadioModule} from '@angular/material/radio';
 import {MatSelectModule} from '@angular/material/select';
+import { MomentDateModule } from '@angular/material-moment-adapter';
 import { NgModule } from '@angular/core';
 
 @NgModule({
   exports: [
     MatDatepickerModule,
+    MomentDateModule,
     MatNativeDateModule,    
     MatFormFieldModule,
     MatCheckboxModule,

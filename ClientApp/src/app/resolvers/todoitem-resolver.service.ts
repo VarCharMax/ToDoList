@@ -3,7 +3,7 @@ import { Observable, Subscription } from 'rxjs';
 
 import { ToDoItem } from '../models/todoitem.model';
 import { Injectable } from '@angular/core';
-import { Repository } from '../modules/repository';
+import { Repository } from '../services/repository';
 
 @Injectable()
 export class ToDoItemResolver implements Resolve<ToDoItem> {

@@ -1,7 +1,7 @@
 import { ActivatedRoute, Data, Router } from '@angular/router';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ToDoItem } from '../../models/todoitem.model';
-import { Repository } from '../../modules/repository';
+import { Repository } from '../../services/repository';
 import { Subscription } from 'rxjs';
 
 @Component({

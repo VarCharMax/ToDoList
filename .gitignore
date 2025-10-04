@@ -239,3 +239,8 @@ _Pvt_Extensions
 # SQLLite
 *.db.shm
 *.db_wal
+
+
+# Cursor
+.cursor
+.md

@@ -1,6 +1,6 @@
 import { Subject } from 'rxjs';
 import { ToDoItem } from '../models/todoitem.model';
-// import { Filter } from './configClasses.repository';
+import { Filter } from '../modules/configClasses.repository';
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 
@@ -16,7 +16,7 @@ export class Repository {
         [label: string]: Array<string>;
     }>();
 
-    // filter: Filter = new Filter();
+    filter: Filter = new Filter();
 
     constructor(private http: HttpClient) {}
 
@@ -30,8 +30,8 @@ export class Repository {
     });
     }
 
-    /*
-    getPatients() {
+/*
+    getToDoItems() {
         let url = `${itemsUrl}?related=${this.filter.related}`;
 
     if (this.filter.search) {
@@ -42,7 +42,7 @@ export class Repository {
             this.todoitems = p.slice();
             this.todoitemsChanged.next(p.slice());
     });
-    */
+*/
 
     /*
     * Get entity
@@ -64,17 +64,17 @@ export class Repository {
             isCompleted: false,
         };
 
-        this.http.post<number>(itemsUrl, data).subscribe(
-            (id) => {
+        this.http.post<number>(itemsUrl, data).subscribe({
+            next:(id) => {
                 todoitem.id = id;
                 this.todoitems.push(todoitem);
                 this.todoitemsChanged.next(this.todoitems.slice());
             },
-            (e) => {
+            error: (e) => {
                 console.log('Error! ' + e);
                 this.errorsChanged.next(e.error?.errors);
             }
-        );
+    });
     }
 
     /*

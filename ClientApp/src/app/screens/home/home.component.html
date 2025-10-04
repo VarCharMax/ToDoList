@@ -1,7 +1,9 @@
 <table>
     <thead>
-    <th>First Name</th>
-    <th>Last Name</th>
+    <th>Description</th>
+    <th>Date Created</th>
+    <th>DateCompleted</th>
+    <th>Completed</th>
     </thead>
     <tbody>
         <tr *ngFor="let todoitem of todoitems;" (click)="updateToDoItem(todoitem.id!)">
