@@ -1,5 +1,5 @@
 import { Subject } from 'rxjs';
-import { ToDoItem } from '../models/todoitem.model';
+import { TodoItemInfo } from '../models/todo-item';
 import { Filter } from '../modules/configClasses.repository';
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
@@ -8,10 +8,11 @@ const itemsUrl = 'api/items';
 
 @Injectable()
 export class Repository {
-    private todoitems: ToDoItem[] = [];
+    
+    todoitems: TodoItemInfo[] = [];
 
-    todoitemsChanged: Subject<ToDoItem[]> = new Subject<ToDoItem[]>();
-    todoitemChanged: Subject<ToDoItem> = new Subject<ToDoItem>();
+    todoitemsChanged: Subject<TodoItemInfo[]> = new Subject<TodoItemInfo[]>();
+    todoitemChanged: Subject<TodoItemInfo> = new Subject<TodoItemInfo>();
     errorsChanged: Subject<{ [label: string]: Array<string> }> = new Subject<{
         [label: string]: Array<string>;
     }>();
@@ -24,7 +25,7 @@ export class Repository {
     * Get collections
     */
     getToDoItems() {
-        this.http.get<ToDoItem[]>(itemsUrl).subscribe((p) => {
+        this.http.get<TodoItemInfo[]>(itemsUrl).subscribe((p) => {
             this.todoitems = p.slice();
             this.todoitemsChanged.next(p.slice());
     });
@@ -38,7 +39,7 @@ export class Repository {
         url += `&search=true&${this.filter.search}`;
     }
 
-        this.http.get<ToDoItem[]>(url).subscribe((p) => {
+        this.http.get<TodoItemInfo[]>(url).subscribe((p) => {
             this.todoitems = p.slice();
             this.todoitemsChanged.next(p.slice());
     });
@@ -48,7 +49,7 @@ export class Repository {
     * Get entity
     */
     getToDoItem(id: number) {
-        this.http.get<ToDoItem>(`${itemsUrl}/${id}`).subscribe((p) => {
+        this.http.get<TodoItemInfo>(`${itemsUrl}/${id}`).subscribe((p) => {
             this.todoitemChanged.next(JSON.parse(JSON.stringify(p)));
         });
     }
@@ -56,7 +57,7 @@ export class Repository {
     /*
     * Add entity
     */
-    createToDoItem(todoitem: ToDoItem) {
+    createToDoItem(todoitem: TodoItemInfo) {
         let data = {
             title: todoitem.title,
             creationDate: todoitem.creationDate,
@@ -81,7 +82,7 @@ export class Repository {
     * Get entity
     */
     getoDoItem(id: number) {
-        this.http.get<ToDoItem>(`${itemsUrl}/${id}`).subscribe((p) => {
+        this.http.get<TodoItemInfo>(`${itemsUrl}/${id}`).subscribe((p) => {
             this.todoitemsChanged.next(JSON.parse(JSON.stringify(p)));
         });
     }
@@ -89,7 +90,7 @@ export class Repository {
     /*
     * Replace Entity
     */
-    replaceClinician(todoitem: ToDoItem) {
+    replaceClinician(todoitem: TodoItemInfo) {
         let data = {
             title: todoitem.title,
             creationDate: todoitem.creationDate,

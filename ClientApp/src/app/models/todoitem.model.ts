@@ -1,4 +1,5 @@
 ﻿
+/*
 export class ToDoItem {
     constructor(
         public id?: number,
@@ -8,3 +9,4 @@ export class ToDoItem {
         public isCompleted?: boolean
         ) { }
 }
+        */

@@ -5,7 +5,7 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
-
+  
   <PropertyGroup>
     <PrepareForBuildDependsOn>BundleMinify;$(PrepareForBuildDependsOn)</PrepareForBuildDependsOn>
   </PropertyGroup>

@@ -2,21 +2,21 @@
 import { Injectable, OnDestroy } from '@angular/core';
 import { Observable, Subscription } from 'rxjs';
 
-import { ToDoItem } from '../models/todoitem.model';
+import { TodoItemInfo } from '../models/todo-item';
 import { Repository } from '../services/repository';
 
 @Injectable()
-export class ToDoItemsResolver implements Resolve<ToDoItem[]>, OnDestroy {
-    private todoitemsObservable: Observable<ToDoItem[]> = new Observable<ToDoItem[]>();
+export class ToDoItemsResolver implements Resolve<TodoItemInfo[]>, OnDestroy {
+    private todoitemsObservable: Observable<TodoItemInfo[]> = new Observable<TodoItemInfo[]>();
     private todoitemsSub: Subscription = new Subscription;
 
     constructor(private repo: Repository) {
 
     }
 
-    resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<ToDoItem[]> | Promise<ToDoItem[]> | ToDoItem[] {
+    resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<TodoItemInfo[]> | Promise<TodoItemInfo[]> | TodoItemInfo[] {
 
-        this.todoitemsObservable = new Observable((observer: { next: (arg0: ToDoItem[]) => void; complete: () => void; }) => {
+        this.todoitemsObservable = new Observable((observer: { next: (arg0: TodoItemInfo[]) => void; complete: () => void; }) => {
 
             const that = this;
 

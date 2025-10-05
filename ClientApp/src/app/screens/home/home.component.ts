@@ -1,40 +1,12 @@
-import { ActivatedRoute, Data, Router } from '@angular/router';
-import { Component, OnDestroy, OnInit } from '@angular/core';
-import { ToDoItem } from '../../models/todoitem.model';
-import { Repository } from '../../services/repository';
-import { Subscription } from 'rxjs';
+import { Component } from '@angular/core';
+import { TodoItemsList} from '../../components/todo-items-list/todo-items-list';
 
 @Component({
-  selector: 'app-todolist-item',
+  selector: 'app-home',
   templateUrl: './home.component.html',
-  styleUrls: ['./home.component.css']
+  styleUrls: ['./home.component.css'],
+  imports: [TodoItemsList]
 })
-export class HomeComponent implements OnInit, OnDestroy {
-    private todoitemsListSub: Subscription = new Subscription();
-
-    todoitems: ToDoItem[] = [];
-
-    constructor(private repo: Repository, private router: Router, private route: ActivatedRoute) { }                     
-
-    ngOnInit() {
-        
-        this.todoitemsListSub = this.route.data
-            .subscribe(
-                (data: Data) => {
-                    this.todoitems = data['todoitems'];
-                }
-        );
-    }
-        
-    updateToDoItem(id: number) {
-        this.router.navigate(['/items', id], { relativeTo: this.route });
-    }
-
-    addToDoItem() {
-        this.router.navigate(['new'], { relativeTo: this.route });
-    }
-
-    ngOnDestroy() {
-        this.todoitemsListSub.unsubscribe();
-    }
+export class HomeComponent {
+    
 }

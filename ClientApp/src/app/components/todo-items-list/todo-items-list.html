@@ -1,0 +1,20 @@
+ <section class="results">
+
+    <table>
+        <thead>
+            <tr>
+            <th>Title</th>
+            <th>Creation Date</th>
+            <th>Completed Date</th>
+            <th>Is Completed</th>
+            </tr>
+        </thead>
+        <tbody>
+            @for(todoitem of todoitemList; track $index) {
+                <app-todo-item [todoItem]="todoitem"></app-todo-item>
+      }
+        </tbody>
+    </table>
+
+      
+    </section>
