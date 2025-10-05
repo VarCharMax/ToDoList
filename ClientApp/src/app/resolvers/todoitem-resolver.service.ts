@@ -1,6 +1,5 @@
 ﻿import { ActivatedRouteSnapshot, Resolve, RouterStateSnapshot } from '@angular/router';
 import { Observable, Subscription } from 'rxjs';
-
 import { TodoItemInfo } from '../models/todo-item';
 import { Injectable } from '@angular/core';
 import { Repository } from '../services/repository';

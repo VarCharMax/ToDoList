@@ -3,6 +3,7 @@ import { TodoItemInfo } from '../models/todo-item';
 import { Filter } from '../modules/configClasses.repository';
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { TodoItem } from '../components/todo-item/todo-item';
 
 const itemsUrl = 'api/items';
 
@@ -10,6 +11,7 @@ const itemsUrl = 'api/items';
 export class Repository {
     
     todoitems: TodoItemInfo[] = [];
+    todoitem: TodoItemInfo = new TodoItem();
 
     todoitemsChanged: Subject<TodoItemInfo[]> = new Subject<TodoItemInfo[]>();
     todoitemChanged: Subject<TodoItemInfo> = new Subject<TodoItemInfo>();

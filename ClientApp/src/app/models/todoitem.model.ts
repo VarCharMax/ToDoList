@@ -1,6 +1,6 @@
-﻿
-/*
-export class ToDoItem {
+﻿import { TodoItemInfo}  from './todo-item';
+
+export class ToDoItem implements TodoItemInfo {
     constructor(
         public id?: number,
         public title?: string,
@@ -9,4 +9,3 @@ export class ToDoItem {
         public isCompleted?: boolean
         ) { }
 }
-        */
