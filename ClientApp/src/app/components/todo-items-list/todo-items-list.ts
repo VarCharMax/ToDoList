@@ -1,5 +1,4 @@
-import { ActivatedRoute, Data, Router } from '@angular/router';
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { Repository } from '../../services/repository';
 import { Subscription } from 'rxjs';
 import { TodoItemInfo } from '../../models/todo-item';
@@ -14,9 +13,11 @@ import { TodoItem } from "../todo-item/todo-item";
 export class TodoItemsList implements OnInit, OnDestroy {
      
     private todoitemsListChanged: Subscription = new Subscription();
+      private repo: Repository = inject(Repository);
+    
     todoitemList: TodoItemInfo[] = [];
 
-    constructor(private repo: Repository) { }                     
+    constructor() { }                     
 
     ngOnInit() { 
          this.todoitemsListChanged = this.repo.todoitemsChanged.subscribe((t) => {

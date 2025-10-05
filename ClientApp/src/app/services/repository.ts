@@ -7,7 +7,10 @@ import { TodoItem } from '../components/todo-item/todo-item';
 
 const itemsUrl = 'api/items';
 
-@Injectable()
+@Injectable({
+        providedIn: 'root'
+    }
+)
 export class Repository {
     
     todoitems: TodoItemInfo[] = [];
