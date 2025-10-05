@@ -11,7 +11,7 @@ const itemsUrl = 'api/items';
 export class Repository {
     
     todoitems: TodoItemInfo[] = [];
-    todoitem: TodoItemInfo = new TodoItem();
+    todoitem: TodoItem = new TodoItem();
 
     todoitemsChanged: Subject<TodoItemInfo[]> = new Subject<TodoItemInfo[]>();
     todoitemChanged: Subject<TodoItemInfo> = new Subject<TodoItemInfo>();
