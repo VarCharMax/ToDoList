@@ -1,27 +1,12 @@
-# ToDoList
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 16.1.4.
 
-## Development server
+There were a few things I wanted to accomplish:
+- Use a minimal de elopment framework instead of the built-in dotnet Angular project template. I find this template very messay, with ports scattered over proxy files and project directives.
+Instead, I opted to use a setup demonstrated by Adam Freeman in an Angluar/MVC book from a few years ago. This approach has a number of advantages. Firstly, it allows you to embed the Angular runtime files in an MVC controller, giving all the benefites of dotnet tooling, minification, etc. Of course, you can do this in the published version just by copying and pasting the runtime files into the page. But this appraoch allows you to do it in a dev environment. Secondly, it gives you more development options. You can either run the application in "managed" mode, which will fire up the Angular dev server automatically, or in "proxy" mode. In the latter case, you have to start the Angular dev server manually, but it allows change monitoring and instant reloads.
+- Reuse a framework I built a few years ago for a large-scale application. This makes use of a client-side repository which mirrors the server-side repository (an approach again based on Adam Freeman's code.) 
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.
-
-## Code scaffolding
-
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
-
-## Build
-
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory.
-
-## Running unit tests
-
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
-
-## Running end-to-end tests
-
-Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To use this command, you need to first add a package that implements end-to-end testing capabilities.
-
-## Further help
-
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.io/cli) page.
+## Issues
+- The legacy framework was built around an older Angular version (probably 12), and the direction was to use the most current version, which is 20. For some reason, if you don't specify an Angualar version when creating an application, you get version 16. This version turned out to be compatible with my framework, but when I realised it was not the current version (it's now 20), I tried replacing the client-side code. However, version 20 didn't work out-of-the-box. I took me almost a day to figure out why. I took the 16 code and ran the upgrade command to 17. That was OK. But when I got to 18, things went wrong. The actual problem is the offer to migrate the code-base to the "new build system". This system no longer creates the expected runtime libraries. Instead, there's only main.js, and on inspection, this seemed to be just a server-side render of the application, not a runtilme library at all, even though server-side rendering is not enabled. So I just went through all the upgrades, being careful not to select the migration option each time. I was able to get it up to 20 with full compatibility with my framework. However, this causes a maintainance headache now. The only way to avoid the new buid system is to start from a version that doesn't have it, and progressively upgrade. In the long-term, it's possible that the new system will become mandatory, so my dev framework won't work anymore.
+## Breaking changes 
+- The standalone build used to be for lightweight applications, but the Angular team have decided to make it the default. It sounds like the modular option is going to be deprecated eventually. Fortunately, there's a command to convert existing code. However, as expected, there were issues - the tool didn't pick up everything and I had to do some manual clean-ups.
+- The dependency injection system has changed. Fortunately, it wasn't a big deal. I consulted the documentation and had everything working in a few minutes.
