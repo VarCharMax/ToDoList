@@ -92,11 +92,6 @@
             }
           },
           "defaultConfiguration": "development",
-          "options": {
-            "host": "localhost",
-            "port": 4200,
-            "proxyConfig": "proxy.conf.js"
-          }
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
