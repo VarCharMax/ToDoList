@@ -127,7 +127,7 @@ namespace ToDoList.Server
 
       app.UseSpa(spa =>
       {
-        string strategy = Configuration.GetValue<string>("DevTools:ConnectionStrategy") ?? "managed";
+        string strategy = Configuration.GetValue<string>("DevTools:ConnectionStrategy") ?? "proxy";
 
         if (env.IsDevelopment())
         {
