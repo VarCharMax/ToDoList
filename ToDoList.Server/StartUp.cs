@@ -11,7 +11,8 @@ namespace ToDoList.Server
   {
     private readonly IConfigurationRoot Configuration = new ConfigurationBuilder()
             .SetBasePath(env.ContentRootPath)
-            .AddJsonFile("appSettings.json", optional: false)
+            .AddJsonFile("appSettings.json", optional: false, true)
+            .AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true, true)
             .AddEnvironmentVariables()
             .Build();
 
@@ -113,7 +114,6 @@ namespace ToDoList.Server
         if (env.IsDevelopment())
         {
           endpoints.MapOpenApi( );
-          
         }
       });
 
@@ -123,14 +123,11 @@ namespace ToDoList.Server
         {
           options.SwaggerEndpoint("/openapi/v1.json", "v1");
         });
-      }
 
-      app.UseSpa(spa =>
-      {
-        string strategy = Configuration.GetValue<string>("DevTools:ConnectionStrategy") ?? "proxy";
-
-        if (env.IsDevelopment())
+        app.UseSpa(spa =>
         {
+          string strategy = Configuration.GetValue<string>("DevTools:ConnectionStrategy") ?? "proxy";
+
           if (strategy == "proxy")
           {
             spa.UseProxyToSpaDevelopmentServer("http://localhost:4200/");
@@ -140,8 +137,8 @@ namespace ToDoList.Server
             spa.Options.SourcePath = "../ClientApp";
             spa.UseAngularCliServer(npmScript: "start");
           }
-        }
-      });
+        });
+      }
     }
   }
 }
