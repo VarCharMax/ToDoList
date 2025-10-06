@@ -9,9 +9,7 @@ import { provideAnimations, provideNoopAnimations} from '@angular/platform-brows
 bootstrapApplication(AppComponent, {
     providers: [
       provideHttpClient(),
-      importProvidersFrom(BrowserModule),
-      provideAnimations(),
-      provideNoopAnimations()
+      importProvidersFrom(BrowserModule)
     ]
 })
   .catch(err => console.error(err));

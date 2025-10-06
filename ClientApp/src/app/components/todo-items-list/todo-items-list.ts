@@ -2,11 +2,11 @@ import { Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { Repository } from '../../services/repository';
 import { Subscription } from 'rxjs';
 import { TodoItemInfo } from '../../models/todo-item';
-import { TodoItem } from "../todo-item/todo-item";
+import { TodoItemComponent } from "../todo-item/todo-item";
 
 @Component({
   selector: 'app-todo-items-list',
-  imports: [TodoItem],
+  imports: [TodoItemComponent],
   templateUrl: './todo-items-list.html',
   styleUrl: './todo-items-list.css'
 })
