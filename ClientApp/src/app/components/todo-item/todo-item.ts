@@ -1,4 +1,4 @@
-import { Component, input } from '@angular/core';
+import { Component, input, signal } from '@angular/core';
 import { TodoItemInfo } from '../../models/todo-item';
 
 @Component({
@@ -9,4 +9,13 @@ import { TodoItemInfo } from '../../models/todo-item';
 })
 export class TodoItem {
    todoItem = input.required<TodoItemInfo>();
+    isOverdue = signal(false);
+
+   ngOnInit() {
+       const today = new Date();
+       if (this.todoItem().completeBy) {
+           const completeByDate = this.todoItem().completeBy;
+           this.isOverdue.set(!this.todoItem().isCompleted && (completeByDate! < today));
+       }
+   }
 }

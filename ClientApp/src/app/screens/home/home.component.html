@@ -9,7 +9,7 @@
       }
   </span>
 	<label for="completedBy">Complete by Date</label>
-	<input id="complete-by" type="text" formControlName="completeBy" />
+	<input readonly id="complete-by" type="text" formControlName="completeBy" />
     <span>
       @if(!todoitemForm.get('completeBy')?.valid && todoitemForm.get('completeBy')?.touched) {
       class="help-block">This field is required.

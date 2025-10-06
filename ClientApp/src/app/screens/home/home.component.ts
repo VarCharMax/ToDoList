@@ -3,6 +3,7 @@ import {FormControl, FormGroup, ReactiveFormsModule, Validators} from '@angular/
 import { TodoItemsList} from '../../components/todo-items-list/todo-items-list';
 import { Repository } from '../../services/repository';
 import { ToDoItem } from 'src/app/models/todoitem.model';
+import { formatDate } from '@angular/common';
 
 @Component({
   selector: 'app-home', 
@@ -18,11 +19,11 @@ export class HomeComponent {
       title: new FormControl(null, Validators.required),
       completeBy: new FormControl(null, Validators.required)
     });
-
+    
     addToDoItem() {
-        this.todoitem.title = this.todoitemForm.value.title ?? '';
+        this.todoitem.title = this.todoitemForm.value.title!;
         this.todoitem.creationDate = new Date();
-        this.todoitem.completeBy =  null; // TODO - create date from string.
+        this.todoitem.completeBy = new Date(formatDate(this.todoitemForm.value.completeBy!, 'dd/MM/yyyy', 'en-AU'));
         this.repo.createToDoItem(this.todoitem);
         this.repo.getToDoItems();
     }
