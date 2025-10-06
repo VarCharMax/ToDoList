@@ -7,14 +7,15 @@
       @if(!todoitemForm.get('title')?.valid && todoitemForm.get('title')?.touched) {
       class="help-block">This field is required.
       }
-  </span>
-	<label for="completedBy">Complete by Date</label>
+  </span> 
+	<label for="completeBy">Complete by Date</label>
 	<input readonly id="complete-by" type="text" formControlName="completeBy" />
     <span>
       @if(!todoitemForm.get('completeBy')?.valid && todoitemForm.get('completeBy')?.touched) {
       class="help-block">This field is required.
       }
   </span>
+  <br />
 	<button type="submit" class="primary">Add</button>
 </form>
 </section>

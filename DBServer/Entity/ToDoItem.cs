@@ -14,6 +14,8 @@ namespace DBServer.Entity
     [NotNull]
     public DateTime CreationDate { get; set; }
 
+    public DateTime? CompleteBy { get; set; }
+
     public DateTime? CompletedDate { get; set; }
 
     [NotNull]

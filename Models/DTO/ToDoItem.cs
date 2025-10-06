@@ -10,6 +10,8 @@
 
     public DateTime? CompletedDate { get; set; } = null;
 
+    public DateTime? CompleteBy { get; set; } = null;
+
     public bool IsCompleted { get; set; } = false;
   }
 }

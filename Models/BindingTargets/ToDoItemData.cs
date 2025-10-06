@@ -24,6 +24,11 @@ namespace Models.BindingTargets
       set => ToDoItem.CompletedDate = value;
     }
 
+    public DateTime? CompleteBy {
+      get => ToDoItem.CompleteBy ?? default;
+      set => ToDoItem.CompleteBy = value;
+    } 
+
     public bool IsCompleted { get => ToDoItem.IsCompleted; set => ToDoItem.IsCompleted = value; }
 
     public ToDoItem ToDoItem { get; set; } = new ToDoItem();

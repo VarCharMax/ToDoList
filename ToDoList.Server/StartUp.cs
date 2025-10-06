@@ -41,7 +41,8 @@ namespace ToDoList.Server
             .AddNewtonsoftJson();
 
       services.AddSingleton<IConfiguration>(Configuration);
-      services.AddSqlite<DataContext>("DataSource=webApi.db");
+      services.AddSqlite<DataContext>("DataSource=webApi.db", 
+        x => x.MigrationsAssembly("DBServer"));
       services.AddScoped<IToDoListRepository, ToDoListRepository>();
 
       services.AddSingleton<IConfiguration>(Configuration);
