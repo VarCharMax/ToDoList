@@ -17,7 +17,7 @@ Instead, I opted to use a setup demonstrated by Adam Freeman in an Angluar/MVC b
 
 ## Breaking changes 
 - The standalone build used to be for lightweight applications, but the Angular team have decided to make it the default. It sounds like the modular option is going to be deprecated eventually. Fortunately, there's a command to convert existing code. However, as expected, there were issues - the tool didn't pick up everything and I had to do some manual clean-ups.
-- The dependency injection system has changed. YOu used to be able to just inject a service by supplying it as a parameter (similar to the MS MVC platform). Now, there's an explicit inject method. Fortunately, it wasn't a big deal. I consulted the documentation and had everything working in a few minutes.
+- The dependency injection system has changed. You used to be able to just inject a service by supplying it as a parameter (similar to the MS MVC platform). Now, there's an explicit inject method. Fortunately, it wasn't a big deal. I consulted the documentation and had everything working in a few minutes.
 - There are a number of new coding approaches in 16+, such as a new flow control syntax. I have tried to use these whereever possible. Signals are another big change. I have used these in inputs and outputs.
 - I'm puzzled as to why the CLI seems to be arrested at version 16. I know there were a number of breaking changes with that version. I'm wondering if they see later versions as more like patches ...
 

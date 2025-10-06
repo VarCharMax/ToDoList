@@ -3,8 +3,18 @@
 <form [formGroup]="todoitemForm" (submit)="addToDoItem()">
 	<label for="title">Title</label>
 	<input id="title" type="text" formControlName="title" />
+    <span>
+      @if(!todoitemForm.get('title')?.valid && todoitemForm.get('title')?.touched) {
+      class="help-block">This field is required.
+      }
+  </span>
 	<label for="completedBy">Complete by Date</label>
 	<input id="complete-by" type="text" formControlName="completeBy" />
+    <span>
+      @if(!todoitemForm.get('completeBy')?.valid && todoitemForm.get('completeBy')?.touched) {
+      class="help-block">This field is required.
+      }
+  </span>
 	<button type="submit" class="primary">Add</button>
 </form>
 </section>
