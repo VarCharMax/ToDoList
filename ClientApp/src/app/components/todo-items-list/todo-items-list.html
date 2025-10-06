@@ -1,17 +1,18 @@
  <section class="results">
     <table>
-        <thead>
+        <thead style="display: table-header-group">
             <tr>
-                <td>Title</td>
-                <td>Creation Date</td>
-                <td>Completed Date</td>
-                <td>Is Completed</td>
+                <th>Title</th>
+                <th>Creation Date</th>
+                <th>Completed Date</th>
+                <th>Is Completed</th>
             </tr>
         </thead>
         <tbody>
             @for(todoitem of todoitemList; track $index) {
-                <app-todo-item [todoItem]="todoitem" />
+                <tr app-todo-item [todoItem]="todoitem"></tr>
         }
         </tbody>
     </table>
+
 </section>

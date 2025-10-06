@@ -1,0 +1,7 @@
+table {
+  border-collapse: collapse; /* Merges adjacent cell borders */
+}
+
+th, td {
+  border: 1px solid black; /* Applies border to cells */
+}
