@@ -82,20 +82,11 @@ export class Repository {
             }
     });
     }
-
-    /*
-    * Get entity
-    */
-    getoDoItem(id: number) {
-        this.http.get<TodoItemInfo>(`${itemsUrl}/${id}`).subscribe((p) => {
-            this.todoitemsChanged.next(JSON.parse(JSON.stringify(p)));
-        });
-    }
  
     /*
     * Replace Entity
     */
-    replaceClinician(todoitem: TodoItemInfo) {
+    replaceToDoItem(todoitem: TodoItemInfo) {
         let data = {
             title: todoitem.title,
             creationDate: todoitem.creationDate,
@@ -117,5 +108,12 @@ export class Repository {
             patch.push({ op: 'replace', path: key, value: value })
         );
         this.http.patch(`${itemsUrl}/${id}`, patch).subscribe(() => this.getToDoItem(id));
+    }
+
+    deleteToDoItem(id: number) {
+        this.http.delete(`${itemsUrl}/${id}`).subscribe(() => {
+            this.todoitems = this.todoitems.filter((p) => p.id != id);
+            this.todoitemsChanged.next(this.todoitems.slice());
+        });
     }
 }

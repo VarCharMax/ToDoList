@@ -1,5 +1,6 @@
-import { Component, input, signal } from '@angular/core';
+import { Component, inject, input, signal } from '@angular/core';
 import { ToDoItem } from '../../models/todoitem.model';
+import { Repository } from 'src/app/services/repository';
 
 @Component({
   selector: '[app-todo-item]',
@@ -8,9 +9,11 @@ import { ToDoItem } from '../../models/todoitem.model';
   styleUrl: './todo-item.css'
 })
 export class TodoItemComponent {
+    private repo: Repository = inject(Repository);
     todoItem = input.required<ToDoItem>();
     isOverdue = signal(false);
     item = signal(new ToDoItem);
+    isEditMode: boolean = false;
 
     ngOnInit() {
       let newItem : ToDoItem =  new ToDoItem(
@@ -28,5 +31,23 @@ export class TodoItemComponent {
            const completeByDate = this.todoItem().completeBy;
            this.isOverdue.set(!this.todoItem().isCompleted && (completeByDate! < today));
        }
+   }
+   setEditMode() {
+       this.isEditMode = true;
+   }
+   cancelEdit() {
+       this.isEditMode = false;
+       this.item.set(this.todoItem());
+   }
+
+   saveChanges() {
+       this.isEditMode = false;
+        this.repo.replaceToDoItem(this.item());
+        this.repo.getToDoItems();
+   }
+
+   deleteItem() {
+       this.repo.deleteToDoItem(this.item().id!);
+       this.repo.getToDoItems();
    }
 }
