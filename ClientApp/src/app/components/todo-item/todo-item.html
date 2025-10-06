@@ -1,16 +1,16 @@
 
 @if(isEditMode == false) {
     <td>{{item().title}}</td>
-    <td>{{item().creationDate}}</td>
-    <td>{{item().completeBy}}</td>
-    <td>{{item().isCompleted}}</td>
+    <td>{{item().creationDate | date: 'shortDate' }}</td>
+    <td>{{item().completeBy | date: 'shortDate'}}</td>
+    <td><input type="checkbox" [checked]=(item().isCompleted)></td>
     <td><button type="button" (click)="setEditMode()">Edit</button></td>
     <td><button type="button" (click)="deleteItem()">Delete</button></td>
 } @else {
-    <td><input type="text" [value]="item().title">></td>
-    <td>{{item().creationDate}}</td>
-    <td>{{item().completedDate}}</td>
-    <td><input type="checkbox" [checked]=(item().isCompleted)></td>
+    <td><input type="text" [value]="item().title"></td>
+    <td>{{item().creationDate | date: 'shortDate' }}</td>
+    <td>{{item().completedDate | date: 'shortDate' }}</td>
+    <td>{{item().isCompleted ? "Yes" : "No"}}</td>
     <td><button type="button" (click)="saveChanges()">Save</button></td>
     <td><button type="button" (click)="cancelEdit()">Cancel</button></td>
 }

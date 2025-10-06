@@ -1,10 +1,10 @@
 import { Component, inject, input, signal } from '@angular/core';
 import { ToDoItem } from '../../models/todoitem.model';
 import { Repository } from 'src/app/services/repository';
-
+import { CommonModule, DatePipe} from '@angular/common';
 @Component({
   selector: '[app-todo-item]',
-  imports: [],
+  imports: [CommonModule,DatePipe],
   templateUrl: './todo-item.html',
   styleUrl: './todo-item.css'
 })
