@@ -14,9 +14,12 @@ namespace DBServer
     private readonly DataContext context = ctx;
     private readonly IMapper _mapper = mapper;
 
-    public Task<Models.DTO.ToDoItem> AddItemAsync(Models.DTO.ToDoItem item)
+    public async Task<Models.DTO.ToDoItem> AddItemAsync(Models.DTO.ToDoItem item)
     {
-      throw new NotImplementedException();
+      await context.ToDoItems.AddAsync(_mapper.Map<Entity.ToDoItem>(item));
+      await context.SaveChangesAsync();
+
+      return _mapper.Map<Models.DTO.ToDoItem>(GetItemByIdAsync(item.Id));
     }
 
     public async Task<bool> DeleteItemAsync(long id)

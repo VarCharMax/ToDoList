@@ -1,5 +1,4 @@
  <section class="results">
-
     <table>
         <thead>
             <tr>
@@ -12,9 +11,8 @@
         <tbody>
             @for(todoitem of todoitemList; track $index) {
                 <app-todo-item [todoItem]="todoitem" />
-      }
+        }
         </tbody>
     </table>
 
-      
     </section>

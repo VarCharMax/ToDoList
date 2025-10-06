@@ -1,5 +1,5 @@
 import { Component, input, signal } from '@angular/core';
-import { TodoItemInfo } from '../../models/todo-item';
+import { ToDoItem } from '../../models/todoitem.model';
 
 @Component({
   selector: 'app-todo-item',
@@ -8,7 +8,7 @@ import { TodoItemInfo } from '../../models/todo-item';
   styleUrl: './todo-item.css'
 })
 export class TodoItem {
-   todoItem = input.required<TodoItemInfo>();
+   todoItem = input.required<ToDoItem>();
     isOverdue = signal(false);
 
    ngOnInit() {

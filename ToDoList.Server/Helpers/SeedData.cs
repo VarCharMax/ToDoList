@@ -6,17 +6,19 @@ namespace ToDoList.Server.Helpers
     {
         public static void EnsurePopulated(DataContext context)
         {
-            if (!context.ToDoItems.Any())
-            {
+            // if (!context.ToDoItems.Any())
+            // {
                 Console.WriteLine("Creating Seed Data...");
 
+                context.ToDoItems.RemoveRange(context.ToDoItems);
+                context.SaveChanges();
                 context.ToDoItems.AddRange(ToDoListGenerator.GenerateRandomItems());
                 context.SaveChanges();
-            }
-            else
-            {
-                Console.WriteLine("Seed Data Not Required...");
-            }
+            // }
+            // else
+            //{
+             //   Console.WriteLine("Seed Data Not Required...");
+            //}
         }
     }
 }
