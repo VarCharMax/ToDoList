@@ -5,7 +5,8 @@ export class ToDoItem implements TodoItemInfo {
         public id?: number,
         public title?: string,
         public creationDate?: Date,
-        public completedDate?: Date,
+        public completedDate?: Date | null,
+        public completeBy?: Date | null,
         public isCompleted?: boolean
         ) { }
 }

@@ -1,3 +1,14 @@
 
-
-<app-todo-items-list></app-todo-items-list>
+<section>
+<form [formGroup]="todoitemForm" (submit)="addToDoItem()">
+	<label for="title">Title</label>
+	<input id="title" type="text" formControlName="title" />
+	<label for="completedBy">Complete by Date</label>
+	<input id="complete-by" type="text" formControlName="completeBy" />
+	<button type="submit" class="primary">Add</button>
+</form>
+</section>
+<hr />
+<section class="results">
+<app-todo-items-list />
+</section>

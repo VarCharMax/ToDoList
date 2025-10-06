@@ -11,7 +11,7 @@
         </thead>
         <tbody>
             @for(todoitem of todoitemList; track $index) {
-                <app-todo-item [todoItem]="todoitem"></app-todo-item>
+                <app-todo-item [todoItem]="todoitem" />
       }
         </tbody>
     </table>
