@@ -5,11 +5,11 @@
 <mat-form-field class="form-control" appearance="fill">
     <mat-label>Title</mat-label>
     <input matInput placeholder="Buy groceries" formControlName="title">
-    
+    @if (todoitemForm.get('title')?.hasError('required') && todoitemForm.get('title')?.touched) {
+      <mat-error>Title is required."</mat-error>
+    }
   </mat-form-field>
-  <mat-error *ngIf="todoitemForm.get('title')?.hasError('required') && todoitemForm.get('title')?.touched") >
-    This field is required.
-  </mat-error>
+  
   <br />
 
   <mat-form-field class="form-control" appearance="fill">
@@ -18,17 +18,19 @@
     <mat-hint>d/M/yyyy</mat-hint>
     <mat-datepicker-toggle matSuffix [for]="dueByPicker"></mat-datepicker-toggle>
     <mat-datepicker #dueByPicker></mat-datepicker>
-   <mat-error *ngIf="todoitemForm.get('dueBy')?.hasError('required') && todoitemForm.get('dueBy')?.touched") >
-    This field is required.
-  </mat-error>
+    @if (todoitemForm.get('dueBy')?.hasError('required') && todoitemForm.get('dueBy')?.touched) {
+      <mat-error>DueBy is required.</mat-error>
+    }
   </mat-form-field>
   <br />
 
-	<button type="submit" class="primary">Add</button>
+	<button mat-raised-button color="primary" type="submit" [disabled]="todoitemForm.invalid">Add</button>
 </form>
 
 <div>
+  <br />
   {{errorMessage()}}
+  <br />
 </div>
 </section>
 <hr />

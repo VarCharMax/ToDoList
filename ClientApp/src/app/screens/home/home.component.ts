@@ -1,5 +1,4 @@
 import { Component, inject, OnDestroy, OnInit, signal } from '@angular/core';
-import { NgIf } from '@angular/common';
 import { formatDate } from '@angular/common';
 import { Subscription } from 'rxjs';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators} from '@angular/forms';
@@ -14,7 +13,6 @@ import { ToDoItem } from 'src/app/models/todoitem.model';
   selector: 'app-home', 
   standalone: true,
   imports: [
-    NgIf, // Material modules don't seem to work with new control flow syntax yet.
     TodoItemsList,
     ReactiveFormsModule, 
     MatDatepickerModule,
