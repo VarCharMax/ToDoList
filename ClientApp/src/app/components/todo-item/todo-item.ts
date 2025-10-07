@@ -27,8 +27,8 @@ export class TodoItemComponent implements OnInit, OnDestroy {
         this.todoItem().id, 
         this.todoItem().title, 
         this.todoItem().creationDate, 
-        this.todoItem().dueBy, 
-        this.todoItem().completedDate, 
+        this.todoItem().completedDate,
+        this.todoItem().dueBy,
         this.todoItem().isCompleted);
 
       this.item.set(newItem);
@@ -57,7 +57,7 @@ export class TodoItemComponent implements OnInit, OnDestroy {
        let updatedItem = new ToDoItem(this.item().id, 
           this.item().title, 
           this.item().creationDate, 
-          this.item().dueBy, 
+          this.item().completedDate, 
           new Date(formatDate(new Date(), 'd/M/yyyy', 'en-AU')), 
           true);
           

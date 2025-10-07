@@ -28,7 +28,7 @@ export class TodoItemsList implements OnInit, OnDestroy {
       });
 
       this.todoitemsListChanged = this.repo.todoitemsChanged.subscribe((itemList) => {
-        console.log('Received updated todoitems list:', itemList);
+        console.log('Received updated todoitems list:', JSON.stringify(itemList)); 
         this.todoitemList.set(itemList);
       });
 

@@ -6,7 +6,7 @@
 
     public string Title { get; set; } = string.Empty;
 
-    public DateTime? CreationDate { get; set; } = DateTime.Now.Date;
+    public DateTime? CreationDate { get; set; }
 
     public DateTime? CompletedDate { get; set; } = null;
 

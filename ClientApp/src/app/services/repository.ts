@@ -31,6 +31,7 @@ export class Repository {
     */
     getToDoItems() {
         this.http.get<TodoItemInfo[]>(itemsUrl).subscribe((t) => {
+            console.log('Retrieved todoitems: ' + JSON.stringify(t));
             this.todoitems = t.slice();
             this.todoitemsChanged.next(t.slice());
     });
@@ -99,7 +100,7 @@ export class Repository {
             isCompleted: todoitem.isCompleted
         };
         */
-        console.log('Replace item: ' + todoitem);
+        console.log('Replace item: ' + JSON.stringify(todoitem));
         this.http
             .put(`${itemsUrl}/${todoitem.id}`, todoitem)
                 .subscribe({next:(t) => {
