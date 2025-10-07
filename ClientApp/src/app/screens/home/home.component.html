@@ -1,21 +1,29 @@
 
 <section>
 <form [formGroup]="todoitemForm" (submit)="addToDoItem()">
-	<label for="title">Title</label>
-	<input id="title" type="text" formControlName="title" />
-    <span>
-      @if(!todoitemForm.get('title')?.valid && todoitemForm.get('title')?.touched) {
-      class="help-block">This field is required.
-      }
-  </span> 
-	<label for="completeBy">Due By</label>
-	<input readonly id="due-by" type="text" formControlName="dueBy" />
-    <span>
-      @if(!todoitemForm.get('dueBy')?.valid && todoitemForm.get('dueBy')?.touched) {
-      class="help-block">This field is required.
-      }
-  </span>
+	
+<mat-form-field class="form-control" appearance="fill">
+    <mat-label>Title</mat-label>
+    <input matInput placeholder="Buy groceries" formControlName="title">
+    
+  </mat-form-field>
+  <mat-error *ngIf="todoitemForm.get('title')?.hasError('required') && todoitemForm.get('title')?.touched") >
+    This field is required.
+  </mat-error>
   <br />
+
+  <mat-form-field class="form-control" appearance="fill">
+  <mat-label>Due By</mat-label>
+    <input matInput [matDatepicker]="dueByPicker" placeholder="d/M/yyyy" formControlName="dueBy">
+    <mat-hint>d/M/yyyy</mat-hint>
+    <mat-datepicker-toggle matSuffix [for]="dueByPicker"></mat-datepicker-toggle>
+    <mat-datepicker #dueByPicker></mat-datepicker>
+   <mat-error *ngIf="todoitemForm.get('dueBy')?.hasError('required') && todoitemForm.get('dueBy')?.touched") >
+    This field is required.
+  </mat-error>
+  </mat-form-field>
+  <br />
+
 	<button type="submit" class="primary">Add</button>
 </form>
 </section>

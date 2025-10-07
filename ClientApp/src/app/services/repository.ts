@@ -30,9 +30,9 @@ export class Repository {
     * Get collections
     */
     getToDoItems() {
-        this.http.get<TodoItemInfo[]>(itemsUrl).subscribe((p) => {
-            this.todoitems = p.slice();
-            this.todoitemsChanged.next(p.slice());
+        this.http.get<TodoItemInfo[]>(itemsUrl).subscribe((t) => {
+            this.todoitems = t.slice();
+            this.todoitemsChanged.next(t.slice());
     });
     }
 

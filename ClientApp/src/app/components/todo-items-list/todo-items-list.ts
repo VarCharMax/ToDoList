@@ -1,4 +1,4 @@
-import { Component, EventEmitter, inject, OnDestroy, OnInit } from '@angular/core';
+import { Component, EventEmitter, inject, OnDestroy, OnInit, output, signal } from '@angular/core';
 import { Repository } from '../../services/repository';
 import { Subscription } from 'rxjs';
 import { TodoItemInfo } from '../../models/todo-item';
@@ -17,7 +17,7 @@ export class TodoItemsList implements OnInit, OnDestroy {
     private editService: SharedItemEditService = inject(SharedItemEditService);
     private itemEventSubscription: Subscription = new Subscription();
 
-    todoitemList: TodoItemInfo[] = [];
+    todoitemList = signal<TodoItemInfo[]>(new Array<TodoItemInfo>());
 
     constructor() { }                     
 
@@ -29,7 +29,8 @@ export class TodoItemsList implements OnInit, OnDestroy {
       });
 
       this.todoitemsListChanged = this.repo.todoitemsChanged.subscribe((itemList) => {
-        this.todoitemList = itemList;
+        console.log('Received updated todoitems list:', itemList);
+        this.todoitemList.update(() => itemList);
       });
 
       this.repo.getToDoItems();

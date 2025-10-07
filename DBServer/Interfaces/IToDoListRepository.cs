@@ -8,7 +8,7 @@ namespace DBServer.Interfaces
   {
     public Task<List<ToDoItem>> GetAllItemsAsync(); 
     public Task<ToDoItem?> GetItemByIdAsync(long id);
-    public Task<ToDoItem> AddItemAsync(ToDoItem item);
+    public Task<ToDoItem?> AddItemAsync(ToDoItem item);
     public Task<ToDoItem?> ReplaceItemAsync(long id, ToDoItem item);
     public Task<ToDoItem?> UpdateItemAsync(long id, JsonPatchDocument<ToDoItemData> patch);
     public Task<bool> DeleteItemAsync(long id);

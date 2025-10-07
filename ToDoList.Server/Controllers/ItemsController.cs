@@ -59,7 +59,7 @@ namespace ToDoList.Server.Controllers
     [HttpPost]
     public async Task<ActionResult<ToDoItem>> PostItem([FromBody]ToDoItemData item)
     {
-      ToDoItem newItem;
+      ToDoItem? newItem;
 
       if (ModelState.IsValid)
       {
@@ -77,6 +77,11 @@ namespace ToDoList.Server.Controllers
       else
       {
         return BadRequest("message: the data was invalid.");
+      }
+
+      if (newItem == null)
+      {
+        return BadRequest("message: a database error occurred.");
       }
 
       //The framework returns JSON by default, but might return XML in some situations (which is the REST standard), so we use an explicit wrapper.

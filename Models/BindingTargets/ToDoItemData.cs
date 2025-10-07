@@ -19,17 +19,14 @@ namespace Models.BindingTargets
       set => ToDoItem.CreationDate = value;
     }
 
-    public DateTime? CompletedDate {
-      get => ToDoItem.CompletedDate ?? default;
-      set => ToDoItem.CompletedDate = value;
-    }
-
+    [Required]
     public DateTime? DueBy
     {
       get => ToDoItem.DueBy ?? default;
       set => ToDoItem.DueBy = value;
-    } 
+    }
 
+    [Required]
     public bool IsCompleted { get => ToDoItem.IsCompleted; set => ToDoItem.IsCompleted = value; }
 
     public ToDoItem ToDoItem { get; set; } = new ToDoItem();

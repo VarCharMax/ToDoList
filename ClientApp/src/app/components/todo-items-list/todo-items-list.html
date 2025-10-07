@@ -4,14 +4,14 @@
             <tr>
                 <th>Title</th>
                 <th>Creation Date</th>
-                <th>Due Date</th>
+                <th>Due By</th>
                 <th>Completed</th>
                 <th>Edit</th>
                 <th>Delete</th>
             </tr>
         </thead>
         <tbody>
-            @for(todoitem of todoitemList; track $index) {
+            @for(todoitem of todoitemList(); track $index) {
                 <tr app-todo-item [todoItem]="todoitem"></tr>
         }
         </tbody>
