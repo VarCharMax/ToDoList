@@ -34,6 +34,12 @@ export class TodoItemComponent implements OnInit, OnDestroy {
 
       this.todoitemChanged = this.repo.todoitemChanged.subscribe((updatedItem) => {
         if (updatedItem.id === this.todoItem().id) {
+          const today = new Date();
+          if (updatedItem.dueBy) {
+            const completeByDate = updatedItem.dueBy;
+            updatedItem.isOverdue = (!updatedItem.isCompleted && (completeByDate! < today));
+          }
+
           this.item = updatedItem;
         }
       })
@@ -49,7 +55,7 @@ export class TodoItemComponent implements OnInit, OnDestroy {
           this.item.id, 
           this.item.title, 
           this.item.creationDate, 
-          new Date(formatDate(new Date(), 'd/M/yyyy', 'en-AU')),
+          new Date(formatDate(new Date(), 'dd/M/yyyy', 'en-AU')),
           this.item.dueBy,
           true);
           
