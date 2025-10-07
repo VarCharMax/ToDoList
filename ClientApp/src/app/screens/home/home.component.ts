@@ -17,8 +17,7 @@ import { ToDoItem } from 'src/app/models/todoitem.model';
     ReactiveFormsModule, 
     MatDatepickerModule,
     MatInputModule,
-    MatNativeDateModule,
-    
+    MatNativeDateModule
   ],
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.css'],

@@ -1,5 +1,5 @@
 import { Component, inject, input, OnDestroy, OnInit, signal } from '@angular/core';
-import { CommonModule, DatePipe} from '@angular/common';
+import { CommonModule, DatePipe } from '@angular/common';
 import { Subscription } from 'rxjs';
 import { SharedItemEditService } from 'src/app/services/shared-edit.service';
 import { ToDoItem } from '../../models/todoitem.model';
@@ -39,7 +39,6 @@ export class TodoItemComponent implements OnInit, OnDestroy {
       }
 
       this.listEventSubscription = this.editService.itemlistEditEvent$.subscribe(message => {
-        // console.log('Child received edit event from parent:', message);
         if (message !== this.todoItem().id) {
           this.isEditMode = false;
           this.item.set(this.todoItem());
@@ -48,7 +47,6 @@ export class TodoItemComponent implements OnInit, OnDestroy {
    }
 
    setEditMode() {
-        console.log('Setting edit mode ...');
         this.editService.emitItemEvent(this.todoItem().id!);
         this.isEditMode = true;
    }
@@ -61,12 +59,10 @@ export class TodoItemComponent implements OnInit, OnDestroy {
    saveChanges() {
        this.isEditMode = false;
         this.repo.replaceToDoItem(this.item());
-        // this.repo.getToDoItems();
    }
 
    deleteItem() {
        this.repo.deleteToDoItem(this.item().id!);
-       // this.repo.getToDoItems();
    }
 
   ngOnDestroy(): void {
