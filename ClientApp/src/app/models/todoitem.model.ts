@@ -6,7 +6,7 @@ export class ToDoItem implements TodoItemInfo {
         public title?: string,
         public creationDate?: Date,
         public completedDate?: Date | null,
-        public completeBy?: Date | null,
+        public dueBy?: Date | null,
         public isCompleted?: boolean
         ) { }
 }

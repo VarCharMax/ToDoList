@@ -8,10 +8,10 @@
       class="help-block">This field is required.
       }
   </span> 
-	<label for="completeBy">Complete by Date</label>
-	<input readonly id="complete-by" type="text" formControlName="completeBy" />
+	<label for="completeBy">Due By</label>
+	<input readonly id="due-by" type="text" formControlName="dueBy" />
     <span>
-      @if(!todoitemForm.get('completeBy')?.valid && todoitemForm.get('completeBy')?.touched) {
+      @if(!todoitemForm.get('dueBy')?.valid && todoitemForm.get('dueBy')?.touched) {
       class="help-block">This field is required.
       }
   </span>

@@ -3,6 +3,6 @@ export interface TodoItemInfo {
     title?: string,
     creationDate?: Date,
     completedDate?: Date | null,
-    completeBy?: Date | null,
+    dueBy?: Date | null,
     isCompleted?: boolean
 }

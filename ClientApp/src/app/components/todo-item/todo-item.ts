@@ -20,22 +20,21 @@ export class TodoItemComponent implements OnInit, OnDestroy {
     isOverdue = signal(false);
     item = signal(new ToDoItem);
     isEditMode: boolean = false;
-    // onItemEditMode = output<number>();
 
     ngOnInit() {
       let newItem : ToDoItem =  new ToDoItem(
         this.todoItem().id, 
         this.todoItem().title, 
         this.todoItem().creationDate, 
-        this.todoItem().completeBy, 
+        this.todoItem().dueBy, 
         this.todoItem().completedDate, 
         this.todoItem().isCompleted);
 
       this.item.set(newItem);
 
       const today = new Date();
-      if (this.todoItem().completeBy) {
-          const completeByDate = this.todoItem().completeBy;
+      if (this.todoItem().dueBy) {
+          const completeByDate = this.todoItem().dueBy;
           this.isOverdue.set(!this.todoItem().isCompleted && (completeByDate! < today));
       }
 

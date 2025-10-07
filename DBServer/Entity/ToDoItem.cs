@@ -16,7 +16,7 @@ namespace DBServer.Entity
 
     public DateTime? CompleteBy { get; set; }
 
-    public DateTime? CompletedDate { get; set; }
+    public DateTime? DueBy { get; set; }
 
     [NotNull]
     public bool IsCompleted { get; set; }
