@@ -37,12 +37,10 @@ export class HomeComponent implements OnInit, OnDestroy {
     
     ngOnInit() {
       this.todoitemChanged = this.repo.todoitemChanged.subscribe((item) => {
-        // this.todoitem = item;
         this.todoitemForm.reset();
       }); 
     
       this.errorsChanged = this.repo.errorsChanged.subscribe(message => {
-        console.log('Received errors: ' + JSON.stringify(message));
         this.errorMessage.set(JSON.stringify(message));
       });
     }

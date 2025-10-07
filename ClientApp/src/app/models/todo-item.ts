@@ -4,5 +4,6 @@ export interface TodoItemInfo {
     creationDate?: Date,
     completedDate?: Date | null,
     dueBy?: Date | null,
-    isCompleted?: boolean
+    isCompleted?: boolean,
+    isOverdue?: boolean
 }

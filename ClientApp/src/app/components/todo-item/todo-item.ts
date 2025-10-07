@@ -18,7 +18,6 @@ export class TodoItemComponent implements OnInit, OnDestroy {
     private todoitemChanged: Subscription = new Subscription();
 
     todoItem = input.required<ToDoItem>();
-    isOverdue = signal(false);
     item = signal(new ToDoItem);
     isEditMode: boolean = false;
 
@@ -35,16 +34,9 @@ export class TodoItemComponent implements OnInit, OnDestroy {
 
       this.todoitemChanged = this.repo.todoitemChanged.subscribe((updatedItem) => {
         if (updatedItem.id === this.todoItem().id) {
-          console.log('Received updated todoitem:', updatedItem); 
           this.item.set(updatedItem);
         }
       })
-
-      const today = new Date();
-      if (this.todoItem().dueBy) {
-          const completeByDate = this.todoItem().dueBy;
-          this.isOverdue.set(!this.todoItem().isCompleted && (completeByDate! < today));
-      }
 
       this.listEventSubscription = this.editService.itemlistEditEvent$.subscribe(message => {
         if (message !== this.todoItem().id) {
@@ -61,7 +53,7 @@ export class TodoItemComponent implements OnInit, OnDestroy {
           new Date(formatDate(new Date(), 'd/M/yyyy', 'en-AU')),
           this.item().dueBy,
           true);
-        console.log('Setting item complete: ' + updatedItem.id  + " " + updatedItem.title + " " + updatedItem.isCompleted);
+          
        this.repo.replaceToDoItem(updatedItem);
    }
 

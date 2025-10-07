@@ -31,7 +31,6 @@ export class Repository {
     */
     getToDoItems() {
         this.http.get<TodoItemInfo[]>(itemsUrl).subscribe((t) => {
-            console.log('Retrieved todoitems: ' + JSON.stringify(t));
             this.todoitems = t.slice();
             this.todoitemsChanged.next(t.slice());
         });
@@ -57,7 +56,7 @@ export class Repository {
     */
     getToDoItem(id: number) {
         this.http.get<TodoItemInfo>(`${itemsUrl}/${id}`).subscribe((p) => {
-            this.todoitemChanged.next(JSON.parse(JSON.stringify(p)));
+            this.todoitemChanged.next(p);
         });
     }
 
@@ -66,15 +65,15 @@ export class Repository {
     */
     createToDoItem(todoitem: TodoItemInfo) {
 
-        this.http.post<number>(itemsUrl, todoitem).subscribe({
-            next:(id) => {
-                todoitem.id = id;
-                this.todoitems.push(todoitem);
+        this.http.post<ToDoItem>(itemsUrl, todoitem).subscribe({
+            next:(item) => {
+                // todoitem.id = id;
+                console.log("Created item: " + JSON.stringify(item));
+                this.todoitems.push(item);
                 this.todoitemsChanged.next(this.todoitems.slice());
-                this.todoitemChanged.next(todoitem);
+                this.todoitemChanged.next(item);
             },
             error: (e) => {
-                console.log('Error! ' + JSON.stringify(e));
                 this.errorsChanged.next(e.error?.errors);
             }
         });
@@ -84,20 +83,18 @@ export class Repository {
     * Replace Entity
     */
     replaceToDoItem(todoitem: ToDoItem) {
-        console.log('Replace item: ' + todoitem.id  + " " + todoitem.title + " " + todoitem.isCompleted);
         this.http
-            .put(`${itemsUrl}/${todoitem.id}`, todoitem)
+            .put<ToDoItem>(`${itemsUrl}/${todoitem.id}`, todoitem)
                 .subscribe({next:(t) => {
-                console.log("Result from put:" + t);
-                let index = this.todoitems.findIndex((t) => t.id === todoitem.id);
-                if (index !== -1) {
-                    this.todoitems[index] = t;
-                    this.todoitemChanged.next(JSON.parse(JSON.stringify(t)));
-                }
-            },
-            error:(e) => {
-                console.log('Error! ' + JSON.stringify(e));
-                this.errorsChanged.next(e.error?.errors);
+                    let index = this.todoitems.findIndex((t) => t.id === todoitem.id);
+                    if (index !== -1) {
+                        console.log("Updated item: " + JSON.stringify(t));
+                        this.todoitems[index] = t;
+                        this.todoitemChanged.next(t);
+                    }
+                },
+                error:(e) => {
+                    this.errorsChanged.next(e.error?.errors);
             }
         });
     }
@@ -114,12 +111,15 @@ export class Repository {
     }
 
     deleteToDoItem(id: number) {
-        this.http.delete(`${itemsUrl}/${id}`).subscribe((result) => {
-            console.log("Result from delete:" + result);
+        this.http.delete<boolean>(`${itemsUrl}/${id}`).subscribe({next: (result) => {
             if (result === true) {
                 this.todoitems = this.todoitems.filter((p) => p.id != id);
                 this.todoitemsChanged.next(this.todoitems.slice());
             }
-        });
+        },
+        error: (e) => {
+            this.errorsChanged.next(e.error?.errors);
+        }
+    });
     }
 }

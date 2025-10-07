@@ -89,7 +89,7 @@ namespace ToDoList.Server.Controllers
     }
 
     [HttpPut("{id}")]
-    public async Task<IActionResult> ReplaceItem(int id, [FromBody]ToDoItemData item)
+    public async Task<ActionResult<ToDoItem>> ReplaceItem(int id, [FromBody]ToDoItemData item)
     {
       ToDoItem? updateItem;
 
@@ -134,7 +134,7 @@ namespace ToDoList.Server.Controllers
     }
 
     [HttpDelete("{id}")]
-    public async Task<ActionResult> DeleteItem(int id)
+    public async Task<ActionResult<bool>> DeleteItem(int id)
     {
       bool result;
 

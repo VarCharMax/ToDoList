@@ -12,7 +12,7 @@
         </thead>
         <tbody>
             @for(todoitem of todoitemList(); track $index) {
-                <tr app-todo-item [todoItem]="todoitem"></tr>
+                <tr [class.statusComplete]="todoitem.isCompleted == true" [class.overdue]="todoitem.isOverdue == true" app-todo-item [todoItem]="todoitem"></tr>
         }
         </tbody>
     </table>

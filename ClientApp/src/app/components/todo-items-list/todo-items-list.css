@@ -5,3 +5,11 @@ table {
 th, td {
   border: 1px solid black; /* Applies border to cells */
 }
+
+.statusComplete {
+  background-color: lightgreen;
+}
+
+.overdue {
+  background-color: lightcoral;
+}

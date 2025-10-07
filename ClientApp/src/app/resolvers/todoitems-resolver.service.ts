@@ -38,7 +38,7 @@ export class ToDoItemsResolver implements Resolve<TodoItemInfo[]>, OnDestroy {
     }
 
     ngOnDestroy() {
-        console.log('In OnDestroy');
+        
 
     }
 
