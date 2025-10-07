@@ -71,6 +71,7 @@ export class Repository {
                 todoitem.id = id;
                 this.todoitems.push(todoitem);
                 this.todoitemsChanged.next(this.todoitems.slice());
+                this.todoitemChanged.next(todoitem);
             },
             error: (e) => {
                 console.log('Error! ' + JSON.stringify(e));
@@ -82,8 +83,8 @@ export class Repository {
     /*
     * Replace Entity
     */
-    replaceToDoItem(todoitem: TodoItemInfo) {
-        console.log('Replace item: ' + JSON.stringify(todoitem));
+    replaceToDoItem(todoitem: ToDoItem) {
+        console.log('Replace item: ' + todoitem.id  + " " + todoitem.title + " " + todoitem.isCompleted);
         this.http
             .put(`${itemsUrl}/${todoitem.id}`, todoitem)
                 .subscribe({next:(t) => {

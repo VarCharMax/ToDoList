@@ -49,18 +49,19 @@ export class TodoItemComponent implements OnInit, OnDestroy {
       this.listEventSubscription = this.editService.itemlistEditEvent$.subscribe(message => {
         if (message !== this.todoItem().id) {
           this.isEditMode = false;
-          this.item.set(this.todoItem());
+          this.item.set(this.item());
         }
       });
    }  
    setItemComplete() {
-       let updatedItem = new ToDoItem(this.item().id, 
+       let updatedItem = new ToDoItem(
+          this.item().id, 
           this.item().title, 
           this.item().creationDate, 
-          this.item().completedDate, 
-          new Date(formatDate(new Date(), 'd/M/yyyy', 'en-AU')), 
+          new Date(formatDate(new Date(), 'd/M/yyyy', 'en-AU')),
+          this.item().dueBy,
           true);
-          
+        console.log('Setting item complete: ' + updatedItem.id  + " " + updatedItem.title + " " + updatedItem.isCompleted);
        this.repo.replaceToDoItem(updatedItem);
    }
 
