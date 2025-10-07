@@ -1,5 +1,5 @@
-import { Component, inject, input, OnDestroy, OnInit, signal } from '@angular/core';
-import { CommonModule, DatePipe } from '@angular/common';
+import { Component, OnDestroy, OnInit, inject, input, signal } from '@angular/core';
+import { CommonModule, DatePipe, formatDate } from '@angular/common';
 import { Subscription } from 'rxjs';
 import { SharedItemEditService } from 'src/app/services/shared-edit.service';
 import { ToDoItem } from '../../models/todoitem.model';
@@ -15,6 +15,7 @@ export class TodoItemComponent implements OnInit, OnDestroy {
     private repo: Repository = inject(Repository);
     private editService: SharedItemEditService = inject(SharedItemEditService);
     private listEventSubscription: Subscription = new Subscription();
+    private todoitemChanged: Subscription = new Subscription();
 
     todoItem = input.required<ToDoItem>();
     isOverdue = signal(false);
@@ -32,6 +33,13 @@ export class TodoItemComponent implements OnInit, OnDestroy {
 
       this.item.set(newItem);
 
+      this.todoitemChanged = this.repo.todoitemChanged.subscribe((updatedItem) => {
+        if (updatedItem.id === this.todoItem().id) {
+          console.log('Received updated todoitem:', updatedItem); 
+          this.item.set(updatedItem);
+        }
+      })
+
       const today = new Date();
       if (this.todoItem().dueBy) {
           const completeByDate = this.todoItem().dueBy;
@@ -44,6 +52,16 @@ export class TodoItemComponent implements OnInit, OnDestroy {
           this.item.set(this.todoItem());
         }
       });
+   }  
+   setItemComplete() {
+       let updatedItem = new ToDoItem(this.item().id, 
+          this.item().title, 
+          this.item().creationDate, 
+          this.item().dueBy, 
+          new Date(formatDate(new Date(), 'd/M/yyyy', 'en-AU')), 
+          true);
+          
+       this.repo.replaceToDoItem(updatedItem);
    }
 
    setEditMode() {
@@ -67,5 +85,6 @@ export class TodoItemComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.listEventSubscription.unsubscribe();
+    this.todoitemChanged.unsubscribe();
   }
 }

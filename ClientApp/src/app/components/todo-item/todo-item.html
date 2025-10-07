@@ -3,7 +3,13 @@
     <td>{{item().title}}</td>
     <td>{{item().creationDate | date: 'shortDate' }}</td>
     <td>{{item().dueBy | date: 'shortDate'}}</td>
-    <td><input type="checkbox" [checked]=(item().isCompleted)></td>
+
+    @if (item().isCompleted == false) {
+        <td><input type="checkbox" [checked]=(item().isCompleted) (click)="setItemComplete()"></td>
+    } @else {
+        <td>Done</td>
+    }
+    
     <td><button type="button" (click)="setEditMode()">Edit</button></td>
     <td><button type="button" (click)="deleteItem()">Delete</button></td>
 } @else {

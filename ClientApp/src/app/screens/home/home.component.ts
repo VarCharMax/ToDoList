@@ -1,4 +1,4 @@
-import { Component, inject , } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { NgIf } from '@angular/common';
 import { formatDate } from '@angular/common';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators} from '@angular/forms';
@@ -12,7 +12,8 @@ import { ToDoItem } from 'src/app/models/todoitem.model';
 @Component({
   selector: 'app-home', 
   standalone: true,
-  imports: [NgIf, // Material modules don't seem to work with new control flow syntax yet.
+  imports: [
+    NgIf, // Material modules don't seem to work with new control flow syntax yet.
     TodoItemsList,
     ReactiveFormsModule, 
     MatDatepickerModule,
@@ -33,8 +34,11 @@ export class HomeComponent {
     
     addToDoItem() {
         this.todoitem.title = this.todoitemForm.value.title!;
-        this.todoitem.creationDate = new Date();
+        this.todoitem.creationDate = new Date(formatDate(new Date(), 'd/M/yyyy', 'en-AU'));
         this.todoitem.dueBy = new Date(formatDate(this.todoitemForm.value.dueBy!, 'd/M/yyyy', 'en-AU'));
+        this.todoitem.completedDate = null;
+        this.todoitem.isCompleted = false;
+
         this.repo.createToDoItem(this.todoitem);
         this.todoitemForm.reset(); //TODO: check if successful before reseting. Will need to subscribe to the result of createToDoItem.
     }

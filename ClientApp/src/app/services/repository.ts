@@ -64,14 +64,17 @@ export class Repository {
     * Add entity
     */
     createToDoItem(todoitem: TodoItemInfo) {
+        /*
         let data = {
             title: todoitem.title,
             creationDate: todoitem.creationDate,
+            dueBy: todoitem.dueBy,
             completedDate: null,
             isCompleted: false,
         };
+        */
 
-        this.http.post<number>(itemsUrl, data).subscribe({
+        this.http.post<number>(itemsUrl, todoitem).subscribe({
             next:(id) => {
                 todoitem.id = id;
                 this.todoitems.push(todoitem);
@@ -88,16 +91,30 @@ export class Repository {
     * Replace Entity
     */
     replaceToDoItem(todoitem: TodoItemInfo) {
+        /*
         let data = {
             title: todoitem.title,
             creationDate: todoitem.creationDate,
             completedDate: todoitem.completedDate,
             isCompleted: todoitem.isCompleted
         };
-
+        */
+        console.log('Replace item: ' + todoitem);
         this.http
-            .put(`${itemsUrl}/${todoitem.id}`, data)
-        .subscribe(() => this.getToDoItems());
+            .put(`${itemsUrl}/${todoitem.id}`, todoitem)
+                .subscribe({next:(t) => {
+                console.log("Result from put:" + t);
+                let index = this.todoitems.findIndex((t) => t.id === todoitem.id);
+                if (index !== -1) {
+                    this.todoitems[index] = t;
+                    this.todoitemChanged.next(JSON.parse(JSON.stringify(t)));
+                }
+            },
+            error:(e) => {
+                console.log('Error! ' + e);
+                this.errorsChanged.next(e.error?.errors);
+            }
+        });
     }
 
     /*
