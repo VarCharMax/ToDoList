@@ -20,7 +20,7 @@ export class TodoItemComponent implements OnInit, OnDestroy {
     isOverdue = signal(false);
     item = signal(new ToDoItem);
     isEditMode: boolean = false;
-    onItemEditMode = output<number>();
+    // onItemEditMode = output<number>();
 
     ngOnInit() {
       let newItem : ToDoItem =  new ToDoItem(
@@ -40,7 +40,7 @@ export class TodoItemComponent implements OnInit, OnDestroy {
       }
 
       this.listEventSubscription = this.editService.itemlistEditEvent$.subscribe(message => {
-        console.log('Child received event from parent:', message);
+        console.log('Child received edit event from parent:', message);
         if (message !== this.todoItem().id) {
           this.isEditMode = false;
           this.item.set(this.todoItem());
@@ -49,7 +49,8 @@ export class TodoItemComponent implements OnInit, OnDestroy {
    }
 
    setEditMode() {
-        this.onItemEditMode.emit(this.todoItem().id!);
+        console.log('Setting edit mode ...');
+        this.editService.emitItemEvent(this.todoItem().id!);
         this.isEditMode = true;
    }
    

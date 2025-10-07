@@ -22,19 +22,18 @@ export class TodoItemsList implements OnInit, OnDestroy {
     constructor() { }                     
 
     ngOnInit() {
-         this.todoitemsListChanged = this.repo.todoitemsChanged.subscribe((itemList) => {
-            this.todoitemList = itemList;
+
+      this.itemEventSubscription = this.editService.itemEditEvent$.subscribe(id => {
+        console.log('Parent received event from child:', id);
+        this.editService.emitListEvent(id);
+      });
+
+      this.todoitemsListChanged = this.repo.todoitemsChanged.subscribe((itemList) => {
+        this.todoitemList = itemList;
       });
 
       this.repo.getToDoItems();
     }
-
-    /*
-    handleItemEditChange(id: number) {
-      console.log('Child received event from child:', id);
-      this.editService.emitListEvent(id);
-   }
-    */
 
     ngOnDestroy() {
         this.todoitemsListChanged.unsubscribe();

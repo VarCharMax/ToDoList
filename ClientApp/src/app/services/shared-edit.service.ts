@@ -7,7 +7,7 @@ export class SharedItemEditService {
     private itemEventSource = new Subject<number>();
 
     itemlistEditEvent$ = this.itemlistEventSource.asObservable();
-    itemEditEvent$ = this.itemlistEventSource.asObservable();
+    itemEditEvent$ = this.itemEventSource.asObservable();
 
     emitListEvent(message: number) {
         this.itemlistEventSource.next(message);
