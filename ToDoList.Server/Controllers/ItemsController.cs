@@ -134,7 +134,7 @@ namespace ToDoList.Server.Controllers
     }
 
     [HttpDelete("{id}")]
-    public async Task<ActionResult> DeletePlayer(int id)
+    public async Task<ActionResult> DeleteItem(int id)
     {
       bool result;
 

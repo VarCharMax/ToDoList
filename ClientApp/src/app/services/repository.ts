@@ -112,9 +112,12 @@ export class Repository {
     }
 
     deleteToDoItem(id: number) {
-        this.http.delete(`${itemsUrl}/${id}`).subscribe(() => {
-            this.todoitems = this.todoitems.filter((p) => p.id != id);
-            this.todoitemsChanged.next(this.todoitems.slice());
+        this.http.delete(`${itemsUrl}/${id}`).subscribe((result) => {
+            console.log("Result from delete:" + result);
+            if (result === true) {
+                this.todoitems = this.todoitems.filter((p) => p.id != id);
+                this.todoitemsChanged.next(this.todoitems.slice());
+            }
         });
     }
 }

@@ -1,4 +1,6 @@
 import { Component, inject , } from '@angular/core';
+import { NgIf } from '@angular/common';
+import { formatDate } from '@angular/common';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators} from '@angular/forms';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatInputModule } from '@angular/material/input';
@@ -6,19 +8,17 @@ import { MatNativeDateModule } from '@angular/material/core';
 import { TodoItemsList} from '../../components/todo-items-list/todo-items-list';
 import { Repository } from '../../services/repository';
 import { ToDoItem } from 'src/app/models/todoitem.model';
-import { formatDate } from '@angular/common';
-import { NgIf } from '@angular/common';
-import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-home', 
   standalone: true,
-  imports: [NgIf, //Material modules don't seem to work with new control flow syntax yet.
+  imports: [NgIf, // Material modules don't seem to work with new control flow syntax yet.
     TodoItemsList,
     ReactiveFormsModule, 
     MatDatepickerModule,
     MatInputModule,
-    MatNativeDateModule
+    MatNativeDateModule,
+    
   ],
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.css'],
