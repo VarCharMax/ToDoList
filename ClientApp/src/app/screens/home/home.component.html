@@ -14,8 +14,8 @@
 
   <mat-form-field class="form-control" appearance="fill">
   <mat-label>Due By</mat-label>
-    <input matInput [matDatepicker]="dueByPicker" placeholder="d/M/yyyy" formControlName="dueBy">
-    <mat-hint>d/M/yyyy</mat-hint>
+    <input matInput [matDatepicker]="dueByPicker" placeholder="dd/M/yyyy" formControlName="dueBy">
+    <mat-hint>dd/M/yyyy</mat-hint>
     <mat-datepicker-toggle matSuffix [for]="dueByPicker"></mat-datepicker-toggle>
     <mat-datepicker #dueByPicker></mat-datepicker>
     @if (todoitemForm.get('dueBy')?.hasError('required') && todoitemForm.get('dueBy')?.touched) {
