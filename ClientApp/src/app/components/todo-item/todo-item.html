@@ -1,11 +1,11 @@
 
 @if(isEditMode == false) {
-    <td>{{item().title}}</td>
-    <td>{{item().creationDate | date: 'shortDate' }}</td>
-    <td>{{item().dueBy | date: 'shortDate'}}</td>
+    <td>{{item.title}}</td>
+    <td>{{item.creationDate | date: 'shortDate' }}</td>
+    <td>{{item.dueBy | date: 'shortDate'}}</td>
 
-    @if (item().isCompleted == false) {
-        <td><input type="checkbox" [checked]=(item().isCompleted) (click)="setItemComplete()"></td>
+    @if (item.isCompleted == false) {
+        <td><input type="checkbox" [checked]=(item.isCompleted) (click)="setItemComplete()"></td>
         <td><button type="button" (click)="setEditMode()">Edit</button></td>
     } @else {
         <td>Done</td>
@@ -14,10 +14,10 @@
     
     <td><button type="button" (click)="deleteItem()">Delete</button></td>
 } @else {
-    <td><input type="text" [value]="item().title"></td>
-    <td>{{item().creationDate | date: 'shortDate' }}</td>
-    <td>{{item().dueBy | date: 'shortDate' }}</td>
-    <td>{{item().isCompleted ? "Yes" : "No"}}</td>
+    <td><input type="text" [value]="item.title"></td>
+    <td>{{item.creationDate | date: 'shortDate' }}</td>
+    <td>{{item.dueBy | date: 'shortDate' }}</td>
+    <td>{{item.isCompleted! ? "Yes" : "No"}}</td>
     <td><button type="button" (click)="saveChanges()">Save</button></td>
     <td><button type="button" (click)="cancelEdit()">Cancel</button></td>
 }

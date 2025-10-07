@@ -1,7 +1,6 @@
-import { Component, EventEmitter, OnDestroy, OnInit, Output, inject, signal } from '@angular/core';
+import { Component, OnDestroy, OnInit, inject } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { Repository } from '../../services/repository';
-import { TodoItemInfo } from '../../models/todo-item';
 import { TodoItemComponent } from "../todo-item/todo-item";
 import { SharedItemEditService } from 'src/app/services/shared-edit.service';
 import { ToDoItem } from 'src/app/models/todoitem.model';
@@ -37,8 +36,6 @@ export class TodoItemsList implements OnInit, OnDestroy {
           }
         });
         console.log("Items received in Home: " + JSON.stringify(itemList));
-        // this.todoitemList.update(() => itemList);
-
         this.todoitemList = itemList;
       });
 

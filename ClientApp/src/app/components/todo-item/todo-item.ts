@@ -18,7 +18,7 @@ export class TodoItemComponent implements OnInit, OnDestroy {
     private todoitemChanged: Subscription = new Subscription();
 
     todoItem = input.required<ToDoItem>();
-    item = signal(new ToDoItem);
+    item: ToDoItem = new ToDoItem();
     isEditMode: boolean = false;
 
     ngOnInit() {
@@ -30,50 +30,49 @@ export class TodoItemComponent implements OnInit, OnDestroy {
         this.todoItem().dueBy,
         this.todoItem().isCompleted);
 
-      this.item.set(newItem);
+      this.item = newItem;
 
       this.todoitemChanged = this.repo.todoitemChanged.subscribe((updatedItem) => {
         if (updatedItem.id === this.todoItem().id) {
-          this.item.set(updatedItem);
+          this.item = updatedItem;
         }
       })
 
       this.listEventSubscription = this.editService.itemlistEditEvent$.subscribe(message => {
         if (message !== this.todoItem().id) {
           this.isEditMode = false;
-          // this.item.set(this.item());
         }
       });
    }  
    setItemComplete() {
        let updatedItem = new ToDoItem(
-          this.item().id, 
-          this.item().title, 
-          this.item().creationDate, 
+          this.item.id, 
+          this.item.title, 
+          this.item.creationDate, 
           new Date(formatDate(new Date(), 'd/M/yyyy', 'en-AU')),
-          this.item().dueBy,
+          this.item.dueBy,
           true);
           
        this.repo.replaceToDoItem(updatedItem);
    }
 
    setEditMode() {
-        this.editService.emitItemEvent(this.todoItem().id!);
+        this.editService.emitItemEvent(this.item .id!);
         this.isEditMode = true;
    }
    
    cancelEdit() {
        this.isEditMode = false;
-       this.item.set(this.todoItem());
+       this.item = this.todoItem();
    }
 
    saveChanges() {
        this.isEditMode = false;
-        this.repo.replaceToDoItem(this.item());
+        this.repo.replaceToDoItem(this.item);
    }
 
    deleteItem() {
-       this.repo.deleteToDoItem(this.item().id!);
+       this.repo.deleteToDoItem(this.item.id!);
    }
 
   ngOnDestroy(): void {
