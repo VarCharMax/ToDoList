@@ -37,6 +37,7 @@ export class Repository {
     }
 
 /*
+    This is an example of how to implement filtering on the server side using a query string.
     getToDoItems() {
         let url = `${itemsUrl}?related=${this.filter.related}`;
 
@@ -80,7 +81,7 @@ export class Repository {
                 console.log('Error! ' + e);
                 this.errorsChanged.next(e.error?.errors);
             }
-    });
+        });
     }
  
     /*

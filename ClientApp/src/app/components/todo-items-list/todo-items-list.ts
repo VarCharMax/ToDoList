@@ -1,4 +1,4 @@
-import { Component, EventEmitter, inject, OnDestroy, OnInit, output, signal } from '@angular/core';
+import { Component, inject, OnDestroy, OnInit, signal } from '@angular/core';
 import { Repository } from '../../services/repository';
 import { Subscription } from 'rxjs';
 import { TodoItemInfo } from '../../models/todo-item';
@@ -24,7 +24,6 @@ export class TodoItemsList implements OnInit, OnDestroy {
     ngOnInit() {
 
       this.itemEventSubscription = this.editService.itemEditEvent$.subscribe(id => {
-        console.log('Parent received event from child:', id);
         this.editService.emitListEvent(id);
       });
 

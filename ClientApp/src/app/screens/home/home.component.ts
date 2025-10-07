@@ -13,7 +13,7 @@ import { Subscription } from 'rxjs';
 @Component({
   selector: 'app-home', 
   standalone: true,
-  imports: [NgIf,
+  imports: [NgIf, //Material modules don't seem to work with new control flow syntax yet.
     TodoItemsList,
     ReactiveFormsModule, 
     MatDatepickerModule,
@@ -26,7 +26,6 @@ import { Subscription } from 'rxjs';
 export class HomeComponent {
     private repo: Repository = inject(Repository);
     private todoitem: ToDoItem = new ToDoItem();
-    // private todoitemsListChanged: Subscription = new Subscription();
     
     todoitemForm = new FormGroup({
       title: new FormControl(null, Validators.required),
@@ -38,6 +37,6 @@ export class HomeComponent {
         this.todoitem.creationDate = new Date();
         this.todoitem.dueBy = new Date(formatDate(this.todoitemForm.value.dueBy!, 'd/M/yyyy', 'en-AU'));
         this.repo.createToDoItem(this.todoitem);
-        this.todoitemForm.reset();
+        this.todoitemForm.reset(); //TODO: check if successful before reseting. Will need to subscribe to the result of createToDoItem.
     }
 }
