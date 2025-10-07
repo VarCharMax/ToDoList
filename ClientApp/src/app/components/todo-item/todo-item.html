@@ -6,11 +6,12 @@
 
     @if (item().isCompleted == false) {
         <td><input type="checkbox" [checked]=(item().isCompleted) (click)="setItemComplete()"></td>
+        <td><button type="button" (click)="setEditMode()">Edit</button></td>
     } @else {
         <td>Done</td>
+        <td>&nbsp;</td>
     }
     
-    <td><button type="button" (click)="setEditMode()">Edit</button></td>
     <td><button type="button" (click)="deleteItem()">Delete</button></td>
 } @else {
     <td><input type="text" [value]="item().title"></td>

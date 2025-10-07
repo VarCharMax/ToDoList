@@ -1,9 +1,9 @@
+import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
 import { Subject } from 'rxjs';
 import { TodoItemInfo } from '../models/todo-item';
-import { Filter } from '../modules/configClasses.repository';
-import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
 import { ToDoItem } from '../models/todoitem.model';
+import { Filter } from '../modules/configClasses.repository';
 
 const itemsUrl = 'api/items';
 
@@ -34,7 +34,7 @@ export class Repository {
             console.log('Retrieved todoitems: ' + JSON.stringify(t));
             this.todoitems = t.slice();
             this.todoitemsChanged.next(t.slice());
-    });
+        });
     }
 
 /*
@@ -65,15 +65,6 @@ export class Repository {
     * Add entity
     */
     createToDoItem(todoitem: TodoItemInfo) {
-        /*
-        let data = {
-            title: todoitem.title,
-            creationDate: todoitem.creationDate,
-            dueBy: todoitem.dueBy,
-            completedDate: null,
-            isCompleted: false,
-        };
-        */
 
         this.http.post<number>(itemsUrl, todoitem).subscribe({
             next:(id) => {
@@ -82,7 +73,7 @@ export class Repository {
                 this.todoitemsChanged.next(this.todoitems.slice());
             },
             error: (e) => {
-                console.log('Error! ' + e);
+                console.log('Error! ' + JSON.stringify(e));
                 this.errorsChanged.next(e.error?.errors);
             }
         });
@@ -92,14 +83,6 @@ export class Repository {
     * Replace Entity
     */
     replaceToDoItem(todoitem: TodoItemInfo) {
-        /*
-        let data = {
-            title: todoitem.title,
-            creationDate: todoitem.creationDate,
-            completedDate: todoitem.completedDate,
-            isCompleted: todoitem.isCompleted
-        };
-        */
         console.log('Replace item: ' + JSON.stringify(todoitem));
         this.http
             .put(`${itemsUrl}/${todoitem.id}`, todoitem)
@@ -112,7 +95,7 @@ export class Repository {
                 }
             },
             error:(e) => {
-                console.log('Error! ' + e);
+                console.log('Error! ' + JSON.stringify(e));
                 this.errorsChanged.next(e.error?.errors);
             }
         });

@@ -1,6 +1,7 @@
 import { Component, inject, OnDestroy, OnInit, signal } from '@angular/core';
 import { NgIf } from '@angular/common';
 import { formatDate } from '@angular/common';
+import { Subscription } from 'rxjs';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators} from '@angular/forms';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatInputModule } from '@angular/material/input';
@@ -8,7 +9,6 @@ import { MatNativeDateModule } from '@angular/material/core';
 import { TodoItemsList} from '../../components/todo-items-list/todo-items-list';
 import { Repository } from '../../services/repository';
 import { ToDoItem } from 'src/app/models/todoitem.model';
-import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-home', 
@@ -28,6 +28,7 @@ export class HomeComponent implements OnInit, OnDestroy {
     private repo: Repository = inject(Repository);
     private todoitem: ToDoItem = new ToDoItem();
     private errorsChanged: Subscription = new Subscription();
+    private todoitemChanged: Subscription = new Subscription();
 
     errorMessage = signal('');
 
@@ -37,6 +38,11 @@ export class HomeComponent implements OnInit, OnDestroy {
     });
     
     ngOnInit() {
+      this.todoitemChanged = this.repo.todoitemChanged.subscribe((item) => {
+        // this.todoitem = item;
+        this.todoitemForm.reset();
+      }); 
+    
       this.errorsChanged = this.repo.errorsChanged.subscribe(message => {
         console.log('Received errors: ' + JSON.stringify(message));
         this.errorMessage.set(JSON.stringify(message));
@@ -51,10 +57,10 @@ export class HomeComponent implements OnInit, OnDestroy {
         this.todoitem.isCompleted = false;
 
         this.repo.createToDoItem(this.todoitem);
-        this.todoitemForm.reset(); //TODO: check if successful before reseting. Will need to subscribe to the result of createToDoItem.
     }
 
      ngOnDestroy() {
+        this.todoitemChanged.unsubscribe();
         this.errorsChanged.unsubscribe();
     }
 }
