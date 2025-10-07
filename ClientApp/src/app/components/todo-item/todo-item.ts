@@ -41,7 +41,7 @@ export class TodoItemComponent implements OnInit, OnDestroy {
       this.listEventSubscription = this.editService.itemlistEditEvent$.subscribe(message => {
         if (message !== this.todoItem().id) {
           this.isEditMode = false;
-          this.item.set(this.item());
+          // this.item.set(this.item());
         }
       });
    }  

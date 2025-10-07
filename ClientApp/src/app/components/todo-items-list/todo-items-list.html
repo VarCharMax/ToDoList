@@ -11,8 +11,8 @@
             </tr>
         </thead>
         <tbody>
-            @for(todoitem of todoitemList(); track $index) {
-                <tr [class.statusComplete]="todoitem.isCompleted == true" [class.overdue]="todoitem.isOverdue == true" app-todo-item [todoItem]="todoitem"></tr>
+            @for(item of todoitemList; track item.id) {
+                <tr [class.statusComplete]="item.isCompleted == true" [class.overdue]="item.isOverdue == true" app-todo-item [todoItem]="item"></tr>
         }
         </tbody>
     </table>

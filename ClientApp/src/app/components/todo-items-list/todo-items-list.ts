@@ -1,9 +1,10 @@
-import { Component, OnDestroy, OnInit, inject, signal } from '@angular/core';
+import { Component, EventEmitter, OnDestroy, OnInit, Output, inject, signal } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { Repository } from '../../services/repository';
 import { TodoItemInfo } from '../../models/todo-item';
 import { TodoItemComponent } from "../todo-item/todo-item";
 import { SharedItemEditService } from 'src/app/services/shared-edit.service';
+import { ToDoItem } from 'src/app/models/todoitem.model';
 
 @Component({
   selector: 'app-todo-items-list',
@@ -17,7 +18,7 @@ export class TodoItemsList implements OnInit, OnDestroy {
     private editService: SharedItemEditService = inject(SharedItemEditService);
     private itemEventSubscription: Subscription = new Subscription();
 
-    todoitemList = signal<TodoItemInfo[]>(new Array<TodoItemInfo>());
+    todoitemList: ToDoItem[] = [];
 
     constructor() { }                     
 
@@ -35,8 +36,10 @@ export class TodoItemsList implements OnInit, OnDestroy {
             item.isOverdue = (!item.isCompleted && (completeByDate! < today));
           }
         });
-        console.log("Items received: " + JSON.stringify(itemList));
-        this.todoitemList.set(itemList);
+        console.log("Items received in Home: " + JSON.stringify(itemList));
+        // this.todoitemList.update(() => itemList);
+
+        this.todoitemList = itemList;
       });
 
       this.repo.getToDoItems();
