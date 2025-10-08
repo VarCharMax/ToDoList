@@ -66,16 +66,10 @@ export class Repository {
     createToDoItem(todoitem: TodoItemInfo) {
         this.http.post<ToDoItem>(itemsUrl, todoitem).subscribe({
             next:(item) => {
-                console.log("Created item: " + JSON.stringify(item));
                 this.todoitem = item
                 this.todoitemChanged.next(item);
-
                 this.todoitems.push(item);
-                
-                console.log("item list in Create: " + JSON.stringify(this.todoitems));
-                
                 this.todoitemsChanged.next(this.todoitems.slice());
-                
             },
             error: (e) => {
                 this.errorsChanged.next(e.error?.errors);
@@ -92,7 +86,6 @@ export class Repository {
                 .subscribe({next:(t) => {
                     let index = this.todoitems.findIndex((t) => t.id === todoitem.id);
                     if (index !== -1) {
-                        console.log("Replaced item: " + JSON.stringify(t));
                         this.todoitems[index] = t;
                         this.todoitemChanged.next(t);
                     }
@@ -115,11 +108,9 @@ export class Repository {
     }
 
     deleteToDoItem(id: number) {
-        console.log("Deleting item: " + id);
         this.http.delete<boolean>(`${itemsUrl}/${id}`).subscribe({next: (result) => {
                 if (result === true) {
                     this.todoitems = this.todoitems.filter((p) => p.id != id);
-                    console.log("After deleted item: " + JSON.stringify(this.todoitems));
                     this.todoitemsChanged.next(this.todoitems.slice());
                 }
             },

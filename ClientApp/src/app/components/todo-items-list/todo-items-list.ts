@@ -35,7 +35,7 @@ export class TodoItemsList implements OnInit, OnDestroy {
             item.isOverdue = (!item.isCompleted && (completeByDate! < today));
           }
         });
-        console.log("Items received in List: " + JSON.stringify(itemList));
+        
         this.todoitemList = itemList;
       });
 

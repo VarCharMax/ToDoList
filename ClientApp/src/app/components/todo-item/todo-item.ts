@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit, inject, input, signal } from '@angular/core';
+import { Component, ElementRef, HostBinding, OnDestroy, OnInit, Renderer2, inject, input } from '@angular/core';
 import { CommonModule, DatePipe, formatDate } from '@angular/common';
 import { Subscription } from 'rxjs';
 import { SharedItemEditService } from 'src/app/services/shared-edit.service';
@@ -17,9 +17,16 @@ export class TodoItemComponent implements OnInit, OnDestroy {
     private listEventSubscription: Subscription = new Subscription();
     private todoitemChanged: Subscription = new Subscription();
 
+    constructor(private el: ElementRef, private renderer: Renderer2){}
+
     todoItem = input.required<ToDoItem>();
     item: ToDoItem = new ToDoItem();
     isEditMode: boolean = false;
+
+    @HostBinding('class.statusComplete')
+    get activeClass() {
+      return this.item.isCompleted;
+    }
 
     ngOnInit() {
       let newItem : ToDoItem =  new ToDoItem(
@@ -33,13 +40,15 @@ export class TodoItemComponent implements OnInit, OnDestroy {
       this.item = newItem;
 
       this.todoitemChanged = this.repo.todoitemChanged.subscribe((updatedItem) => {
-        if (updatedItem.id === this.todoItem().id) {
+        if (updatedItem.id === this.item.id) {
           const today = new Date();
           if (updatedItem.dueBy) {
             const completeByDate = updatedItem.dueBy;
             updatedItem.isOverdue = (!updatedItem.isCompleted && (completeByDate! < today));
           }
-
+          if (updatedItem.isCompleted){
+            this.renderer.addClass(this.el.nativeElement, 'statusComplete');
+          }
           this.item = updatedItem;
         }
       })
