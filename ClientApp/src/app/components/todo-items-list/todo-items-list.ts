@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit, inject } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewEncapsulation, inject } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { Repository } from '../../services/repository';
 import { TodoItemComponent } from "../todo-item/todo-item";
@@ -9,7 +9,8 @@ import { ToDoItem } from 'src/app/models/todoitem.model';
   selector: 'app-todo-items-list',
   imports: [TodoItemComponent],
   templateUrl: './todo-items-list.html',
-  styleUrl: './todo-items-list.css'
+  styleUrl: './todo-items-list.css',
+   encapsulation: ViewEncapsulation.None
 })
 export class TodoItemsList implements OnInit, OnDestroy {
     private todoitemsListChanged: Subscription = new Subscription();

@@ -6,8 +6,9 @@ th, td {
   border: 1px solid black; /* Applies border to cells */
 }
 
-.statusComplete {
+.statusComplete > td:nth-child(-n + 3) {
   background-color: lightgreen;
+  text-decoration: line-through;
 }
 
 .overdue {
