@@ -4,6 +4,7 @@ import { Subject } from 'rxjs';
 import { TodoItemInfo } from '../models/todo-item';
 import { ToDoItem } from '../models/todoitem.model';
 import { Filter } from '../modules/configClasses.repository';
+import { formatDate } from '@angular/common';
 
 const itemsUrl = 'api/items';
 
@@ -31,6 +32,12 @@ export class Repository {
     */
     getToDoItems() {
         this.http.get<TodoItemInfo[]>(itemsUrl).subscribe((t) => {
+            t.forEach(i =>{
+                if (i.completedDate) i.completedDate = new Date(formatDate(i.completedDate!, 'dd/M/yyyy', 'en-AU'))
+                if (i.dueBy) i.dueBy = new Date(formatDate(i.dueBy!, 'dd/M/yyyy', 'en-AU'));
+                if (i.creationDate) i.creationDate = new Date(formatDate(i.creationDate!, 'dd/M/yyyy', 'en-AU'))
+            })
+
             this.todoitems = t.slice();
             this.todoitemsChanged.next(t.slice());
         });
@@ -55,8 +62,13 @@ export class Repository {
     * Get entity
     */
     getToDoItem(id: number) {
-        this.http.get<TodoItemInfo>(`${itemsUrl}/${id}`).subscribe((p) => {
-            this.todoitemChanged.next(p);
+        this.http.get<TodoItemInfo>(`${itemsUrl}/${id}`).subscribe((i) => {
+
+            if (i.completedDate) i.completedDate = new Date(formatDate(i.completedDate!, 'dd/M/yyyy', 'en-AU'))
+            if (i.dueBy) i.dueBy = new Date(formatDate(i.dueBy!, 'dd/M/yyyy', 'en-AU'));
+            if (i.creationDate) i.creationDate = new Date(formatDate(i.creationDate!, 'dd/M/yyyy', 'en-AU'))
+
+            this.todoitemChanged.next(i);
         });
     }
 
@@ -66,6 +78,11 @@ export class Repository {
     createToDoItem(todoitem: TodoItemInfo) {
         this.http.post<ToDoItem>(itemsUrl, todoitem).subscribe({
             next:(item) => {
+
+                if (item.completedDate) item.completedDate = new Date(formatDate(item.completedDate!, 'dd/M/yyyy', 'en-AU'))
+                if (item.dueBy) item.dueBy = new Date(formatDate(item.dueBy!, 'dd/M/yyyy', 'en-AU'));
+                if (item.creationDate) item.creationDate = new Date(formatDate(item.creationDate!, 'dd/M/yyyy', 'en-AU'))
+
                 this.todoitem = item
                 this.todoitemChanged.next(item);
                 this.todoitems.push(item);
@@ -86,6 +103,11 @@ export class Repository {
                 .subscribe({next:(t) => {
                     let index = this.todoitems.findIndex((t) => t.id === todoitem.id);
                     if (index !== -1) {
+
+                        t.completedDate ?? new Date(formatDate(t.completedDate!, 'dd/M/yyyy', 'en-AU'))
+                        t.dueBy ?? new Date(formatDate(t.dueBy!, 'dd/M/yyyy', 'en-AU'));
+                        t.creationDate ?? new Date(formatDate(t.creationDate!, 'dd/M/yyyy', 'en-AU'))
+
                         this.todoitems[index] = t;
                         this.todoitemChanged.next(t);
                     }
