@@ -18,6 +18,6 @@
     <td>{{item.creationDate | date: 'shortDate' }}</td>
     <td>{{item.dueBy | date: 'shortDate' }}</td>
     <td>{{item.isCompleted! ? "Yes" : "No"}}</td>
-    <td><button type="button"  class="btn btn-success" (click)="saveChanges()">Save</button></td>
-    <td><button type="button"  class="btn btn-danger" (click)="cancelEdit()">Cancel</button></td>
+    <td><button type="button" class="btn btn-success" (click)="saveChanges()">Save</button></td>
+    <td><button type="button" class="btn btn-danger" (click)="cancelEdit()">Cancel</button></td>
 }

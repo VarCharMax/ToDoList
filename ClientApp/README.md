@@ -1,6 +1,7 @@
 ## Quick Start.
 
-- Run the EntityFramework migrations in order to create and upgrade the database.
+- From the ClientAp folder run `npm install` to install node_modules.
+- From the ToDoList.Server folder run `dotnet restore` to restore NuGet packages.
 - The Connection Strategy is set to "managed", which means that the Angular development server will launch automatically in the background to supply the runtime files to the MVC controller.
 - Invoke the "ToDoList" profile either by selecting it from the VS toolbar and hitting F5, or typing dotnet run --profile "ToDoList" in the console. If the database has been correctly created, the app should run out-of-the-box with no problems. (There is a connection string defined, but it isn't used.)
 
