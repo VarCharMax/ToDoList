@@ -23,14 +23,13 @@
     }
   </mat-form-field>
   <br />
-
-	<button mat-raised-button color="primary" type="submit" [disabled]="todoitemForm.invalid">Add</button>
+  <br />
+	<button mat-raised-button class="btn btn-primary" type="submit" [disabled]="todoitemForm.invalid">Add</button>
 </form>
 
 <div>
   <br />
   {{errorMessage()}}
-  <br />
 </div>
 </section>
 <hr />
