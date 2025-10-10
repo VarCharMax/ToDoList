@@ -12,7 +12,7 @@
         </thead>
         <tbody>
             @for(item of todoitemList; track item.id) {
-                <tr app-todo-item [class.statusComplete]="item.isCompleted == true" [class.overdue]="item.isOverdue == true" [todoItem]="item"></tr>
+                <tr app-todo-item [todoItem]="item" [class.statusComplete]="item.isCompleted == true" [class.overdue]="item.isOverdue == true"></tr>
         }
         </tbody>
     </table>

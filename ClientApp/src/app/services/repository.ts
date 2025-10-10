@@ -32,6 +32,8 @@ export class Repository {
     */
     getToDoItems() {
         this.http.get<TodoItemInfo[]>(itemsUrl).subscribe((t) => {
+            
+            // since SQLite stores dates as strings, rehydrate dates.
             t.forEach(i =>{
                 if (i.completedDate) i.completedDate = new Date(formatDate(i.completedDate!, 'dd/M/yyyy', 'en-AU'))
                 if (i.dueBy) i.dueBy = new Date(formatDate(i.dueBy!, 'dd/M/yyyy', 'en-AU'));
@@ -79,13 +81,25 @@ export class Repository {
         this.http.post<ToDoItem>(itemsUrl, todoitem).subscribe({
             next:(item) => {
 
-                if (item.completedDate) item.completedDate = new Date(formatDate(item.completedDate!, 'dd/M/yyyy', 'en-AU'))
+                if (item.completedDate) item.completedDate = new Date(formatDate(item.completedDate!, 'dd/M/yyyy', 'en-AU'));
                 if (item.dueBy) item.dueBy = new Date(formatDate(item.dueBy!, 'dd/M/yyyy', 'en-AU'));
-                if (item.creationDate) item.creationDate = new Date(formatDate(item.creationDate!, 'dd/M/yyyy', 'en-AU'))
+                if (item.creationDate) item.creationDate = new Date(formatDate(item.creationDate!, 'dd/M/yyyy', 'en-AU'));
 
                 this.todoitem = item
                 this.todoitemChanged.next(item);
                 this.todoitems.push(item);
+
+                /*
+                this.todoitems
+                    .sort((a, b) => b.creationDate!.getTime() - a.creationDate!.getTime()!) //Descending
+                    .sort((a, b) => b.dueBy!.getTime() - a.dueBy!.getTime()) //Descending
+                    .sort((a, b) => { if (a.isCompleted! && !b.isCompleted!) { return 1; } 
+                        else if (!a.isCompleted! && b.isCompleted!) { return -1; } 
+                        else {return 0; }}); //Ascending
+                */
+                
+                // Sort list according to match DB sort rules.
+                this.todoitems = this.todoitems.DBSort();
                 this.todoitemsChanged.next(this.todoitems.slice());
             },
             error: (e) => {
@@ -104,11 +118,12 @@ export class Repository {
                     let index = this.todoitems.findIndex((t) => t.id === todoitem.id);
                     if (index !== -1) {
 
-                        t.completedDate ?? new Date(formatDate(t.completedDate!, 'dd/M/yyyy', 'en-AU'))
-                        t.dueBy ?? new Date(formatDate(t.dueBy!, 'dd/M/yyyy', 'en-AU'));
-                        t.creationDate ?? new Date(formatDate(t.creationDate!, 'dd/M/yyyy', 'en-AU'))
+                        if (t.completedDate) t.completedDate = new Date(formatDate(t.completedDate!, 'dd/M/yyyy', 'en-AU'));
+                        if (t.dueBy) t.dueBy = new Date(formatDate(t.dueBy!, 'dd/M/yyyy', 'en-AU'));
+                        if (t.creationDate) t.creationDate = new Date(formatDate(t.creationDate!, 'dd/M/yyyy', 'en-AU'));
 
                         this.todoitems[index] = t;
+                        this.todoitems = this.todoitems.DBSort();
                         this.todoitemChanged.next(t);
                     }
                 },

@@ -67,7 +67,7 @@ namespace DBServer
       var list = await context.Set<ToDoItem>()
         .OrderByDescending(p => p.CreationDate)
         .ThenByDescending(p => p.DueBy)
-        .ThenByDescending(p => p.IsCompleted)
+        .ThenBy(p => p.IsCompleted) //Ascending
         .Select(p => _mapper.Map<Models.DTO.ToDoItem>(p)).ToListAsync();
 
       return list;
