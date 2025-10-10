@@ -4,7 +4,6 @@ import { Subject } from 'rxjs';
 import { ToDoItemInfo } from '../models/todo-item';
 import { ToDoItem } from '../models/todoitem.model';
 import { Filter } from '../modules/configClasses.repository';
-import { formatDate } from '@angular/common';
 
 const itemsUrl = 'api/items';
 
