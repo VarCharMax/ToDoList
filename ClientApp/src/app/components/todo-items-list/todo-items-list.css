@@ -11,6 +11,6 @@ th, td {
   text-decoration: line-through;
 }
 
-.overdue {
+.statusOverdue > td:nth-child(-n + 3)  {
   background-color: lightcoral;
 }

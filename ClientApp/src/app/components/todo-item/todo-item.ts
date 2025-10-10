@@ -32,10 +32,12 @@ export class TodoItemComponent implements OnInit, OnDestroy {
     });
 
     @HostBinding('class.statusComplete')
+
+    /*
     get activeClass() {
       return this.item.isCompleted;
     }
-
+*/
     ngOnInit() {
       let newItem : ToDoItem =  new ToDoItem(
         this.todoItem().id, 
@@ -66,7 +68,8 @@ export class TodoItemComponent implements OnInit, OnDestroy {
           this.isEditMode = false;
         }
       });
-   }  
+   }
+
    setItemComplete() {
        let updatedItem = new ToDoItem(
           this.item.id, 
