@@ -1,21 +1,21 @@
 ﻿import { ActivatedRouteSnapshot, Resolve, RouterStateSnapshot } from '@angular/router';
 import { Injectable, OnDestroy } from '@angular/core';
 import { Observable, Subscription } from 'rxjs';
-import { TodoItemInfo } from '../models/todo-item';
+import { ToDoItemInfo } from '../models/todo-item';
 import { Repository } from '../services/repository';
 
 @Injectable()
-export class ToDoItemsResolver implements Resolve<TodoItemInfo[]>, OnDestroy {
-    private todoitemsObservable: Observable<TodoItemInfo[]> = new Observable<TodoItemInfo[]>();
+export class ToDoItemsResolver implements Resolve<ToDoItemInfo[]>, OnDestroy {
+    private todoitemsObservable: Observable<ToDoItemInfo[]> = new Observable<ToDoItemInfo[]>();
     private todoitemsSub: Subscription = new Subscription;
 
     constructor(private repo: Repository) {
 
     }
 
-    resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<TodoItemInfo[]> | Promise<TodoItemInfo[]> | TodoItemInfo[] {
+    resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<ToDoItemInfo[]> | Promise<ToDoItemInfo[]> | ToDoItemInfo[] {
 
-        this.todoitemsObservable = new Observable((observer: { next: (arg0: TodoItemInfo[]) => void; complete: () => void; }) => {
+        this.todoitemsObservable = new Observable((observer: { next: (arg0: ToDoItemInfo[]) => void; complete: () => void; }) => {
 
             const that = this;
 
