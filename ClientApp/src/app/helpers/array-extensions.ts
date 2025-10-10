@@ -6,7 +6,7 @@ if (!Array.prototype.DBSort) {
                 .sort((a, b) => b.creationDate!.getTime() - a.creationDate!.getTime()!) //Descending
                 .sort((a, b) => b.dueBy!.getTime() - a.dueBy!.getTime()) //Descending
                 .sort((a, b) => { if (a.isCompleted! && !b.isCompleted!) { return 1; } 
-                    else if (!a.isCompleted! && b.isCompleted!) { return -1; } 
-                    else {return 0; }}); //Ascending
+                    else if (!a.isCompleted! && b.isCompleted!) { return -1; } //Ascending
+                    else {return 0; }}); //Preserve order
         };
     }
