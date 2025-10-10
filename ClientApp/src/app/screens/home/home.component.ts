@@ -48,7 +48,7 @@ export class HomeComponent implements OnInit, OnDestroy {
     addToDoItem() {
         this.todoitem.title = this.todoitemForm.value.title!;
         this.todoitem.creationDate = new Date(formatDate(new Date(), 'dd/M/yyyy', 'en-AU'));
-        this.todoitem.dueBy = new Date(formatDate(this.todoitemForm.value.dueBy!, 'dd/M/yyyy', 'en-AU'));
+        this.todoitem.dueBy = this.todoitemForm.value.dueBy!;
         this.todoitem.completedDate = null;
         this.todoitem.isCompleted = false;
 

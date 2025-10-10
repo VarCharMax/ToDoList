@@ -1,8 +1,8 @@
 
 @if(isEditMode == false) {
     <td>{{item.title}}</td>
-    <td>{{item.creationDate | date: 'shortDate' }}</td>
-    <td>{{item.dueBy | date: 'shortDate'}}</td>
+    <td>{{item.creationDate | date: 'dd/M/yyyy' }}</td>
+    <td>{{item.dueBy | date: 'dd/M/yyyy'}}</td>
 
     @if (item.isCompleted == false) {
         <td><input type="checkbox" [checked]=(item.isCompleted) (click)="setItemComplete()"></td>
@@ -15,8 +15,8 @@
     <td><button type="button" class="btn btn-danger" (click)="deleteItem()">Delete</button></td>
 } @else {
     <td><input type="text" [value]="item.title"></td>
-    <td>{{item.creationDate | date: 'shortDate' }}</td>
-    <td>{{item.dueBy | date: 'shortDate' }}</td>
+    <td>{{item.creationDate | date: 'dd/M/yyyy' }}</td>
+    <td>{{item.dueBy | date: 'dd/M/yyyy' }}</td>
     <td>{{item.isCompleted! ? "Yes" : "No"}}</td>
     <td><button type="button" class="btn btn-success" (click)="saveChanges()">Save</button></td>
     <td><button type="button" class="btn btn-danger" (click)="cancelEdit()">Cancel</button></td>

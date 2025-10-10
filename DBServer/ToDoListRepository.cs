@@ -16,7 +16,7 @@ namespace DBServer
 
     public async Task<Models.DTO.ToDoItem?> AddItemAsync(Models.DTO.ToDoItem item)
     {
-      var result = await context.ToDoItems.AddAsync(_mapper.Map<Entity.ToDoItem>(item));
+      var result = await context.ToDoItems.AddAsync(_mapper.Map<ToDoItem>(item));
       await context.SaveChangesAsync();
       
       return  _mapper.Map<Models.DTO.ToDoItem>(result.Entity);

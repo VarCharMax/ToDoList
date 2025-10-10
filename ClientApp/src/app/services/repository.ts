@@ -75,7 +75,8 @@ export class Repository {
     getToDoItem(id: number) {
         this.http.get<ToDoItemInfo>(`${itemsUrl}/${id}`).subscribe((i) => {
 
-            let newItem: ToDoItem = new ToDoItem(i.id, 
+            let newItem: ToDoItem = new ToDoItem(
+                    i.id, 
                     i.title, 
                     i.creationDate, 
                     i.completedDate, 
@@ -96,7 +97,8 @@ export class Repository {
         this.http.post<ToDoItem>(itemsUrl, todoitem).subscribe({
             next:(item) => {
 
-                let newItem: ToDoItem = new ToDoItem(item.id, 
+                let newItem: ToDoItem = new ToDoItem(
+                    item.id, 
                     item.title, 
                     item.creationDate, 
                     item.completedDate, 
@@ -131,7 +133,14 @@ export class Repository {
                     let index = this.todoitems.findIndex((t) => t.id === todoitem.id);
                     if (index !== -1) {
 
-                        let updateItem: ToDoItem = new ToDoItem(t.id, t.title, t.creationDate, t.completedDate, t.dueBy, t.isCompleted, false);
+                        let updateItem: ToDoItem = new ToDoItem(
+                            t.id, 
+                            t.title, 
+                            t.creationDate, 
+                            t.completedDate, 
+                            t.dueBy, 
+                            t.isCompleted, 
+                            false);
 
                         updateItem.RehydrateDates();
 
