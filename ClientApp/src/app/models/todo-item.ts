@@ -1,9 +1,10 @@
-export interface TodoItemInfo {
+export interface ToDoItemInfo {
     id?: number,
     title?: string,
     creationDate?: Date,
     completedDate?: Date | null,
     dueBy?: Date | null,
     isCompleted?: boolean,
-    isOverdue?: boolean
+    isOverdue?: boolean,
+    RehydrateDates(): this
 }
