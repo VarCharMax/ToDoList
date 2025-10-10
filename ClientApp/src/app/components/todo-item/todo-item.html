@@ -14,10 +14,14 @@
     
     <td><button type="button" class="btn btn-danger" (click)="deleteItem()">Delete</button></td>
 } @else {
-    <td><input type="text" [value]="item.title"></td>
+    <td>
+        <form [formGroup]="todoitemForm">
+            <input type="text" [value]="item.title" formControlName="title">
+        </form>
+    </td>
     <td>{{item.creationDate | date: 'dd/M/yyyy' }}</td>
     <td>{{item.dueBy | date: 'dd/M/yyyy' }}</td>
     <td>{{item.isCompleted! ? "Yes" : "No"}}</td>
-    <td><button type="button" class="btn btn-success" (click)="saveChanges()">Save</button></td>
+    <td><button type="submit" class="btn btn-success" (click)="saveChanges()"  [disabled]="todoitemForm.invalid">Save</button></td>
     <td><button type="button" class="btn btn-danger" (click)="cancelEdit()">Cancel</button></td>
 }

@@ -4,10 +4,15 @@ import { Subscription } from 'rxjs';
 import { SharedItemEditService } from 'src/app/services/shared-edit.service';
 import { ToDoItem } from '../../models/todoitem.model';
 import { Repository } from 'src/app/services/repository';
+import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 
 @Component({
   selector: '[app-todo-item]',
-  imports: [CommonModule,DatePipe],
+  imports: [
+            CommonModule,
+            DatePipe,
+            ReactiveFormsModule
+          ],
   templateUrl: './todo-item.html',
   styleUrl: './todo-item.css'
 })
@@ -22,6 +27,9 @@ export class TodoItemComponent implements OnInit, OnDestroy {
     todoItem = input.required<ToDoItem>();
     item: ToDoItem = new ToDoItem();
     isEditMode: boolean = false;
+    todoitemForm: FormGroup = new FormGroup({
+      title: new FormControl(null, Validators.required)
+    });
 
     @HostBinding('class.statusComplete')
     get activeClass() {
@@ -66,7 +74,8 @@ export class TodoItemComponent implements OnInit, OnDestroy {
           this.item.creationDate, 
           new Date(formatDate(new Date(), 'dd/M/yyyy', 'en-AU')),
           this.item.dueBy,
-          true);
+          true,
+          false);
           
        this.repo.replaceToDoItem(updatedItem);
    }
@@ -78,17 +87,23 @@ export class TodoItemComponent implements OnInit, OnDestroy {
    
    cancelEdit() {
        this.isEditMode = false;
+       this.todoitemForm.reset();
        this.item = this.todoItem();
    }
 
    saveChanges() {
-       this.isEditMode = false;
-        this.repo.replaceToDoItem(this.item);
+     if (this.todoitemForm.valid) {
+      this.isEditMode = false;
+      this.item.title = this.todoitemForm.value.title!;
+      this.repo.replaceToDoItem(this.item);
+    } else {
+      this.todoitemForm.markAllAsTouched();
+    }
    }
 
-   deleteItem() {
-      this.editService.emitItemEvent(-1);
-       this.repo.deleteToDoItem(this.item.id!);
+  deleteItem() {
+    this.editService.emitItemEvent(-1);
+    this.repo.deleteToDoItem(this.item.id!);
    }
 
   ngOnDestroy(): void {
