@@ -45,5 +45,5 @@ A couple of issues caused me significant frustration and time loss.
 
 ## TODO
 
-- I haven't completed the in-line editing functionality. It's obvious how it will work, however.
+- Editing should allow the user to change the due by date. However, I don't want to use the Material datepicker as there's too much overhead associated with it, so I've left it for now.
 - There is some issue with the Material stylesheet. Most of the styles seem to be loading, but the datepicker is not rendering correctly. I'll look into this.

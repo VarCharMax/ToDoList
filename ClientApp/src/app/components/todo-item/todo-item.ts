@@ -72,7 +72,7 @@ export class TodoItemComponent implements OnInit, OnDestroy {
    }
 
    setEditMode() {
-        this.editService.emitItemEvent(this.item .id!);
+        this.editService.emitItemEvent(this.item.id!);
         this.isEditMode = true;
    }
    
@@ -87,6 +87,7 @@ export class TodoItemComponent implements OnInit, OnDestroy {
    }
 
    deleteItem() {
+      this.editService.emitItemEvent(-1);
        this.repo.deleteToDoItem(this.item.id!);
    }
 
