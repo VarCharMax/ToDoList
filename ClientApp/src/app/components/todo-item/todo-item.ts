@@ -49,6 +49,10 @@ export class TodoItemComponent implements OnInit, OnDestroy {
 
       this.item = newItem;
 
+      this.todoitemForm.setValue({
+        title: newItem.title!
+      });
+
       this.todoitemChanged = this.repo.todoitemChanged.subscribe((updatedItem) => {
         if (updatedItem.id === this.item.id) {
           const today = new Date();

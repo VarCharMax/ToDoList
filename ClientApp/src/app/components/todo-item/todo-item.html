@@ -16,7 +16,7 @@
 } @else {
     <td>
         <form [formGroup]="todoitemForm">
-            <input type="text" [value]="item.title" formControlName="title">
+            <input type="text" formControlName="title">
         </form>
     </td>
     <td>{{item.creationDate | date: 'dd/M/yyyy' }}</td>
