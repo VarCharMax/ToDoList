@@ -14,9 +14,10 @@ import { ToDoItem } from 'src/app/models/todoitem.model';
 })
 export class TodoItemsList implements OnInit, OnDestroy {
     private todoitemsListChanged: Subscription = new Subscription();
+    private todoitemChanged: Subscription = new Subscription();
+    private itemEventSubscription: Subscription = new Subscription();
     private repo: Repository = inject(Repository);
     private editService: SharedItemEditService = inject(SharedItemEditService);
-    private itemEventSubscription: Subscription = new Subscription();
 
     todoitemList: ToDoItem[] = [];
 
@@ -27,17 +28,15 @@ export class TodoItemsList implements OnInit, OnDestroy {
       this.itemEventSubscription = this.editService.itemEditEvent$.subscribe(id => {
         this.editService.emitListEvent(id);
       });
-
+      
       this.todoitemsListChanged = this.repo.todoitemsChanged.subscribe((itemList) => {
-        itemList.forEach(item => {
-          const today = new Date();
-          if (item.dueBy) {
-            const completeByDate = item.dueBy;
-            item.isOverdue = (!item.isCompleted && (completeByDate! < today));
-          }
-        });
-        
-        this.todoitemList = itemList;
+        this.todoitemList = itemList.DBSort();
+      });
+
+      this.todoitemChanged = this.repo.todoitemChanged.subscribe((item) => {
+        let updateItemIndex: number = this.todoitemList.findIndex((i) => i.id == item.id);
+        this.todoitemList[updateItemIndex] = item;
+        this.todoitemList = this.todoitemList.DBSort(); // Item status might have changed.
       });
 
       this.repo.getToDoItems();
@@ -45,6 +44,7 @@ export class TodoItemsList implements OnInit, OnDestroy {
 
     ngOnDestroy() {
         this.todoitemsListChanged.unsubscribe();
+        this.todoitemChanged.unsubscribe();
         this.itemEventSubscription.unsubscribe();
     }
 }

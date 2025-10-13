@@ -1,10 +1,11 @@
-import { Component, ElementRef, HostBinding, OnDestroy, OnInit, Renderer2, inject, input } from '@angular/core';
+import { Component, OnDestroy, OnInit, Renderer2, inject, input } from '@angular/core';
 import { CommonModule, DatePipe, formatDate } from '@angular/common';
+import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Subscription } from 'rxjs';
 import { SharedItemEditService } from 'src/app/services/shared-edit.service';
+import { ToDoItemInfo } from 'src/app/models/todo-item';
 import { ToDoItem } from '../../models/todoitem.model';
 import { Repository } from 'src/app/services/repository';
-import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 
 @Component({
   selector: '[app-todo-item]',
@@ -22,30 +23,30 @@ export class TodoItemComponent implements OnInit, OnDestroy {
     private listEventSubscription: Subscription = new Subscription();
     private todoitemChanged: Subscription = new Subscription();
 
-    constructor(private el: ElementRef, private renderer: Renderer2){}
+    // constructor(private el: ElementRef, private renderer: Renderer2){}
+    constructor(){}
 
-    todoItem = input.required<ToDoItem>();
-    item: ToDoItem = new ToDoItem();
+    todoItem = input.required<ToDoItemInfo>();
+    item: ToDoItemInfo = new ToDoItem();
     isEditMode: boolean = false;
     todoitemForm: FormGroup = new FormGroup({
       title: new FormControl(null, Validators.required)
     });
 
-    @HostBinding('class.statusComplete')
+    // @HostBinding('class.statusComplete')
+    // @HostBinding('class.statusOverdue')
 
-    /*
-    get activeClass() {
-      return this.item.isCompleted;
-    }
-*/
     ngOnInit() {
-      let newItem : ToDoItem =  new ToDoItem(
-        this.todoItem().id, 
-        this.todoItem().title, 
-        this.todoItem().creationDate, 
-        this.todoItem().completedDate,
-        this.todoItem().dueBy,
-        this.todoItem().isCompleted);
+
+      let newItem : ToDoItemInfo =  new ToDoItem(
+          this.todoItem().id, 
+          this.todoItem().title, 
+          this.todoItem().creationDate, 
+          this.todoItem().dueBy,
+          this.todoItem().completedDate,
+          this.todoItem().isCompleted,
+          !this.todoItem().isCompleted && (this.todoItem().dueBy! < new Date())
+        );
 
       this.item = newItem;
 
@@ -55,13 +56,19 @@ export class TodoItemComponent implements OnInit, OnDestroy {
 
       this.todoitemChanged = this.repo.todoitemChanged.subscribe((updatedItem) => {
         if (updatedItem.id === this.item.id) {
+          /*
           const today = new Date();
           if (updatedItem.dueBy) {
-            const completeByDate = updatedItem.dueBy;
-            updatedItem.isOverdue = (!updatedItem.isCompleted && (completeByDate! < today));
+            const dueByDate = updatedItem.dueBy;
+            updatedItem.isOverdue = (!updatedItem.isCompleted && (dueByDate! < today));
           }
-          if (updatedItem.isCompleted){
-            this.renderer.addClass(this.el.nativeElement, 'statusComplete');
+          */
+          if (updatedItem.isCompleted) {
+            
+            updatedItem.isOverdue = false;
+            // Update class in parent selector in real time.
+            // this.renderer.addClass(this.el.nativeElement, 'statusComplete');
+            // this.renderer.removeClass(this.el.nativeElement, 'statusOverdue');
           }
           this.item = updatedItem;
         }
@@ -79,10 +86,9 @@ export class TodoItemComponent implements OnInit, OnDestroy {
           this.item.id, 
           this.item.title, 
           this.item.creationDate, 
-          new Date(formatDate(new Date(), 'dd/M/yyyy', 'en-AU')),
           this.item.dueBy,
-          true,
-          false);
+          new Date(formatDate(new Date(), 'dd/M/yyyy', 'en-AU')),
+          true);
           
        this.repo.replaceToDoItem(updatedItem);
    }
@@ -95,7 +101,7 @@ export class TodoItemComponent implements OnInit, OnDestroy {
    cancelEdit() {
        this.isEditMode = false;
        this.todoitemForm.reset();
-       this.item = this.todoItem();
+       this.item = this.item;
    }
 
    saveChanges() {

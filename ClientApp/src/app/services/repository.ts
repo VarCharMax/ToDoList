@@ -13,11 +13,19 @@ const itemsUrl = 'api/items';
 )
 export class Repository {
     
-    todoitems: ToDoItemInfo[] = [];
-    todoitem: ToDoItem = new ToDoItem();
+    private todoitems: ToDoItemInfo[] = [];
+    private todoitem: ToDoItem = new ToDoItem();
+
+    /*
+    * todoitemsChanged - called when list is added to or subtracted from.
+    * todoitemChanged - called when item changes state.
+    * todoitemChanged does not get called when item is created.
+    * No method should call both events, as this this will lead to edit-warring over item.
+    */
 
     todoitemsChanged: Subject<ToDoItemInfo[]> = new Subject<ToDoItemInfo[]>();
     todoitemChanged: Subject<ToDoItemInfo> = new Subject<ToDoItemInfo>();
+    todoitemRetrieved: Subject<ToDoItemInfo> = new Subject<ToDoItemInfo>();
     errorsChanged: Subject<{ [label: string]: Array<string> }> = new Subject<{
         [label: string]: Array<string>;
     }>();
@@ -32,20 +40,20 @@ export class Repository {
     getToDoItems() {
         this.http.get<ToDoItemInfo[]>(itemsUrl).subscribe((t) => {
             
+            //Clear array.
             this.todoitems = [];
+            let today = new Date();
 
             t.forEach(item =>{
                 let newItem: ToDoItem = new ToDoItem(
                     item.id, 
                     item.title, 
                     item.creationDate, 
-                    item.completedDate, 
                     item.dueBy, 
-                    item.isCompleted, 
-                    false);
-                
-                // since SQLite stores dates as strings, rehydrate dates.
-                newItem.RehydrateDates();
+                    item.completedDate,
+                    item.isCompleted
+                );
+
                 this.todoitems.push(newItem);
             });
             
@@ -78,14 +86,12 @@ export class Repository {
                     i.id, 
                     i.title, 
                     i.creationDate, 
+                    i.dueBy,
                     i.completedDate, 
-                    i.dueBy, 
-                    i.isCompleted, 
-                    false);
-
-            i.RehydrateDates();
-
-            this.todoitemChanged.next(i);
+                    i.isCompleted);
+            
+            this.todoitem = newItem;
+            this.todoitemRetrieved.next(newItem);
         });
     }
 
@@ -99,21 +105,17 @@ export class Repository {
                 let newItem: ToDoItem = new ToDoItem(
                     item.id, 
                     item.title, 
-                    item.creationDate, 
-                    item.completedDate, 
+                    item.creationDate,
                     item.dueBy, 
-                    item.isCompleted, 
-                    false);
+                    item.completedDate,
+                    item.isCompleted);
 
-                // Fix issue wiht SQLIte DB storing dates as strings.
-                newItem.RehydrateDates();
-
+                //Don't call change event on new item.
                 this.todoitem = newItem
-                this.todoitemChanged.next(newItem);
+
                 this.todoitems.push(newItem);
                 
                 // Sort list according to match DB sort rules.
-                this.todoitems = this.todoitems.DBSort();
                 this.todoitemsChanged.next(this.todoitems.slice());
             },
             error: (e) => {
@@ -136,15 +138,12 @@ export class Repository {
                             t.id, 
                             t.title, 
                             t.creationDate, 
-                            t.completedDate, 
                             t.dueBy, 
-                            t.isCompleted, 
-                            false);
-
-                        updateItem.RehydrateDates();
+                            t.completedDate,
+                            t.isCompleted);
 
                         this.todoitems[index] = updateItem;
-                        this.todoitems = this.todoitems.DBSort();
+                        
                         this.todoitemChanged.next(updateItem);
                     }
                 },
@@ -168,7 +167,7 @@ export class Repository {
     deleteToDoItem(id: number) {
         this.http.delete<boolean>(`${itemsUrl}/${id}`).subscribe({next: (result) => {
                 if (result === true) {
-                    this.todoitems = this.todoitems.filter((p) => p.id != id);
+                    this.todoitems = this.todoitems.filter((i) => i.id != id).slice();
                     this.todoitemsChanged.next(this.todoitems.slice());
                 }
             },

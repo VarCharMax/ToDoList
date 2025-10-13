@@ -1,7 +1,7 @@
 import { ToDoItem } from "../models/todoitem.model";
 
 /*This is to mirror the sort order returned from the database whenever an item is added or updated on the client.
-* Stable sort.
+* Stable sort:
 * Will sort by title, then due date.
 * Overdue items will appear at top, completed at bottom.
 */
