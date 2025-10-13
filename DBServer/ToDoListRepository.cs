@@ -65,7 +65,7 @@ namespace DBServer
     public async Task<List<Models.DTO.ToDoItem>> GetAllItemsAsync()
     {
       var list = await context.Set<ToDoItem>()
-        .OrderByDescending(p => p.CreationDate)
+        .OrderByDescending(p => p.Title)
         .ThenByDescending(p => p.DueBy)
         .ThenBy(p => p.IsCompleted) //Ascending
         .Select(p => _mapper.Map<Models.DTO.ToDoItem>(p)).ToListAsync();
