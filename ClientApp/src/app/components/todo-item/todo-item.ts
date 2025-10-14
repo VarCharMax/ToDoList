@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit, Renderer2, inject, input } from '@angular/core';
+import { Component, OnDestroy, OnInit, inject, input } from '@angular/core';
 import { CommonModule, DatePipe, formatDate } from '@angular/common';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Subscription } from 'rxjs';
