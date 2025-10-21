@@ -12,7 +12,6 @@ const itemsUrl = 'api/items';
     }
 )
 export class Repository {
-    
     private todoitems: ToDoItemInfo[] = [];
     private todoitem: ToDoItem = new ToDoItem();
 
@@ -42,7 +41,6 @@ export class Repository {
             
             //Clear array.
             this.todoitems = [];
-            let today = new Date();
 
             t.forEach(item =>{
                 let newItem: ToDoItem = new ToDoItem(
@@ -82,16 +80,16 @@ export class Repository {
     getToDoItem(id: number) {
         this.http.get<ToDoItemInfo>(`${itemsUrl}/${id}`).subscribe((i) => {
 
-            let newItem: ToDoItem = new ToDoItem(
+            this.todoitem = new ToDoItem(
                     i.id, 
                     i.title, 
                     i.creationDate, 
                     i.dueBy,
                     i.completedDate, 
-                    i.isCompleted);
+                    i.isCompleted
+                );
             
-            this.todoitem = newItem;
-            this.todoitemRetrieved.next(newItem);
+            this.todoitemRetrieved.next(this.todoitem);
         });
     }
 
@@ -99,23 +97,21 @@ export class Repository {
     * Add entity
     */
     createToDoItem(todoitem: ToDoItemInfo) {
-        this.http.post<ToDoItem>(itemsUrl, todoitem).subscribe({
-            next:(item) => {
+        this.http.post<number>(itemsUrl, todoitem).subscribe({
+            next:(id) => {
 
                 let newItem: ToDoItem = new ToDoItem(
-                    item.id, 
-                    item.title, 
-                    item.creationDate,
-                    item.dueBy, 
-                    item.completedDate,
-                    item.isCompleted);
+                    id, 
+                    todoitem.title, 
+                    todoitem.creationDate,
+                    todoitem.dueBy, 
+                    todoitem.completedDate,
+                    todoitem.isCompleted);
 
                 //Don't call change event on new item.
                 this.todoitem = newItem
-
                 this.todoitems.push(newItem);
-                
-                // Sort list according to match DB sort rules.
+
                 this.todoitemsChanged.next(this.todoitems.slice());
             },
             error: (e) => {
@@ -127,24 +123,33 @@ export class Repository {
     /*
     * Replace Entity
     */
-    replaceToDoItem(todoitem: ToDoItem) {
+    replaceToDoItem(todoItem: ToDoItemInfo) {
         this.http
-            .put<ToDoItem>(`${itemsUrl}/${todoitem.id}`, todoitem)
-                .subscribe({next:(t) => {
-                    let index = this.todoitems.findIndex((t) => t.id === todoitem.id);
-                    if (index !== -1) {
+            .put<boolean>(`${itemsUrl}/${todoItem.id}`, todoItem)
+                .subscribe({next:(result) => {
+                    if (result == true) {
 
-                        let updateItem: ToDoItem = new ToDoItem(
-                            t.id, 
-                            t.title, 
-                            t.creationDate, 
-                            t.dueBy, 
-                            t.completedDate,
-                            t.isCompleted);
+                        let index = this.todoitems.findIndex((t) => t.id === todoItem.id);
 
-                        this.todoitems[index] = updateItem;
+                        if (index !== -1)
+                        {
+                            let updateItem: ToDoItem = new ToDoItem(
+                                todoItem.id, 
+                                todoItem.title, 
+                                todoItem.creationDate, 
+                                todoItem.dueBy, 
+                                todoItem.completedDate,
+                                todoItem.isCompleted
+                            );
+
+                            this.todoitems[index] = updateItem;
+                            
+                            this.todoitemChanged.next(updateItem);
+                        } else
+                        {
+                            this.errorsChanged.next({errors: ["Update operation encountered an error"]});
+                        }
                         
-                        this.todoitemChanged.next(updateItem);
                     }
                 },
                 error:(e) => {

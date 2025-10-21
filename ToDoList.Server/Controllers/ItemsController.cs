@@ -57,17 +57,15 @@ namespace ToDoList.Server.Controllers
     }
 
     [HttpPost]
-    public async Task<ActionResult<ToDoItem>> PostItem([FromBody]ToDoItemData item)
+    public async Task<ActionResult<long>> PostItem([FromBody]ToDoItemData item)
     {
-      ToDoItem? newItem;
+      long newItemId = 0;
 
       if (ModelState.IsValid)
       {
-        newItem = item.ToDoItem;
-
         try
         {
-          newItem = await repos.AddItemAsync(newItem);
+          newItemId = await repos.AddItemAsync(item.ToDoItem);
         }
         catch (DataException)
         {
@@ -79,28 +77,28 @@ namespace ToDoList.Server.Controllers
         return BadRequest("message: the data was invalid.");
       }
 
-      if (newItem == null)
+      if (newItemId == 0)
       {
         return BadRequest("message: a database error occurred.");
       }
 
       //The framework returns JSON by default, but might return XML in some situations (which is the REST standard), so we use an explicit wrapper.
-      return new JsonResult(newItem);
+      return new JsonResult(newItemId);
     }
 
     [HttpPut("{id}")]
-    public async Task<ActionResult<ToDoItem>> ReplaceItem(int id, [FromBody]ToDoItemData item)
+    public async Task<ActionResult<bool>> ReplaceItem(int id, [FromBody]ToDoItemData item)
     {
-      ToDoItem? updateItem;
+      int resultCount;
 
       if (ModelState.IsValid)
       {
-        updateItem = item.ToDoItem;
+        ToDoItem updateItem = item.ToDoItem;
         updateItem.Id = id;
 
         try
         {
-          updateItem = await repos.ReplaceItemAsync(id, updateItem);
+          resultCount = await repos.ReplaceItemAsync(id, updateItem);
         }
         catch (Exception)
         {
@@ -112,12 +110,12 @@ namespace ToDoList.Server.Controllers
         return BadRequest();
       }
 
-      if (updateItem is null)
+      if (resultCount != 1)
       {
-        return BadRequest("message: a database error occurred.");
+        return BadRequest("message: update operation failed.");
       }
 
-      return new JsonResult(updateItem);
+      return new JsonResult(true);
     }
 
     [HttpPatch("{id}")]

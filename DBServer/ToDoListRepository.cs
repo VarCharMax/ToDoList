@@ -14,12 +14,24 @@ namespace DBServer
     private readonly DataContext context = ctx;
     private readonly IMapper _mapper = mapper;
 
-    public async Task<Models.DTO.ToDoItem?> AddItemAsync(Models.DTO.ToDoItem item)
+    public async Task<long> AddItemAsync(Models.DTO.ToDoItem item)
     {
-      var result = await context.ToDoItems.AddAsync(_mapper.Map<ToDoItem>(item));
-      await context.SaveChangesAsync();
+      long newId = 0;
+
+      try
+      {
+        var result = await context.ToDoItems.AddAsync(_mapper.Map<ToDoItem>(item));
+        await context.SaveChangesAsync();
+
+        newId = result.Entity.Id;
+
+      }
+      catch (DataException)
+      {
+        newId = -1;
+      }
       
-      return  _mapper.Map<Models.DTO.ToDoItem>(result.Entity);
+      return newId;
     }
 
     public async Task<bool> DeleteItemAsync(long id)
@@ -88,19 +100,23 @@ namespace DBServer
       throw new NotImplementedException();
     }
 
-    public async Task<Models.DTO.ToDoItem?> ReplaceItemAsync(long id, Models.DTO.ToDoItem item)
+    public async Task<int> ReplaceItemAsync(long id, Models.DTO.ToDoItem item)
     {
-      ToDoItem updateItem = _mapper.Map<ToDoItem>(item);
+      int successCount = 0;
 
-      context.Update(updateItem);
-      await context.SaveChangesAsync();
+      try
+      {
+        item.Id = id;
 
-      ToDoItem? result = await context.ToDoItems
-               .FirstOrDefaultAsync(p => p.Id == id);
+        context.Update(_mapper.Map<ToDoItem>(item));
+        successCount = await context.SaveChangesAsync();
+      }
+      catch (DataException)
+      {
+        successCount = -1;
+      }
 
-      var model = _mapper.Map<Models.DTO.ToDoItem>(result);
-
-      return model;
+      return successCount;
     }
     
     public async Task<Models.DTO.ToDoItem?> UpdateItemAsync(long id, JsonPatchDocument<ToDoItemData> patch)

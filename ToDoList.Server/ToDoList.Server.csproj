@@ -8,13 +8,13 @@
   
   <PropertyGroup>
     <PrepareForBuildDependsOn>BundleMinify;$(PrepareForBuildDependsOn)</PrepareForBuildDependsOn>
+    <UserSecretsId>0b4aa815-7940-4e43-b15e-d63154dad38c</UserSecretsId>
   </PropertyGroup>
   
   <ItemGroup>
     <PackageReference Include="BuildBundlerMinifier" Version="3.2.449" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="9.0.9" />
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="9.0.9" />
-    <PackageReference Include="Microsoft.AspNetCore.SpaProxy" Version="9.0.9" />
     <PackageReference Include="Microsoft.AspNetCore.SpaServices.Extensions" Version="9.0.9" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="9.0.9">
       <PrivateAssets>all</PrivateAssets>
@@ -30,5 +30,9 @@
   <ItemGroup>
     <ProjectReference Include="..\DBServer\DBServer.csproj" />
     <ProjectReference Include="..\Models\Models.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="wwwroot\js\main\" />
   </ItemGroup>
 </Project>
