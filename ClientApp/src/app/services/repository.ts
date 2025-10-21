@@ -26,8 +26,8 @@ export class Repository {
     todoitemChanged: Subject<ToDoItemInfo> = new Subject<ToDoItemInfo>();
     todoitemRetrieved: Subject<ToDoItemInfo> = new Subject<ToDoItemInfo>();
     errorsChanged: Subject<{ [label: string]: Array<string> }> = new Subject<{
-        [label: string]: Array<string>;
-    }>();
+            [label: string]: Array<string>;
+        }>();
 
     filter: Filter = new Filter();
 
@@ -115,7 +115,7 @@ export class Repository {
                 this.todoitemsChanged.next(this.todoitems.slice());
             },
             error: (e) => {
-                this.errorsChanged.next(e.error?.errors);
+                this.errorsChanged.next(e.error);
             }
         });
     }
@@ -131,8 +131,7 @@ export class Repository {
 
                         let index = this.todoitems.findIndex((t) => t.id === todoItem.id);
 
-                        if (index !== -1)
-                        {
+                        if (index !== -1) {
                             let updateItem: ToDoItem = new ToDoItem(
                                 todoItem.id, 
                                 todoItem.title, 
@@ -145,15 +144,13 @@ export class Repository {
                             this.todoitems[index] = updateItem;
                             
                             this.todoitemChanged.next(updateItem);
-                        } else
-                        {
+                        } else {
                             this.errorsChanged.next({errors: ["Update operation encountered an error"]});
                         }
-                        
                     }
                 },
                 error:(e) => {
-                    this.errorsChanged.next(e.error?.errors);
+                    this.errorsChanged.next(e.error);
             }
         });
     }
@@ -190,7 +187,7 @@ export class Repository {
                 }
             },
             error: (e) => {
-                this.errorsChanged.next(e.error?.errors);
+                this.errorsChanged.next(e.error);
             },
         });
     }
@@ -203,7 +200,7 @@ export class Repository {
                 }
             },
             error: (e) => {
-                this.errorsChanged.next(e.error?.errors);
+                this.errorsChanged.next(e.error);
             }
         });
     }

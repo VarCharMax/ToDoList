@@ -18,5 +18,17 @@ namespace Helpers
 
       return newPatchDocument;
     }
+
+    public static JsonPatchDocument CreateCopyOfOperations(JsonPatchDocument sourcePatchDocument)
+    {
+      var newPatchDocument = new JsonPatchDocument();
+
+      foreach (var operation in sourcePatchDocument.Operations)
+      {
+        newPatchDocument.Operations.Add(new Operation(operation.op, operation.path, operation.from, operation.value));
+      }
+
+      return newPatchDocument;
+    }
   }
 }

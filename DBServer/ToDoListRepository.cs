@@ -115,6 +115,7 @@ namespace DBServer
     public async Task<bool> UpdateItemAsync(long id, JsonPatchDocument<Models.DTO.ToDoItem> patch)
     {
       //Convert the patch document from DTO to Entity type.
+      //It is possible to apply patch by mapping the entity to DTO, applying the patch, and mapping back to entity, but this is neater.
       JsonPatchDocument<ToDoItem> patchUpdate = JsonPatchDocumentHelper.CreateCopyOfOperations<Models.DTO.ToDoItem, ToDoItem>(patch);
 
       try

@@ -1,6 +1,7 @@
 ﻿using DBServer.Interfaces;
 using Helpers;
 using Microsoft.AspNetCore.JsonPatch;
+using Microsoft.AspNetCore.JsonPatch.Operations;
 using Microsoft.AspNetCore.Mvc;
 using Models.BindingTargets;
 using Models.DTO;
@@ -117,12 +118,24 @@ namespace ToDoList.Server.Controllers
     [HttpPatch("{id}")]
     public async Task<IActionResult> UpdateItem(long id, [FromBody] JsonPatchDocument<ToDoItemData> patch)
     {
+      //Patch operations pose a security risk because anyone with knowlege of the backend can potentially post a collection of patch operations to it.
+      //Therefore we should implement some guards - e.g. the maximum number of operations, allowed paths, allowed values, etc.
+
+      if (patch.Operations.Count > 2 || 
+        patch.Operations.Any(p => p.OperationType != OperationType.Replace))
+      {
+        return BadRequest("Invalid patch document.");
+      }
+
       bool result;
       
       if (ModelState.IsValid)
       {
         try
         {
+          //Create new patch object to avoid exposing binding targets to repository.
+          //Patch operations don't have to be strongly typed. You could maybe avoid these steps by using untyped patch documents throughout,
+          //but then you lose compile-time checking of paths and values.
           JsonPatchDocument<ToDoItem> patchUpdate = JsonPatchDocumentHelper.CreateCopyOfOperations<ToDoItemData, ToDoItem>(patch);        
 
           result = await repos.UpdateItemAsync(id, patchUpdate);

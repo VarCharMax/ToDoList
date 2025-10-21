@@ -52,9 +52,7 @@ export class TodoItemComponent implements OnInit, OnDestroy {
 
       this.todoitemChanged = this.repo.todoitemChanged.subscribe((updatedItem) => {
         if (updatedItem.id === this.item.id) {
-
           if (updatedItem.isCompleted) {
-            
             updatedItem.isOverdue = false;
           }
           this.item = updatedItem;
@@ -69,12 +67,9 @@ export class TodoItemComponent implements OnInit, OnDestroy {
    }
 
    setItemComplete() {
-  
       let changes = new Map<string, any>();
-      
       changes.set("isCompleted", true);
       changes.set("completedDate", new Date());
-      
       this.repo.updateToDoItem(this.item.id!, changes);
    }
 
@@ -91,15 +86,14 @@ export class TodoItemComponent implements OnInit, OnDestroy {
 
    saveChanges() {
      if (this.todoitemForm.valid) {
+        this.isEditMode = false;
+        this.item.title = this.todoitemForm.value.title!;
 
-      this.isEditMode = false;
-      this.item.title = this.todoitemForm.value.title!;
-
-      let changes = new Map<string, any>();
-      changes.set("title", this.item.title);
-      this.repo.updateToDoItem(this.item.id!, changes);
+        let changes = new Map<string, any>();
+        changes.set("title", this.item.title);
+        this.repo.updateToDoItem(this.item.id!, changes);
     } else {
-      this.todoitemForm.markAllAsTouched();
+        this.todoitemForm.markAllAsTouched();
     }
    }
 
