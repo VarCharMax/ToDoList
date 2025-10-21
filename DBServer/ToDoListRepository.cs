@@ -8,7 +8,6 @@ using System.Data;
 
 namespace DBServer
 {
-
   public class ToDoListRepository(DataContext ctx, IMapper mapper) : IToDoListRepository, IDisposable
   {
     private bool disposed;
@@ -46,8 +45,8 @@ namespace DBServer
         try
         {
           context.ToDoItems.Remove(item);
-
-          await context.SaveChangesAsync();
+          int successCount = await context.SaveChangesAsync();
+          success = successCount > 0;
         }
         catch(DataException)
         {

@@ -1,5 +1,7 @@
 ## Quick Start.
-
+- Run the following commands:
+     * dotnet dev-certs https --clean
+     * dotnet dev-certs https --trust 
 - From the ClientAp folder run `npm install` to install node_modules.
 - From the ToDoList.Server folder run `dotnet restore` to restore NuGet packages.
 - The Connection Strategy is set to `managed` in appSettings.json, which means that the Angular development server will launch automatically in the background to supply the runtime files to the MVC controller.

@@ -30,6 +30,8 @@ Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "ClientApp", "ClientApp\", "
 		SlnRelativePath = "ClientApp\"
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Helpers", "Helpers\Helpers.csproj", "{EFD44D08-6035-4E53-8302-35ABBBCF56C3}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -52,6 +54,10 @@ Global
 		{AC014D01-BB68-719C-0E66-093897CD85AD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AC014D01-BB68-719C-0E66-093897CD85AD}.Release|Any CPU.ActiveCfg = Debug|Any CPU
 		{AC014D01-BB68-719C-0E66-093897CD85AD}.Release|Any CPU.Build.0 = Debug|Any CPU
+		{EFD44D08-6035-4E53-8302-35ABBBCF56C3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EFD44D08-6035-4E53-8302-35ABBBCF56C3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EFD44D08-6035-4E53-8302-35ABBBCF56C3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EFD44D08-6035-4E53-8302-35ABBBCF56C3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
