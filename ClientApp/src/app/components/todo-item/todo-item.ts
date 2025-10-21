@@ -22,8 +22,7 @@ export class TodoItemComponent implements OnInit, OnDestroy {
     private editService: SharedItemEditService = inject(SharedItemEditService);
     private listEventSubscription: Subscription = new Subscription();
     private todoitemChanged: Subscription = new Subscription();
-
-    // constructor(private el: ElementRef, private renderer: Renderer2){}
+    
     constructor(){}
 
     todoItem = input.required<ToDoItemInfo>();
@@ -32,9 +31,6 @@ export class TodoItemComponent implements OnInit, OnDestroy {
     todoitemForm: FormGroup = new FormGroup({
       title: new FormControl(null, Validators.required)
     });
-
-    // @HostBinding('class.statusComplete')
-    // @HostBinding('class.statusOverdue')
 
     ngOnInit() {
 
@@ -56,19 +52,10 @@ export class TodoItemComponent implements OnInit, OnDestroy {
 
       this.todoitemChanged = this.repo.todoitemChanged.subscribe((updatedItem) => {
         if (updatedItem.id === this.item.id) {
-          /*
-          const today = new Date();
-          if (updatedItem.dueBy) {
-            const dueByDate = updatedItem.dueBy;
-            updatedItem.isOverdue = (!updatedItem.isCompleted && (dueByDate! < today));
-          }
-          */
+
           if (updatedItem.isCompleted) {
             
             updatedItem.isOverdue = false;
-            // Update class in parent selector in real time.
-            // this.renderer.addClass(this.el.nativeElement, 'statusComplete');
-            // this.renderer.removeClass(this.el.nativeElement, 'statusOverdue');
           }
           this.item = updatedItem;
         }
@@ -104,9 +91,13 @@ export class TodoItemComponent implements OnInit, OnDestroy {
 
    saveChanges() {
      if (this.todoitemForm.valid) {
+
       this.isEditMode = false;
       this.item.title = this.todoitemForm.value.title!;
-      this.repo.replaceToDoItem(this.item);
+
+      let changes = new Map<string, any>();
+      changes.set("title", this.item.title);
+      this.repo.updateToDoItem(this.item.id!, changes);
     } else {
       this.todoitemForm.markAllAsTouched();
     }

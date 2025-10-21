@@ -17,7 +17,7 @@ namespace DBServer
 
     public async Task<long> AddItemAsync(Models.DTO.ToDoItem item)
     {
-      long newId = 0;
+      long newId;
 
       try
       {
@@ -115,6 +115,7 @@ namespace DBServer
     
     public async Task<bool> UpdateItemAsync(long id, JsonPatchDocument<Models.DTO.ToDoItem> patch)
     {
+      //Convert the patch document from DTO to Entity type.
       JsonPatchDocument<ToDoItem> patchUpdate = JsonPatchDocumentHelper.CreateCopyOfOperations<Models.DTO.ToDoItem, ToDoItem>(patch);
 
       try
