@@ -29,16 +29,19 @@ namespace ToDoList.Server
       var cnfLog = Configuration.GetSection("Logging");
       builder.Logging.AddConfiguration(cnfLog);
       builder.Logging.AddConsole();
-      builder.Logging.AddFilter("Microsoft.EntityFrameworkCore.Database.Command", LogLevel.Warning);
-      builder.Logging.AddFilter("Microsoft.EntityFrameworkCore.Infrastructure", LogLevel.Warning);
-      builder.Logging.AddFilter("Microsoft.AspNetCore", LogLevel.Warning);
 
-      services.AddControllersWithViews()
-            .AddJsonOptions(opts =>
+      services.AddControllersWithViews(options =>
+            {
+              options.InputFormatters.Insert(0, MyJPIF.GetJsonPatchInputFormatter()); //Support for PATCH method.
+            }
+       )
+       .AddJsonOptions(opts =>
             {
               opts.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
-            })
-            .AddNewtonsoftJson();
+              opts.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles; //Prevent circular references.
+            }
+       )
+       .AddNewtonsoftJson();
 
       services.AddSingleton<IConfiguration>(Configuration);
       services.AddSqlite<DataContext>("DataSource=webApi.db", 

@@ -161,12 +161,38 @@ export class Repository {
     /*
     * Update entity
     */
-    updateContent(id: number, changes: Map<string, any>) {
+    updateToDoItem(id: number, changes: Map<string, any>) {
         let patch: { op: string; path: string; value: any }[] = [];
+        
+        // Define the patch operations. All are 'replace' operations.
         changes.forEach((value, key) =>
             patch.push({ op: 'replace', path: key, value: value })
         );
-        this.http.patch(`${itemsUrl}/${id}`, patch).subscribe(() => this.getToDoItem(id));
+
+        this.http.patch(`${itemsUrl}/${id}`, patch).subscribe({
+            next: (result) => {
+                if (result == true) {
+                    let index = this.todoitems.findIndex((t) => t.id === id);
+                    if (index !== -1) {
+                        let item = this.todoitems[index];
+                        
+                        //Apply patch locally.
+                        changes.forEach((value, key) => {
+                            (item as any)[key] = value;
+                        });
+
+                        this.todoitemChanged.next(item);
+                    } else {
+                        this.errorsChanged.next({
+                            errors: ['Update operation encountered an error'],
+                        });
+                    }
+                }
+            },
+            error: (e) => {
+                this.errorsChanged.next(e.error?.errors);
+            },
+        });
     }
 
     deleteToDoItem(id: number) {

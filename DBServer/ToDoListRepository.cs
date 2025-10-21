@@ -1,13 +1,14 @@
 ﻿using AutoMapper;
 using DBServer.Entity;
 using DBServer.Interfaces;
+using Helpers;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.EntityFrameworkCore;
-using Models.BindingTargets;
 using System.Data;
 
 namespace DBServer
 {
+
   public class ToDoListRepository(DataContext ctx, IMapper mapper) : IToDoListRepository, IDisposable
   {
     private bool disposed;
@@ -36,32 +37,25 @@ namespace DBServer
 
     public async Task<bool> DeleteItemAsync(long id)
     {
-      try
-      {
-        ToDoItem? item = context.ToDoItems.Find(id);
+      bool success = false;
 
-        if (item != null)
+      ToDoItem? item = context.ToDoItems.Find(id);
+
+      if (item != null)
+      {
+        try
         {
-          try
-          {
-            context.ToDoItems.Remove(item);
+          context.ToDoItems.Remove(item);
 
-            await context.SaveChangesAsync();
-          }
-          catch(DataException de)
-          {
-            
-          }
-
-          return true;
+          await context.SaveChangesAsync();
         }
-
-        return false;
+        catch(DataException)
+        {
+          success = false;
+        }
       }
-      catch (DataException)
-      {
-        return false;
-      }
+      
+      return success;
     }
 
     public Task<bool> DeleteItemAsync(Models.DTO.ToDoItem item)
@@ -102,7 +96,7 @@ namespace DBServer
 
     public async Task<int> ReplaceItemAsync(long id, Models.DTO.ToDoItem item)
     {
-      int successCount = 0;
+      int successCount;
 
       try
       {
@@ -119,26 +113,28 @@ namespace DBServer
       return successCount;
     }
     
-    public async Task<Models.DTO.ToDoItem?> UpdateItemAsync(long id, JsonPatchDocument<ToDoItemData> patch)
+    public async Task<bool> UpdateItemAsync(long id, JsonPatchDocument<Models.DTO.ToDoItem> patch)
     {
-      var toDoItem = await context.ToDoItems.FindAsync(id);
-      if (toDoItem == null)
+      JsonPatchDocument<ToDoItem> patchUpdate = JsonPatchDocumentHelper.CreateCopyOfOperations<Models.DTO.ToDoItem, ToDoItem>(patch);
+
+      try
       {
-        return null;
+        var toDoItem = await context.ToDoItems.FindAsync(id);
+        if (toDoItem == null)
+        {
+          return false;
+        }
+
+        patchUpdate.ApplyTo(toDoItem);
+
+        await context.SaveChangesAsync();
+      }
+      catch (DataException)
+      {
+        return false;
       }
 
-      //Map entity to DTO
-      ToDoItemData itemData = new() { ToDoItem = _mapper.Map<Models.DTO.ToDoItem>(toDoItem) };
-
-      //Apply patch to Binding target.
-      patch.ApplyTo(itemData);
-
-      //Map changes back to entity
-      _mapper.Map<ToDoItem>(itemData);
-
-      await context.SaveChangesAsync();
-
-      return itemData.ToDoItem;
+      return true;
     }
 
     protected virtual void Dispose(bool disposing)

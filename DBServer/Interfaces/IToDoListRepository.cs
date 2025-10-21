@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.JsonPatch;
-using Models.BindingTargets;
 using Models.DTO;
 
 namespace DBServer.Interfaces
@@ -10,7 +9,7 @@ namespace DBServer.Interfaces
     public Task<ToDoItem?> GetItemByIdAsync(long id);
     public Task<long> AddItemAsync(ToDoItem item);
     public Task<int> ReplaceItemAsync(long id, ToDoItem item);
-    public Task<ToDoItem?> UpdateItemAsync(long id, JsonPatchDocument<ToDoItemData> patch);
+    public Task<bool> UpdateItemAsync(long id, JsonPatchDocument<ToDoItem> patch);
     public Task<bool> DeleteItemAsync(long id);
     public Task<bool> DeleteItemAsync(ToDoItem item);
     public Task<bool> DeleteItemAsync(List<ToDoItem> items);

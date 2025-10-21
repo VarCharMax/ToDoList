@@ -1,4 +1,5 @@
 ﻿using DBServer.Interfaces;
+using Helpers;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using Models.BindingTargets;
@@ -22,10 +23,8 @@ namespace ToDoList.Server.Controllers
       {
         items = await repos.GetAllItemsAsync();
       }
-      catch (Exception ex)
+      catch (Exception)
       {
-        string message = ex.Message;
-
         return BadRequest("Error returning ToDo list");
       }
 
@@ -41,10 +40,8 @@ namespace ToDoList.Server.Controllers
       {
         item = await repos.GetItemByIdAsync(id);
       }
-      catch (Exception ex)
+      catch (Exception)
       {
-        string message = ex.Message;
-
         return BadRequest("Error returning player list");
       }
 
@@ -59,8 +56,7 @@ namespace ToDoList.Server.Controllers
     [HttpPost]
     public async Task<ActionResult<long>> PostItem([FromBody]ToDoItemData item)
     {
-      long newItemId = 0;
-
+      long newItemId;
       if (ModelState.IsValid)
       {
         try
@@ -115,20 +111,33 @@ namespace ToDoList.Server.Controllers
         return BadRequest("message: update operation failed.");
       }
 
-      return new JsonResult(true);
+      return Ok(true);
     }
 
     [HttpPatch("{id}")]
     public async Task<IActionResult> UpdateItem(long id, [FromBody] JsonPatchDocument<ToDoItemData> patch)
     {
-      ToDoItem? item = await repos.UpdateItemAsync(id, patch);
-
-      if (item is null)
+      bool result;
+      
+      if (ModelState.IsValid)
       {
-        return NotFound();
+        try
+        {
+          JsonPatchDocument<ToDoItem> patchUpdate = JsonPatchDocumentHelper.CreateCopyOfOperations<ToDoItemData, ToDoItem>(patch);        
+
+          result = await repos.UpdateItemAsync(id, patchUpdate);
+        }
+        catch (Exception)
+        {
+          return BadRequest("message: a database error occurred.");
+        }
+      }
+      else
+      {
+        return BadRequest();
       }
 
-      return new JsonResult(item);
+      return Ok(result);
     }
 
     [HttpDelete("{id}")]

@@ -82,15 +82,13 @@ export class TodoItemComponent implements OnInit, OnDestroy {
    }
 
    setItemComplete() {
-       let updatedItem = new ToDoItem(
-          this.item.id, 
-          this.item.title, 
-          this.item.creationDate, 
-          this.item.dueBy,
-          new Date(formatDate(new Date(), 'dd/M/yyyy', 'en-AU')),
-          true);
-          
-       this.repo.replaceToDoItem(updatedItem);
+  
+      let changes = new Map<string, any>();
+      
+      changes.set("isCompleted", true);
+      changes.set("completedDate", new Date());
+      
+      this.repo.updateToDoItem(this.item.id!, changes);
    }
 
    setEditMode() {
