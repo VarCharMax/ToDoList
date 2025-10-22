@@ -116,7 +116,7 @@ namespace ToDoList.Server.Controllers
     }
 
     [HttpPatch("{id}")]
-    public async Task<IActionResult> UpdateItem(long id, [FromBody] JsonPatchDocument<ToDoItemData> patch)
+    public async Task<ActionResult<bool>> UpdateItem(long id, [FromBody] JsonPatchDocument<ToDoItemData> patch)
     {
       //Patch operations pose a security risk because anyone with knowlege of the backend can potentially post a collection of patch operations to it.
       //Therefore we should implement some guards - e.g. the maximum number of operations, allowed paths, allowed values, etc.
@@ -126,7 +126,7 @@ namespace ToDoList.Server.Controllers
       {
         return BadRequest("Invalid patch document.");
       }
-
+      
       bool result;
       
       if (ModelState.IsValid)
@@ -134,8 +134,6 @@ namespace ToDoList.Server.Controllers
         try
         {
           //Create new patch object to avoid exposing binding targets to repository.
-          //Patch operations don't have to be strongly typed. You could maybe avoid these steps by using untyped patch documents throughout,
-          //but then you lose compile-time checking of paths and values.
           JsonPatchDocument<ToDoItem> patchUpdate = JsonPatchDocumentHelper.CreateCopyOfOperations<ToDoItemData, ToDoItem>(patch);        
 
           result = await repos.UpdateItemAsync(id, patchUpdate);

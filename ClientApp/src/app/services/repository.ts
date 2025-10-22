@@ -59,7 +59,7 @@ export class Repository {
         });
     }
 
-/*
+    /*
     This is an example of how to implement filtering on the server side using a query string.
     getToDoItems() {
         let url = `${itemsUrl}?related=${this.filter.related}`;
@@ -72,7 +72,7 @@ export class Repository {
             this.todoitems = p.slice();
             this.todoitemsChanged.next(p.slice());
     });
-*/
+    */
 
     /*
     * Get entity
@@ -166,7 +166,7 @@ export class Repository {
             patch.push({ op: 'replace', path: key, value: value })
         );
 
-        this.http.patch(`${itemsUrl}/${id}`, patch).subscribe({
+        this.http.patch<boolean>(`${itemsUrl}/${id}`, patch).subscribe({
             next: (result) => {
                 if (result == true) {
                     let index = this.todoitems.findIndex((t) => t.id === id);

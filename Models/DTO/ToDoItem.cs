@@ -1,6 +1,6 @@
 ﻿namespace Models.DTO
 {
-  public class ToDoItem
+  public record ToDoItem
   {
     public long Id { get; set; }
 

@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Models.BindingTargets
 {
-  public class ToDoItemData
+  public record ToDoItemData
   {
     [Required]
     public string Title
