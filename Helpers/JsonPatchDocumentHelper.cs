@@ -57,19 +57,19 @@ namespace Helpers
             // Check if value type is incorrect.
             if (!IsValidForProperty(currentModelInstance, operation.path, operation.value))
             {
-              throw new InvalidOperationException($"Value for path: {operation.path} is not valid");
+              throw new InvalidOperationException($"Value supplied for path: {operation.path} is not correct type.");
             }
             break;
           case "replace":
-            // Check if required property is present and at least has some value.
+            // If property is required check that it has at least some value.
             if (!IsRequiredPropertyPresent(currentModelInstance, operation.path, operation.value))
             {
-              throw new InvalidOperationException($"Value for required property at path: {operation.path} not supplied.");
+              throw new InvalidOperationException($"Value for required property at path: {operation.path} not supplied or invalid.");
             }
-            // Check if value type is incorrect.
+            // Check if value type is correct for property type.
             if (!IsValidForProperty(currentModelInstance, operation.path, operation.value))
             {
-              throw new InvalidOperationException($"Value for path: {operation.path} is not valid");
+              throw new InvalidOperationException($"Value supplied for path: {operation.path} is not correct type.");
             }
             break;
         }
@@ -114,6 +114,14 @@ namespace Helpers
       {
         // Assume that if the int is zero or negative, it's invalid for a required field
         if (intValue <= 0)
+        {
+          return false;
+        }
+      }
+      else if (val is long lngValue)
+      {
+        // Assume that if the int is zero or negative, it's invalid for a required field
+        if (lngValue <= 0)
         {
           return false;
         }
