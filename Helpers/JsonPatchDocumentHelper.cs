@@ -100,6 +100,7 @@ namespace Helpers
           .OfType<RangeAttribute>()
           .SingleOrDefault();
 
+      //If there's no Range attribute, just return true for convenience.
       if (range is null)
       {
         return true;
@@ -154,12 +155,8 @@ namespace Helpers
           .OfType<RequiredAttribute>()
           .SingleOrDefault();
 
-      //If there's no Required attribute, then the property is not required, so just return true for convenience.
+      //If there's no Required attribute, just return true for convenience.
       if (req is null) return true;
-
-      var range = property.GetCustomAttributes(false)
-          .OfType<RangeAttribute>()
-          .SingleOrDefault();
 
       if (val is null)
       {
