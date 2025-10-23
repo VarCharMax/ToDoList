@@ -37,25 +37,29 @@ export class Repository {
     * Get collections
     */
     getToDoItems() {
-        this.http.get<ToDoItemInfo[]>(itemsUrl).subscribe((t) => {
-            
-            //Clear array.
-            this.todoitems = [];
+        this.http.get<ToDoItemInfo[]>(itemsUrl).subscribe({
+            next: (t) => {
+                
+                this.todoitems = [];
 
-            t.forEach(item =>{
-                let newItem: ToDoItem = new ToDoItem(
-                    item.id, 
-                    item.title, 
-                    item.creationDate, 
-                    item.dueBy, 
-                    item.completedDate,
-                    item.isCompleted
-                );
+                t.forEach(item =>{
+                    let newItem: ToDoItem = new ToDoItem(
+                        item.id, 
+                        item.title, 
+                        item.creationDate, 
+                        item.dueBy, 
+                        item.completedDate,
+                        item.isCompleted
+                    );
 
-                this.todoitems.push(newItem);
-            });
+                    this.todoitems.push(newItem);
+                });
             
-            this.todoitemsChanged.next(this.todoitems.slice());
+                this.todoitemsChanged.next(this.todoitems.slice());
+            },
+            error: (e) => {
+                this.errorsChanged.next(e.error?.errors);
+            }
         });
     }
 
@@ -78,19 +82,24 @@ export class Repository {
     * Get entity
     */
     getToDoItem(id: number) {
-        this.http.get<ToDoItemInfo>(`${itemsUrl}/${id}`).subscribe((i) => {
+        this.http.get<ToDoItemInfo>(`${itemsUrl}/${id}`).subscribe({
+            next:(i) => {
 
-            this.todoitem = new ToDoItem(
-                    i.id, 
-                    i.title, 
-                    i.creationDate, 
-                    i.dueBy,
-                    i.completedDate, 
-                    i.isCompleted
-                );
-            
-            this.todoitemRetrieved.next(this.todoitem);
-        });
+                this.todoitem = new ToDoItem(
+                        i.id, 
+                        i.title, 
+                        i.creationDate, 
+                        i.dueBy,
+                        i.completedDate, 
+                        i.isCompleted
+                    );
+                
+                this.todoitemRetrieved.next(this.todoitem);
+            },
+            error: (e) => {
+                this.errorsChanged.next(e.error?.errors);   
+            }
+        }); 
     }
 
     /*
