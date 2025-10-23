@@ -118,13 +118,15 @@ namespace ToDoList.Server.Controllers
     [HttpPatch("{id}")]
     public async Task<ActionResult<bool>> UpdateItem(long id, [FromBody] JsonPatchDocument<ToDoItemData> patch)
     {
-      //Patch operations pose a security risk because anyone with knowlege of the backend can potentially post a collection of patch operations to it.
-      //Therefore we should implement some guards - e.g. the maximum number of operations, allowed paths, allowed values, etc.
-
-      if (patch.Operations.Count > 2 || 
-        patch.Operations.Any(p => p.OperationType != OperationType.Replace))
+      //Patch operations pose a security risk because anyone with knowlege of the backend can potentially post an arbitrary collection of patch operations to it.
+      //Therefore we implement some guards - e.g. the maximum number of operations, allowed paths, allowed values, etc.
+      try
       {
-        return BadRequest("Invalid patch document.");
+        JsonPatchDocumentHelper.ValidatePatch(patch, typeof(ToDoItemData), 2, OperationType.Replace);
+      }
+      catch (InvalidOperationException ex)
+      {
+        return BadRequest($"{ex.Message}");
       }
       
       bool result;
