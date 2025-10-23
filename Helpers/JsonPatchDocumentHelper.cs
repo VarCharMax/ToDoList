@@ -64,12 +64,17 @@ namespace Helpers
             // If property is required, check that it has at least some value.
             if (!IsRequiredPropertyPresent(currentModelInstance, operation.path, operation.value))
             {
-              throw new InvalidOperationException($"Value for required property at path: {operation.path} not supplied or out of range.");
+              throw new InvalidOperationException($"Value for required property at path: {operation.path} not supplied.");
             }
             // Check if value type is correct for property type.
             if (!IsValidForProperty(currentModelInstance, operation.path, operation.value))
             {
               throw new InvalidOperationException($"Value supplied for path: {operation.path} is not correct type.");
+            }
+            // If property has a range, check that value is within range.
+            if (!IsPropertyInRange(currentModelInstance, operation.path, operation.value))
+            {
+              throw new InvalidOperationException($"Value for property at path: {operation.path} is out of range.");
             }
             break;
         }
@@ -87,6 +92,60 @@ namespace Helpers
       return success;
     }
 
+    private static bool IsPropertyInRange<TModel>(TModel currentModel, string path, object? val) where TModel : class
+    {
+      var property = currentModel.GetType().GetProperty(path, BindingFlags.Instance | BindingFlags.Public | BindingFlags.IgnoreCase);
+
+      var range = property!.GetCustomAttributes(false)
+          .OfType<RangeAttribute>()
+          .SingleOrDefault();
+
+      if (range is null)
+      {
+        return true;
+      }
+
+      if (val is int intValue && range != null)
+      {
+        if (range.Minimum is int min && range.Maximum is int max)
+        {
+          if (intValue < min || intValue > max)
+          {
+            return false;
+          }
+        }
+      }
+      else if (val is long lngValue && range != null)
+      {
+        if (range.Minimum is long min && range.Maximum is long max)
+        {
+          if (lngValue < min || lngValue > max)
+          {
+            return false;
+          }
+        }
+      }
+      else if (val is double dblVal && range != null)
+      {
+        if (range.Minimum is double min && range.Maximum is double max)
+        {
+          if (dblVal < min || dblVal > max)
+          {
+            return false;
+          }
+        }
+      }
+      else if (val is DateTime dateTimeValue)
+      {
+        if (dateTimeValue == default)
+        {
+          return false;
+        }
+      }
+
+      return true;
+    }
+
     private static bool IsRequiredPropertyPresent<TModel>(TModel currentModel, string path, object? val) where TModel : class
     {
       var property = currentModel.GetType().GetProperty(path, BindingFlags.Instance | BindingFlags.Public | BindingFlags.IgnoreCase);
@@ -98,47 +157,22 @@ namespace Helpers
       //If there's no Required attribute, then the property is not required, so just return true for convenience.
       if (req is null) return true;
 
-      //Cast and check for null or empty values based on type.
+      var range = property.GetCustomAttributes(false)
+          .OfType<RangeAttribute>()
+          .SingleOrDefault();
+
       if (val is null)
       {
         return false;
       }
       else if (val is string strValue)
       {
-        if (String.IsNullOrEmpty(strValue))
+        if (req.AllowEmptyStrings == false)
         {
-          return false;
-        }
-      }
-      else if (val is int intValue)
-      {
-        // Assume that if the value is zero or negative, it's invalid for a required field.
-        if (intValue <= 0)
-        {
-          return false;
-        }
-      }
-      else if (val is long lngValue)
-      {
-        // Likewise.
-        if (lngValue <= 0)
-        {
-          return false;
-        }
-      }
-      else if (val is double dblVal)
-      {
-        // Likewise.
-        if (dblVal <= 0)
-        {
-          return false;
-        }
-      }
-      else if (val is DateTime dateTimeValue)
-      {
-        if (dateTimeValue == default)
-        {
-          return false;
+          if (String.IsNullOrEmpty(strValue))
+          {
+            return false;
+          }
         }
       }
 

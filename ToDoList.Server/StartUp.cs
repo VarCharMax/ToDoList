@@ -1,6 +1,7 @@
 ﻿using DBServer;
 using DBServer.Helpers;
 using DBServer.Interfaces;
+using Microsoft.AspNetCore.Mvc.NewtonsoftJson;
 using Microsoft.AspNetCore.SpaServices.AngularCli;
 using System.Text.Json.Serialization;
 using ToDoList.Server.Helpers;
@@ -33,11 +34,12 @@ namespace ToDoList.Server
       services.AddControllersWithViews(options =>
             {
               options.InputFormatters.Insert(0, MyJPIF.GetJsonPatchInputFormatter()); //Support for PATCH method.
+              options.ModelMetadataDetailsProviders.Add(new NewtonsoftJsonValidationMetadataProvider()); //Enable Newtonsoft based validation.
             }
        )
        .AddJsonOptions(opts =>
             {
-              opts.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
+              opts.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull; //Ignore null values.
               opts.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles; //Prevent circular references.
             }
        )
@@ -63,7 +65,7 @@ namespace ToDoList.Server
         });
       */
 
-      //This adds support for WebApi and Controllers with Views.
+      //Needed for MapRazorPages() method call.
       services.AddRazorPages();
 
       if (env.IsDevelopment())
@@ -113,6 +115,8 @@ namespace ToDoList.Server
         endpoints.MapControllerRoute(
                  name: "default",
                  pattern: "{controller=Home}/{action=Index}/{id?}");
+
+        //This adds support for WebApi and Controllers with Views.
         endpoints.MapRazorPages();
 
         if (env.IsDevelopment())
