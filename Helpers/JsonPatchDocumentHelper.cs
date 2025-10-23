@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.JsonPatch.Operations;
 using System.ComponentModel.DataAnnotations;
 using System.Reflection;
+using Models.Attributes;
 
 namespace Helpers
 {
@@ -99,6 +100,20 @@ namespace Helpers
       var range = property!.GetCustomAttributes(false)
           .OfType<RangeAttribute>()
           .SingleOrDefault();
+
+      //Handle DueBy DateTime range attribute.
+      var dueByDateRange = property!.GetCustomAttributes(false)
+          .OfType<DueByDateRangeAttribute>()
+          .SingleOrDefault();
+
+      try
+      {
+        dueByDateRange?.Validate(val, new ValidationContext(currentModel));
+      }
+      catch (ValidationException)
+      {
+        return false;
+      }
 
       //If there's no Range attribute, just return true for convenience.
       if (range is null)

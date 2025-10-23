@@ -9,7 +9,7 @@ namespace DBServer.Entity
     public long Id { get; set; }
 
     [NotNull]
-    public string? Title { get; set; }
+    public string Title { get; set; } = "";
 
     [NotNull]
     public DateTime CreationDate { get; set; }
@@ -17,7 +17,7 @@ namespace DBServer.Entity
     public DateTime? CompletedDate { get; set; }
 
     [NotNull]
-    public DateTime? DueBy { get; set; }
+    public DateTime DueBy { get; set; }
 
     [NotNull]
     public bool IsCompleted { get; set; }

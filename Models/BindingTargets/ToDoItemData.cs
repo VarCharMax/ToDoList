@@ -1,4 +1,5 @@
-﻿using Models.DTO;
+﻿using Models.Attributes;
+using Models.DTO;
 using System.ComponentModel.DataAnnotations;
 
 namespace Models.BindingTargets
@@ -20,7 +21,8 @@ namespace Models.BindingTargets
     }
 
     [Required]
-    public DateTime? DueBy
+    [DueByDateRange]
+    public DateTime DueBy
     {
       get => ToDoItem.DueBy ?? default;
       set => ToDoItem.DueBy = value;
