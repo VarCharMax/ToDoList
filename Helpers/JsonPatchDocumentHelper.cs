@@ -61,10 +61,10 @@ namespace Helpers
             }
             break;
           case "replace":
-            // If property is required check that it has at least some value.
+            // If property is required, check that it has at least some value.
             if (!IsRequiredPropertyPresent(currentModelInstance, operation.path, operation.value))
             {
-              throw new InvalidOperationException($"Value for required property at path: {operation.path} not supplied or invalid.");
+              throw new InvalidOperationException($"Value for required property at path: {operation.path} not supplied or out of range.");
             }
             // Check if value type is correct for property type.
             if (!IsValidForProperty(currentModelInstance, operation.path, operation.value))
@@ -112,7 +112,7 @@ namespace Helpers
       }
       else if (val is int intValue)
       {
-        // Assume that if the int is zero or negative, it's invalid for a required field
+        // Assume that if the value is zero or negative, it's invalid for a required field.
         if (intValue <= 0)
         {
           return false;
@@ -120,7 +120,7 @@ namespace Helpers
       }
       else if (val is long lngValue)
       {
-        // Assume that if the int is zero or negative, it's invalid for a required field
+        // Likewise.
         if (lngValue <= 0)
         {
           return false;
@@ -128,6 +128,7 @@ namespace Helpers
       }
       else if (val is double dblVal)
       {
+        // Likewise.
         if (dblVal <= 0)
         {
           return false;
