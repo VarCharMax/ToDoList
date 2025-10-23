@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.JsonPatch.Operations;
+using Models.Attributes;
 using System.ComponentModel.DataAnnotations;
 using System.Reflection;
-using Models.Attributes;
 
 namespace Helpers
 {
@@ -97,11 +97,7 @@ namespace Helpers
     {
       var property = currentModel.GetType().GetProperty(path, BindingFlags.Instance | BindingFlags.Public | BindingFlags.IgnoreCase);
 
-      var range = property!.GetCustomAttributes(false)
-          .OfType<RangeAttribute>()
-          .SingleOrDefault();
-
-      //Handle DueBy DateTime range attribute.
+      //Handle custom range attributes.
       var dueByDateRange = property!.GetCustomAttributes(false)
           .OfType<DueByDateRangeAttribute>()
           .SingleOrDefault();
@@ -114,6 +110,11 @@ namespace Helpers
       {
         return false;
       }
+
+      //Handle standard Range attribute.
+      var range = property!.GetCustomAttributes(false)
+          .OfType<RangeAttribute>()
+          .SingleOrDefault();
 
       //If there's no Range attribute, just return true for convenience.
       if (range is null)

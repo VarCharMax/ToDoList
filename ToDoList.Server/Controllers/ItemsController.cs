@@ -58,7 +58,8 @@ namespace ToDoList.Server.Controllers
     public async Task<ActionResult<long>> PostItem([FromBody]ToDoItemData item)
     {
       long newItemId;
-      if (ModelState.IsValid)
+
+      if (ModelState.IsValid && TryValidateModel(item))
       {
         try
         {
@@ -120,6 +121,22 @@ namespace ToDoList.Server.Controllers
     {
       //Patch operations pose a security risk because anyone with knowlege of the backend can potentially post an arbitrary collection of patch operations to it.
       //Therefore we implement some guards - e.g. the maximum number of operations, allowed paths, allowed values, etc.
+
+      /*
+       * Can't do it this way because most model properties aren't populated.
+      ToDoItemData? currentModelInstance = Activator.CreateInstance(typeof(ToDoItemData)) as ToDoItemData;
+
+      if (currentModelInstance is not null)
+      {
+        patch.ApplyTo(currentModelInstance);
+
+        if (ModelState.IsValid && TryValidateModel(currentModelInstance))
+        {
+          return BadRequest($"Invalid model");
+        }
+      }
+      */
+
       try
       {
         JsonPatchDocumentHelper.ValidatePatch(patch, typeof(ToDoItemData), 2, OperationType.Replace);

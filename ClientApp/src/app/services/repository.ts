@@ -115,7 +115,7 @@ export class Repository {
                 this.todoitemsChanged.next(this.todoitems.slice());
             },
             error: (e) => {
-                this.errorsChanged.next(e.error);
+                this.errorsChanged.next(e.error?.errors);
             }
         });
     }
@@ -150,7 +150,7 @@ export class Repository {
                     }
                 },
                 error:(e) => {
-                    this.errorsChanged.next(e.error);
+                    this.errorsChanged.next(e.error?.errors);
             }
         });
     }
@@ -187,7 +187,7 @@ export class Repository {
                 }
             },
             error: (e) => {
-                this.errorsChanged.next(e.error);
+                this.errorsChanged.next(e.error?.errors);
             },
         });
     }
@@ -200,7 +200,7 @@ export class Repository {
                 }
             },
             error: (e) => {
-                this.errorsChanged.next(e.error);
+                this.errorsChanged.next(e.error?.errors);
             }
         });
     }

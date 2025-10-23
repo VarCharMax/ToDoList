@@ -41,7 +41,15 @@ export class HomeComponent implements OnInit, OnDestroy {
       }); 
     
       this.errorsChanged = this.repo.errorsChanged.subscribe(message => {
-        this.errorMessage.set(JSON.stringify(message));
+        
+        let err = '';
+        Object.keys(message).forEach(key => {
+          if (key !== '') {
+            err += `${message[key].join(' ')} \n`;
+            } 
+          });
+
+        this.errorMessage.set(err);
       });
     }
 
