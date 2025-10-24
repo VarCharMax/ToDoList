@@ -1,5 +1,5 @@
-using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
+using System.Diagnostics;
 using ToDoList.Server.Models;
 
 namespace ToDoList.Server.Controllers;

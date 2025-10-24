@@ -119,12 +119,11 @@ namespace ToDoList.Server.Controllers
     [HttpPatch("{id}")]
     public async Task<ActionResult<bool>> UpdateItem(long id, [FromBody] JsonPatchDocument<ToDoItemData> patch)
     {
-      //Patch operations are efficient from a database point of view, but pose a security risk, because anyone with knowlege of the backend can potentially
-      //post an arbitrary collection of patch operations to it.
-      //Therefore we implement some guards - e.g. the maximum number and type of operations, allowed paths, run validation, etc.
-
       try
       {
+        //Patch operations are efficient from a database point of view, but pose a security risk, because anyone with knowlege of the backend can potentially
+        //post an arbitrary collection of patch operations to it.
+        //Therefore we implement some guards - e.g. the maximum number and type of operations, allowed paths, run validation, etc.
         JsonPatchDocumentHelper.ValidatePatch(patch, 2, OperationType.Replace);
       }
       catch (InvalidOperationException ex)

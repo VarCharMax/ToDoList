@@ -1,5 +1,5 @@
-﻿using Models.DTO;
-using AutoMapper;
+﻿using AutoMapper;
+using Models.DTO;
 
 namespace DBServer.Helpers
 {
