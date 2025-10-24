@@ -1,7 +1,8 @@
-## Quick Start.
+## Quick Start
+
 - Run the following commands:
-     * dotnet dev-certs https --clean
-     * dotnet dev-certs https --trust 
+    * dotnet dev-certs https --clean
+    * dotnet dev-certs https --trust
 - From the ClientApp folder run `npm install` to install node_modules.
 - From the ToDoList.Server folder run `dotnet restore` to restore NuGet packages.
 - The Connection Strategy is set to `managed` in appSettings.json, which means that the Angular development server will launch automatically in the background to supply the runtime files to the MVC controller.
@@ -10,6 +11,7 @@
 ## Aims
 
 There were a few things I wanted to accomplish:
+
 - Use a minimal development framework instead of the built-in dotnet Angular project template. I find this template very messy, with ports scattered over proxy files and project directives. I'm not crazy about MS's embrace of third-party technologies - they often break the standard. (For example, the Docker compose file that the VS template creates does not work like a normal compose file.)
   Instead, I opted to use a setup demonstrated by Adam Freeman in an Angular/MVC book from a few years ago. This approach has a number of advantages. Firstly, it allows you to embed the Angular runtime files in an MVC controller, giving all the benefits of dotnet tooling - libman.json, bundleConfig, conditional script inclusion, minification, etc. Of course, you can do this in the published version just by copying and pasting the runtime files into the page. But this approach allows you to do it in a dev environment at runtime. Secondly, it gives you more development options. You can either run the application in "managed" mode, which will fire up the Angular dev server automatically, or in "proxy" mode. In the latter case, you have to start the Angular dev server manually first, but it allows change monitoring and instant reloads.
 - Reuse a framework I built a few years ago for a large-scale application. This makes use of a client-side repository which mirrors the server-side repository (an approach again based on Adam Freeman's code.) This was quite a large data entry app that I wrote for a medical data company that had many screens. I would have preferred it if the received repository idea was implemented as a service. However, last time I checked, TypeScript doesn't support dependency injection using interfaces, so the type of DI mechanism you might be familiar with from .NET Core was never an option (although you can rig up a plug-in system with a delegate model). You can change the provider in the REST backend.
@@ -18,13 +20,16 @@ There were a few things I wanted to accomplish:
 - DB Repository pattern. The requirement didn't ask for a real database. But repository code is trivially easy to write, and I had plenty on hand, so it didn't take any time to write it. It's a tried and tested solution, and if you want to do unit testing, you need an injectable repository.
 
 ## Project
+
 I didn't have a specific list of requirements for the project. But I thought of several features I wanted to include.
+
 - In-place editing for existing todo items.
 - If an item is already in edit mode, this needs to be reset if a different item is selected for editing or any other button in the table is clicked. I used a service to broadcast the edit event to all items in the list. (There might be other scenarios to deal with.)
 - Item style updates immediately to show status. Completed display in green, overdue in red.
 - If an item is marked completed, it immediately updates without the user needing to click a save button.
 
 ## Issues
+
 - The legacy framework was built around an older Angular version (probably 12), and the requirement was to use the most current version (20). For some reason, if you don't specify an Angular version when creating an application, you get version 16. This version turned out to be compatible with my framework, but when I realised it was not the current version, I tried replacing the client-side code. However, version 20 didn't work out-of-the-box. I took me almost a day to figure out why. I took the 16 code and ran the upgrade command to 17. That was OK. But when I got to 18, things went wrong. The actual problem is the offer to migrate the code-base to the "new build system". This system no longer creates the expected runtime libraries. Instead, there's only main.js, and on inspection, this seemed to be a server-side render of the application, not a runtime library at all, even though server-side rendering is not enabled. So I just went through all the upgrades, being careful not to select the migration option each time. I was able to get it up to 20 with full compatibility with my framework. However, this now causes a maintenance headache. The only way to avoid the new build system is to start from a version that doesn't have it, and progressively upgrade. There are other migrations as well, so you have to be careful what you choose. In the long-term, it's possible that the new system will become mandatory, so my dev framework won't work anymore.
 - The legacy framework used extensive routing with targeting and resolvers, but these weren't required for a small application like this, so I removed the routing library. Since the app doesn't need to maintain state through reloads, resolvers are not necessary, but I left a couple in the code just to show how they are implemented.
 - Even though MS favours a headless MVC startup file now, I still like to use the explicit StartUp class approach because it gives more options. And once it's there, it's there.
@@ -32,18 +37,22 @@ I didn't have a specific list of requirements for the project. But I thought of 
 - The overdue style had been working earlier, but at one point seemed to stop. This was odd, because it was essentially the same code that applied to the completed style, which continued to work. I realised the problem had started around the time I applied the bootstrap styling to the table. The only difference between the two was that I had added a cell selector to the completed style to constrain the number of cells it applied to. When I did the same to the overdue style, it started working.
 
 ## Breaking changes
+
 - The standalone build used to be for lightweight applications, but the Angular team have decided to make it the default. It sounds like the modular option is going to be deprecated eventually. Fortunately, there's a command to convert existing code. However, as expected, there were issues - the tool didn't pick up everything and I had to do some manual clean-ups.
 - The dependency injection system has changed. You used to be able to just inject a service by supplying it as a parameter (similar to the MS MVC platform). Now, there's an explicit inject method. Fortunately, it wasn't a big deal. I consulted the documentation and had everything working in a few minutes.
 - There are a number of new coding approaches in 16+, such as a new flow control syntax. I have tried to use these wherever possible. Signals are another big change. I have used these in inputs and outputs.
 - I'm puzzled as to why the CLI seems to be arrested at version 16. I know there were a number of breaking changes with that version. I'm wondering if they see later versions as more like patches ...
 
 ## Sidetracks
+
 A few issues caused me significant frustration and time loss.
+
 - The VS minification library I am using a old and slightly out-of-date. The better alternative is to use a Grunt script. There is a VS extension that promises to convert your bundleConfig.json file to a Grunt script. However, while it installed Grunt 5.0, it wrote the script in Grunt 3 syntax. I tried re-writing the script, but when this proved too difficult, I tried downgrading the Grunt library. But this broke dependencies, so it was back to the old library. It still works ok. (Also, the extension seemed to keep working even after I uninstalled it.)
 - AI. When you create an Angular app now, you are asked if you want to enable AI coding support. Apparently, AI is capable of writing an entire app for you in any language if you tell it what you want. That sounded like a real labour-saving idea. As an engine, I selected Cursor, with hilarious results. Attempting to invoke the Generate Project command continually crashed in VS Code. I tried installing their native editor - same problem. Then I went to my Macbook and installed the engine and extension. Same problem. I found a discussion on a Github forum describing the problem, but the discussion had been closed with no resolution. Oh, and the extension was in Mandarin initially. Somehow it came good at some point. (I found a discussion explaining that sometimes it connects to the wrong AI engine.) That was about half a day wasted at that point. I can't understand how they can allow such a broken app in the wild.
 - The way the SQLite database handles (or doesn't handle) dates caused some headaches. It can receive date data, but internally stores it as an ISO string. But it also returns it in ISO string format, not as a date object. Both dotnet and TypeScript seem ok with this - the date field gets populated, but somehow is a string, not an actual date object. So the date has to get reconstituted on the client. Not especially difficult, as long as the locale is defined. AS it happens, Angular, or more specifically Material, does its own thing here, and doesn't observe the machine locale setting. So it's very important to define the locale. Not doing this meant that the app seemed to work for days in the 1-12 range (although if you looked carefully, the date was not correct), but broke for higher dates. This was, of course, because Material was defaulting to US format and assuming the day was the month. I think I have located and addressed this issue. But the ablity of date objects to accept ISO strings without complaining seems asking for trouble. Aso I can't see how you can handle internationalisation if you have to hard-code the culture.
 
 ## TODO
+
 - Editing should of course allow the user to change the due by date. However, I don't want to use the Material datepicker as there's too much overhead associated with it, so I've left it for now.
 - There is some issue with the Material stylesheet. Most of the styles seem to be loading, but the datepicker is not rendering correctly. I'll look into this.
 
