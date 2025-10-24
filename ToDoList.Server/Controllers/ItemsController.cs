@@ -119,27 +119,13 @@ namespace ToDoList.Server.Controllers
     [HttpPatch("{id}")]
     public async Task<ActionResult<bool>> UpdateItem(long id, [FromBody] JsonPatchDocument<ToDoItemData> patch)
     {
-      //Patch operations pose a security risk because anyone with knowlege of the backend can potentially post an arbitrary collection of patch operations to it.
-      //Therefore we implement some guards - e.g. the maximum number of operations, allowed paths, allowed values, etc.
-
-      /*
-       * Can't do it this way because most model properties aren't populated.
-      ToDoItemData? currentModelInstance = Activator.CreateInstance(typeof(ToDoItemData)) as ToDoItemData;
-
-      if (currentModelInstance is not null)
-      {
-        patch.ApplyTo(currentModelInstance);
-
-        if (ModelState.IsValid && TryValidateModel(currentModelInstance))
-        {
-          return BadRequest($"Invalid model");
-        }
-      }
-      */
+      //Patch operations are efficient from a database point of view, but pose a security risk, because anyone with knowlege of the backend can potentially
+      //post an arbitrary collection of patch operations to it.
+      //Therefore we implement some guards - e.g. the maximum number and type of operations, allowed paths, run validation, etc.
 
       try
       {
-        JsonPatchDocumentHelper.ValidatePatch(patch, typeof(ToDoItemData), 2, OperationType.Replace);
+        JsonPatchDocumentHelper.ValidatePatch(patch, 2, OperationType.Replace);
       }
       catch (InvalidOperationException ex)
       {
@@ -147,24 +133,23 @@ namespace ToDoList.Server.Controllers
       }
       
       bool result;
-      
-      if (ModelState.IsValid)
-      {
-        try
-        {
-          //Create new patch object to avoid exposing binding targets to repository.
-          JsonPatchDocument<ToDoItem> patchUpdate = JsonPatchDocumentHelper.CreateCopyOfOperations<ToDoItemData, ToDoItem>(patch);        
 
-          result = await repos.UpdateItemAsync(id, patchUpdate);
-        }
-        catch (Exception)
-        {
-          return BadRequest("message: a database error occurred.");
-        }
-      }
-      else
+      try
       {
-        return BadRequest();
+        //Create new patch object to avoid exposing binding targets to repository.
+        JsonPatchDocument<ToDoItem>? patchUpdate = JsonPatchDocumentHelper.CreateCopyOfOperations<ToDoItemData, ToDoItem>(patch, ["ToDoItem"]); //Id should not be patchable.
+
+        if (patchUpdate == null)
+        {
+          return BadRequest("Patch type does not match internal type.");
+        }
+
+        //You could return the updated object here and run further model validation on it if needed, but we just return success/failure for simplicity.
+        result = await repos.UpdateItemAsync(id, patchUpdate);
+      }
+      catch (DataException)
+      {
+        return BadRequest("A database error occurred.");
       }
 
       return Ok(result);

@@ -8,18 +8,25 @@ namespace Helpers
 {
   public class JsonPatchDocumentHelper
   {
-    public static JsonPatchDocument<TModelOut> CreateCopyOfOperations<TModelIn, TModelOut>(JsonPatchDocument<TModelIn> sourcePatchDocument)
-    where TModelIn : class
-    where TModelOut : class
+    public static JsonPatchDocument<TModelTarget>? CreateCopyOfOperations<TModelSource, TModelTarget>(JsonPatchDocument<TModelSource> sourcePatchDocument, string[]? excludedProperties = null)
+    where TModelSource : class
+    where TModelTarget : class
     {
-      var newPatchDocument = new JsonPatchDocument<TModelOut>();
+      excludedProperties ??= [];
 
-      foreach (var operation in sourcePatchDocument.Operations)
+      if (TypeComparer.HaveSameProperties<TModelSource, TModelTarget>(excludedProperties))
       {
-        newPatchDocument.Operations.Add(new Operation<TModelOut>(operation.op, operation.path, operation.from, operation.value));
+        var newPatchDocument = new JsonPatchDocument<TModelTarget>();
+
+        foreach (var operation in sourcePatchDocument.Operations)
+        {
+          newPatchDocument.Operations.Add(new Operation<TModelTarget>(operation.op, operation.path, operation.from, operation.value));
+        }
+
+        return newPatchDocument;
       }
 
-      return newPatchDocument;
+      return null;
     }
 
     public static JsonPatchDocument CreateCopyOfOperations(JsonPatchDocument sourcePatchDocument)
@@ -34,12 +41,21 @@ namespace Helpers
       return newPatchDocument;
     }
 
-    public static void ValidatePatch<TModel>(JsonPatchDocument<TModel> patch, Type currentModel, int numAllowedOperations, OperationType curOperation) 
+    /// <summary>
+    /// Guard for patch operations.
+    /// </summary>
+    /// <param name="patch">Strongly-typed JsonPatchDocument.</param>
+    /// <param name="numAllowedOperations">Number of permissible operations.</param>
+    /// <param name="curOperation">Type of allowed operation.</param>
+    /// <exception cref="InvalidOperationException"></exception>
+    /// <example>JsonPatchDocumentHelper.ValidatePatch(patch, typeof(MyClass), 2, OperationType.Replace);</example>
+    /// <returns>void</returns>
+    public static void ValidatePatch<TModel>(JsonPatchDocument<TModel> patch, int numAllowedOperations, OperationType curOperation) 
       where TModel : class
     {
-      var currentModelInstance = Activator.CreateInstance(currentModel) as TModel ?? 
+      var currentModelInstance = Activator.CreateInstance<TModel>() ?? 
         throw new InvalidOperationException("Could not create an instance of the current model.");
-      
+
       if (patch.Operations.Count > numAllowedOperations || patch.Operations.Any(p => p.OperationType != curOperation))
       {
         throw new InvalidOperationException($"Invalid patch document.");

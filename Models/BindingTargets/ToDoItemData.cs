@@ -16,7 +16,7 @@ namespace Models.BindingTargets
     [Required]
     public DateTime CreationDate
     {
-      get => ToDoItem.CreationDate ?? default;
+      get => ToDoItem.CreationDate;
       set => ToDoItem.CreationDate = value;
     }
 
@@ -24,7 +24,7 @@ namespace Models.BindingTargets
     [DueByDateRange]
     public DateTime DueBy
     {
-      get => ToDoItem.DueBy ?? default;
+      get => ToDoItem.DueBy;
       set => ToDoItem.DueBy = value;
     }
 

@@ -11,7 +11,7 @@ namespace Models.Attributes
         return new ValidationResult("Invalid date value.");
       }
       
-      if (DateTime.Now.CompareTo(dateTimeValue) <= 0)
+      if (DateTime.Now.CompareTo(dateTimeValue) < 0)
       {
         return ValidationResult.Success!;
       }

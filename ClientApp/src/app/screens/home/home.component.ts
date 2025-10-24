@@ -1,6 +1,5 @@
 import { Component, inject, OnDestroy, OnInit, signal } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators} from '@angular/forms';
-import { formatDate } from '@angular/common';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatInputModule } from '@angular/material/input';
 import { MatNativeDateModule } from '@angular/material/core';
@@ -8,6 +7,7 @@ import { Subscription } from 'rxjs';
 import { TodoItemsList} from '../../components/todo-items-list/todo-items-list';
 import { Repository } from '../../services/repository';
 import { ToDoItem } from 'src/app/models/todoitem.model';
+import { SharedItemEditService } from 'src/app/services/shared-edit.service';
 
 @Component({
   selector: 'app-home', 
@@ -27,6 +27,7 @@ export class HomeComponent implements OnInit, OnDestroy {
     private todoitemListChanged: Subscription = new Subscription();  
     private repo: Repository = inject(Repository);
     private todoitem: ToDoItem = new ToDoItem();
+    private editService: SharedItemEditService = inject(SharedItemEditService);
 
     errorMessage = signal('');
 
@@ -41,7 +42,7 @@ export class HomeComponent implements OnInit, OnDestroy {
       }); 
     
       this.errorsChanged = this.repo.errorsChanged.subscribe(message => {
-        
+
         let err = '';
         Object.keys(message).forEach(key => {
           if (key !== '') {
@@ -63,6 +64,7 @@ export class HomeComponent implements OnInit, OnDestroy {
         false
       );
 
+      this.errorMessage.set('');
       this.repo.createToDoItem(this.todoitem);
     }
 

@@ -6,11 +6,11 @@
 
     public string Title { get; set; } = string.Empty;
 
-    public DateTime? CreationDate { get; set; }
+    public DateTime CreationDate { get; set; }
 
     public DateTime? CompletedDate { get; set; } = null;
 
-    public DateTime? DueBy { get; set; } = null;
+    public DateTime DueBy { get; set; }
 
     public bool IsCompleted { get; set; } = false;
   }
