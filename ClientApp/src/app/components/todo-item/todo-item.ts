@@ -86,12 +86,15 @@ export class TodoItemComponent implements OnInit, OnDestroy {
 
    saveChanges() {
      if (this.todoitemForm.valid) {
+        
         this.isEditMode = false;
         this.item.title = this.todoitemForm.value.title!;
 
         let changes = new Map<string, any>();
         changes.set("title", this.item.title);
+
         this.repo.updateToDoItem(this.item.id!, changes);
+
     } else {
         this.todoitemForm.markAllAsTouched();
     }

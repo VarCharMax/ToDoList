@@ -116,7 +116,7 @@ namespace DBServer
     {
       //Convert the patch document from DTO to Entity type.
       //It is possible to apply patch by mapping the entity to DTO, applying the patch, and mapping back to entity, but this is neater.
-      JsonPatchDocument<ToDoItem> patchUpdate = JsonPatchDocumentHelper.CreateCopyOfOperations<Models.DTO.ToDoItem, ToDoItem>(patch);
+      JsonPatchDocument<ToDoItem>? patchUpdate = JsonPatchDocumentHelper.CreateCopyOfOperations<Models.DTO.ToDoItem, ToDoItem>(patch);
 
       try
       {
@@ -126,7 +126,7 @@ namespace DBServer
           return false;
         }
 
-        patchUpdate.ApplyTo(toDoItem);
+        patchUpdate!.ApplyTo(toDoItem);
 
         await context.SaveChangesAsync();
       }
