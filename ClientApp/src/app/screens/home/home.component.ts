@@ -24,10 +24,11 @@ import { SharedItemEditService } from 'src/app/services/shared-edit.service';
 })
 export class HomeComponent implements OnInit, OnDestroy {
     private errorsChanged: Subscription = new Subscription();
-    private todoitemListChanged: Subscription = new Subscription();  
+    private todoitemListChanged: Subscription = new Subscription();
+    private resetErrors: Subscription = new Subscription();
     private repo: Repository = inject(Repository);
-    private todoitem: ToDoItem = new ToDoItem();
     private editService: SharedItemEditService = inject(SharedItemEditService);
+    private todoitem: ToDoItem = new ToDoItem();
 
     errorMessage = signal('');
 
@@ -52,9 +53,15 @@ export class HomeComponent implements OnInit, OnDestroy {
 
         this.errorMessage.set(err);
       });
+
+      this.resetErrors = this.editService.resetErrorsEvent$.subscribe(() => {
+        this.errorMessage.set('');
+      });
     }
 
     addToDoItem() {
+      this.editService.emitErrorsResetEvent();
+      
       this.todoitem = new ToDoItem(
         undefined,
         this.todoitemForm.value.title!,
@@ -63,13 +70,13 @@ export class HomeComponent implements OnInit, OnDestroy {
         null,
         false
       );
-
-      this.errorMessage.set('');
+      
       this.repo.createToDoItem(this.todoitem);
     }
 
      ngOnDestroy() {
         this.todoitemListChanged.unsubscribe();
+        this.resetErrors.unsubscribe();
         this.errorsChanged.unsubscribe();
     }
 }
