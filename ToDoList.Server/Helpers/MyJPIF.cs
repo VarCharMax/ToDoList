@@ -8,6 +8,7 @@ namespace ToDoList.Server.Helpers
   {
     public static NewtonsoftJsonPatchInputFormatter GetJsonPatchInputFormatter()
     {
+      //TODO: are these redundant?
       var builder = new ServiceCollection()
           .AddLogging()
           .AddMvc()

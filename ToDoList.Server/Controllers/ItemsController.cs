@@ -136,7 +136,7 @@ namespace ToDoList.Server.Controllers
       try
       {
         //Create new patch object to avoid exposing binding targets to repository.
-        JsonPatchDocument<ToDoItem>? patchUpdate = JsonPatchDocumentHelper.CreateCopyOfOperations<ToDoItemData, ToDoItem>(patch, ["ToDoItem"]); //Id should not be patchable.
+        JsonPatchDocument<ToDoItem>? patchUpdate = JsonPatchDocumentHelper.CreateCopyOfOperations<ToDoItemData, ToDoItem>(patch, ["ToDoItem"]);
 
         if (patchUpdate == null)
         {
