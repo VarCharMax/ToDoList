@@ -5,7 +5,7 @@ import { Subject } from 'rxjs';
 export class SharedItemEditService {
     private itemlistEventSource = new Subject<number>();
     private itemEventSource = new Subject<number>();
-    private resetErrorsEventSource = new Subject<string>();
+    private resetErrorsEventSource = new Subject<void>();
 
     itemlistEditEvent$ = this.itemlistEventSource.asObservable();
     itemEditEvent$ = this.itemEventSource.asObservable();
@@ -19,7 +19,7 @@ export class SharedItemEditService {
         this.itemEventSource.next(message);
     }
 
-    emitErrorsResetEvent(message: string) {
-        this.resetErrorsEventSource.next(message);
+    emitErrorsResetEvent() {
+        this.resetErrorsEventSource.next();
     }
 }

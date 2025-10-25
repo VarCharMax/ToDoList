@@ -67,6 +67,7 @@ export class TodoItemComponent implements OnInit, OnDestroy {
    }
 
    setItemComplete() {
+      this.editService.emitErrorsResetEvent();
       let changes = new Map<string, any>();
       changes.set("isCompleted", true);
       changes.set("completedDate", new Date());
@@ -74,6 +75,7 @@ export class TodoItemComponent implements OnInit, OnDestroy {
    }
 
    setEditMode() {
+        this.editService.emitErrorsResetEvent();
         this.editService.emitItemEvent(this.item.id!);
         this.isEditMode = true;
    }
@@ -85,7 +87,10 @@ export class TodoItemComponent implements OnInit, OnDestroy {
    }
 
    saveChanges() {
-     if (this.todoitemForm.valid) {
+    
+    this.editService.emitErrorsResetEvent();
+    
+    if (this.todoitemForm.valid) {
         
         this.isEditMode = false;
         this.item.title = this.todoitemForm.value.title!;
@@ -98,9 +103,11 @@ export class TodoItemComponent implements OnInit, OnDestroy {
     } else {
         this.todoitemForm.markAllAsTouched();
     }
+    
    }
 
   deleteItem() {
+    this.editService.emitErrorsResetEvent();
     this.editService.emitItemEvent(-1);
     this.repo.deleteToDoItem(this.item.id!);
    }
