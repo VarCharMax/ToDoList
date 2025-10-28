@@ -2,7 +2,7 @@ import { Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators} from '@angular/forms';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatInputModule } from '@angular/material/input';
-import { DateAdapter, MAT_DATE_FORMATS, MatNativeDateModule } from '@angular/material/core';
+import { DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE, MatNativeDateModule } from '@angular/material/core';
 import { MAT_MOMENT_DATE_ADAPTER_OPTIONS, MomentDateAdapter } from '@angular/material-moment-adapter';
 import { Subscription } from 'rxjs';
 import { TodoItemsList} from '../../components/todo-items-list/todo-items-list';
@@ -32,6 +32,7 @@ export const CUSTOM_DATE_FORMAT = {
     MatNativeDateModule
   ],
   providers: [
+      { provide: MAT_DATE_LOCALE, useValue: 'en-AU' },
       { provide: DateAdapter, useClass: MomentDateAdapter },
       { provide: MAT_DATE_FORMATS, useValue: CUSTOM_DATE_FORMAT },
       { provide: MAT_MOMENT_DATE_ADAPTER_OPTIONS, useValue: { useUtc: true } }
@@ -64,7 +65,7 @@ export class HomeComponent implements OnInit, OnDestroy {
         let err = '';
         Object.keys(message).forEach(key => {
           if (key !== '') {
-            err += `${message[key].join(' ')} \n`;
+            err += `${message[key].join('\n')}`;
             } 
           });
 

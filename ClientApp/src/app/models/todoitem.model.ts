@@ -1,4 +1,4 @@
-﻿import { ToDoItemInfo }  from './todo-item';
+﻿import { ToDoItemInfo } from './todo-item';
 
 export class ToDoItem implements ToDoItemInfo {
     constructor(

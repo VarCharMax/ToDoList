@@ -6,5 +6,5 @@ import { provideHttpClient } from '@angular/common/http';
 export const appConfig: ApplicationConfig = {
     providers: [provideHttpClient(),
         importProvidersFrom(BrowserModule),
-        { provide: LOCALE_ID, useValue: 'en-au' }]
+        { provide: LOCALE_ID, useValue: 'en-AU' }]
 };
