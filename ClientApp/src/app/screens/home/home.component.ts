@@ -23,8 +23,7 @@ export const CUSTOM_DATE_FORMAT = {
 };
 
 @Component({
-  selector: 'app-home', 
-  standalone: true,
+  selector: 'app-home',
   imports: [
     TodoItemsList,
     ReactiveFormsModule, 
