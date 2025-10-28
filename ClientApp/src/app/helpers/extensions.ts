@@ -18,6 +18,8 @@ if (!Array.prototype.DBSort) {
 /* Removes the time component from a Date object, returning a new Date with time set to 00:00:00 */
 if (!Date.prototype.removeTimeFromDate) {
     Date.prototype.removeTimeFromDate = function(this: Date): Date {
+        // HACK: the `useutc` parameter of the datepicker should ensure that the date is already in UTC, but for some reason isn't.
+        // So we use this workaround.
         return new Date(Date.UTC(this.getFullYear(), this.getMonth(), this.getDate()));
     }
 }
