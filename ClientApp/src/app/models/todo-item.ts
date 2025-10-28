@@ -5,5 +5,5 @@ export interface ToDoItemInfo {
     dueBy?: Date,
     completedDate?: Date | null,
     isCompleted?: boolean,
-    isOverdue?: boolean
+    isOverdue: boolean
 }

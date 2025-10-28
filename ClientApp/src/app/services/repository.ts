@@ -187,10 +187,6 @@ export class Repository {
                             (item as any)[key] = value;
                         });
 
-                        if (item.isCompleted) {
-                            item.isOverdue = false;
-                        }
-
                         this.todoitemChanged.next(item);
                     } else {
                         this.errorsChanged.next({
