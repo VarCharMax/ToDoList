@@ -12,7 +12,7 @@ import { SharedItemEditService } from 'src/app/services/shared-edit.service';
 
 export const CUSTOM_DATE_FORMAT = {
   parse: {
-    dateInput: 'DD/MM/YYYY',
+    dateInput: 'L',
   },
   display: {
     dateInput: 'DD/MM/YYYY',
@@ -33,9 +33,10 @@ export const CUSTOM_DATE_FORMAT = {
   ],
   providers: [
       { provide: MAT_DATE_LOCALE, useValue: 'en-AU' },
-      { provide: DateAdapter, useClass: MomentDateAdapter },
       { provide: MAT_DATE_FORMATS, useValue: CUSTOM_DATE_FORMAT },
-      { provide: MAT_MOMENT_DATE_ADAPTER_OPTIONS, useValue: { useUtc: true } }
+      { provide: DateAdapter, useClass: MomentDateAdapter, 
+        deps: [MAT_DATE_LOCALE, MAT_MOMENT_DATE_ADAPTER_OPTIONS] },
+      { provide: MAT_MOMENT_DATE_ADAPTER_OPTIONS, useValue: { useUtc: true } },
     ],
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.css'],
@@ -48,6 +49,7 @@ export class HomeComponent implements OnInit, OnDestroy {
     private editService: SharedItemEditService = inject(SharedItemEditService);
     private todoitem: ToDoItem = new ToDoItem();
 
+    minDate = new Date().removeTimeFromDate;
     errorMessage = '';
 
     todoitemForm = new FormGroup({
