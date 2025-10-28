@@ -14,3 +14,10 @@ if (!Array.prototype.DBSort) {
                 .sort((a, b) => (Number(b.isOverdue!) - Number(a.isOverdue!)));
     }
 }
+
+/* Removes the time component from a Date object, returning a new Date with time set to 00:00:00 */
+if (!Date.prototype.removeTimeFromDate) {
+    Date.prototype.removeTimeFromDate = function(this: Date): Date {
+        return new Date(this.getFullYear(), this.getMonth(), this.getDate());
+    }
+}

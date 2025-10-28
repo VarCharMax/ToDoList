@@ -3,4 +3,7 @@ export {}; // Mark as an external module to augment global scope
         interface Array<T> {
             DBSort(): T[];
         }
+        interface Date {
+            removeTimeFromDate(): Date;
+        }
     }

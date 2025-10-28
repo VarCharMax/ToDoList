@@ -6,7 +6,7 @@ namespace Models.BindingTargets
 {
   public record ToDoItemData
   {
-    [Required]
+    [Required(ErrorMessage ="Title is required.")]
     public string Title
     {
       get => ToDoItem.Title ?? string.Empty;

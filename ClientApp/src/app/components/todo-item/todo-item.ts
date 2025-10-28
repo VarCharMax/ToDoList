@@ -70,7 +70,7 @@ export class TodoItemComponent implements OnInit, OnDestroy {
       this.editService.emitErrorsResetEvent();
       let changes = new Map<string, any>();
       changes.set("isCompleted", true);
-      changes.set("completedDate", new Date());
+      changes.set("completedDate", new Date().removeTimeFromDate());
       this.repo.updateToDoItem(this.item.id!, changes);
    }
 

@@ -1,13 +1,26 @@
-import { Component, inject, OnDestroy, OnInit, signal } from '@angular/core';
+import { Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators} from '@angular/forms';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatInputModule } from '@angular/material/input';
-import { MatNativeDateModule } from '@angular/material/core';
+import { DateAdapter, MAT_DATE_FORMATS, MatNativeDateModule } from '@angular/material/core';
+import { MAT_MOMENT_DATE_ADAPTER_OPTIONS, MomentDateAdapter } from '@angular/material-moment-adapter';
 import { Subscription } from 'rxjs';
 import { TodoItemsList} from '../../components/todo-items-list/todo-items-list';
 import { Repository } from '../../services/repository';
 import { ToDoItem } from 'src/app/models/todoitem.model';
 import { SharedItemEditService } from 'src/app/services/shared-edit.service';
+
+export const CUSTOM_DATE_FORMAT = {
+  parse: {
+    dateInput: 'DD/MM/YYYY',
+  },
+  display: {
+    dateInput: 'DD/MM/YYYY',
+    monthYearLabel: 'MMMM YYYY',
+    dateA11yLabel: 'DD/MM/YYYY',
+    monthYearA11yLabel: 'MMMM YYYY',
+  },
+};
 
 @Component({
   selector: 'app-home', 
@@ -19,6 +32,11 @@ import { SharedItemEditService } from 'src/app/services/shared-edit.service';
     MatInputModule,
     MatNativeDateModule
   ],
+  providers: [
+      { provide: DateAdapter, useClass: MomentDateAdapter },
+      { provide: MAT_DATE_FORMATS, useValue: CUSTOM_DATE_FORMAT },
+      { provide: MAT_MOMENT_DATE_ADAPTER_OPTIONS, useValue: { useUtc: true } }
+    ],
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.css'],
 })
@@ -30,7 +48,7 @@ export class HomeComponent implements OnInit, OnDestroy {
     private editService: SharedItemEditService = inject(SharedItemEditService);
     private todoitem: ToDoItem = new ToDoItem();
 
-    errorMessage = signal('');
+    errorMessage = '';
 
     todoitemForm = new FormGroup({
       title: new FormControl(null, Validators.required),
@@ -51,11 +69,11 @@ export class HomeComponent implements OnInit, OnDestroy {
             } 
           });
 
-        this.errorMessage.set(err);
+        this.errorMessage = err;
       });
 
       this.resetErrors = this.editService.resetErrorsEvent$.subscribe(() => {
-        this.errorMessage.set('');
+        this.errorMessage ='';
       });
     }
 
@@ -65,8 +83,8 @@ export class HomeComponent implements OnInit, OnDestroy {
       this.todoitem = new ToDoItem(
         undefined,
         this.todoitemForm.value.title!,
-        new Date(),
-        this.todoitemForm.value.dueBy!,
+        new Date().removeTimeFromDate(),
+        new Date(this.todoitemForm.value.dueBy!).removeTimeFromDate(),
         null,
         false
       );

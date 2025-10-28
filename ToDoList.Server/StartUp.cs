@@ -1,6 +1,7 @@
 ﻿using DBServer;
 using DBServer.Helpers;
 using DBServer.Interfaces;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.NewtonsoftJson;
 using Microsoft.AspNetCore.SpaServices.AngularCli;
 using System.Text.Json.Serialization;
@@ -34,7 +35,11 @@ namespace ToDoList.Server
       services.AddControllersWithViews(options =>
             {
               options.InputFormatters.Insert(0, MyJPIF.GetJsonPatchInputFormatter()); //Support for PATCH method.
-              options.ModelMetadataDetailsProviders.Add(new NewtonsoftJsonValidationMetadataProvider()); //Enable Newtonsoft based validation.
+              options.ModelMetadataDetailsProviders.Add(new NewtonsoftJsonValidationMetadataProvider()); //Use JSON property names in validation errors
+              options.MaxModelValidationErrors = 5;
+              options.ModelBindingMessageProvider.SetValueMustNotBeNullAccessor(
+                  _ => "The field is required.");
+              options.Filters.Add(new ValidateModelAttribute());
             }
        )
        .AddJsonOptions(opts =>
@@ -44,6 +49,8 @@ namespace ToDoList.Server
             }
        )
        .AddNewtonsoftJson();
+
+      // services.Configure<ApiBehaviorOptions>(options => options.SuppressModelStateInvalidFilter = true);
 
       services.AddSingleton<IConfiguration>(Configuration);
       services.AddSqlite<DataContext>("DataSource=webApi.db", 

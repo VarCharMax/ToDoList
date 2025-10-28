@@ -59,20 +59,13 @@ namespace ToDoList.Server.Controllers
     {
       long newItemId;
 
-      if (ModelState.IsValid && TryValidateModel(item))
+      try
       {
-        try
-        {
-          newItemId = await repos.AddItemAsync(item.ToDoItem);
-        }
-        catch (DataException)
-        {
-          return BadRequest("message: a database error occurred.");
-        }
+        newItemId = await repos.AddItemAsync(item.ToDoItem);
       }
-      else
+      catch (DataException)
       {
-        return BadRequest("message: the data was invalid.");
+        return BadRequest("message: a database error occurred.");
       }
 
       if (newItemId == 0)
@@ -88,24 +81,16 @@ namespace ToDoList.Server.Controllers
     public async Task<ActionResult<bool>> ReplaceItem(int id, [FromBody]ToDoItemData item)
     {
       int resultCount;
+      ToDoItem updateItem = item.ToDoItem;
+      updateItem.Id = id;
 
-      if (ModelState.IsValid)
+      try
       {
-        ToDoItem updateItem = item.ToDoItem;
-        updateItem.Id = id;
-
-        try
-        {
-          resultCount = await repos.ReplaceItemAsync(id, updateItem);
-        }
-        catch (Exception)
-        {
-          return BadRequest("message: a database error occurred.");
-        }
+        resultCount = await repos.ReplaceItemAsync(id, updateItem);
       }
-      else
+      catch (Exception)
       {
-        return BadRequest();
+        return BadRequest("message: a database error occurred.");
       }
 
       if (resultCount != 1)
