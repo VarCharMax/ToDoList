@@ -58,7 +58,7 @@ export class Repository {
                 this.todoitemsChanged.next(this.todoitems.slice());
             },
             error: (e) => {
-                this.errorsChanged.next(e.error?.errors);
+                this.errorsChanged.next(e.error?.errors || {error: [e.error]});
             }
         });
     }
@@ -97,7 +97,7 @@ export class Repository {
                 this.todoitemRetrieved.next(this.todoitem);
             },
             error: (e) => {
-                this.errorsChanged.next(e.error?.errors);   
+                this.errorsChanged.next(e.error?.errors || {error: [e.error]});   
             }
         }); 
     }
@@ -124,7 +124,7 @@ export class Repository {
                 this.todoitemsChanged.next(this.todoitems.slice());
             },
             error: (e) => {
-                this.errorsChanged.next(e.error?.errors);
+                this.errorsChanged.next(e.error?.errors || {error: [e.error]});
             }
         });
     }
@@ -154,12 +154,12 @@ export class Repository {
                             
                             this.todoitemChanged.next(updateItem);
                         } else {
-                            this.errorsChanged.next({errors: ["Update operation encountered an error"]});
+                            this.errorsChanged.next({error: ["Update operation encountered an error"]});
                         }
                     }
                 },
                 error:(e) => {
-                    this.errorsChanged.next(e.error?.errors);
+                    this.errorsChanged.next(e.error?.errors || {error: [e.error]});
             }
         });
     }
@@ -187,16 +187,20 @@ export class Repository {
                             (item as any)[key] = value;
                         });
 
+                        if (item.isCompleted) {
+                            item.isOverdue = false;
+                        }
+
                         this.todoitemChanged.next(item);
                     } else {
                         this.errorsChanged.next({
-                            errors: ['Update operation encountered an error'],
+                            error: ['Update operation encountered an error'],
                         });
                     }
                 }
             },
             error: (e) => {
-                this.errorsChanged.next(e.error?.errors);
+                this.errorsChanged.next(e.error?.errors || {error: [e.error]});
             },
         });
     }
@@ -209,7 +213,7 @@ export class Repository {
                 }
             },
             error: (e) => {
-                this.errorsChanged.next(e.error?.errors);
+                this.errorsChanged.next(e.error?.errors || {error: [e.error]});
             }
         });
     }
