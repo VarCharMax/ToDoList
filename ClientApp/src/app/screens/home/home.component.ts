@@ -1,8 +1,8 @@
 import { Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators} from '@angular/forms';
+import { DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE, MatNativeDateModule } from '@angular/material/core';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatInputModule } from '@angular/material/input';
-import { DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE, MatNativeDateModule } from '@angular/material/core';
 import { MAT_MOMENT_DATE_ADAPTER_OPTIONS, MomentDateAdapter } from '@angular/material-moment-adapter';
 import { Subscription } from 'rxjs';
 import { TodoItemsList} from '../../components/todo-items-list/todo-items-list';
@@ -15,9 +15,9 @@ export const CUSTOM_DATE_FORMAT = {
     dateInput: 'L',
   },
   display: {
-    dateInput: 'DD/MM/YYYY',
+    dateInput: 'L',
     monthYearLabel: 'MMMM YYYY',
-    dateA11yLabel: 'DD/MM/YYYY',
+    dateA11yLabel: 'LL',
     monthYearA11yLabel: 'MMMM YYYY',
   },
 };
@@ -49,7 +49,7 @@ export class HomeComponent implements OnInit, OnDestroy {
     private editService: SharedItemEditService = inject(SharedItemEditService);
     private todoitem: ToDoItem = new ToDoItem();
 
-    minDate = new Date().removeTimeFromDate;
+    minDate = new Date(Date.now()).removeTimeFromDate;
     errorMessage = '';
 
     todoitemForm = new FormGroup({
