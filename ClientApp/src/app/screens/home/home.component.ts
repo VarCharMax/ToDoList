@@ -19,7 +19,7 @@ export const CUSTOM_DATE_FORMAT = {
   display: {
     dateInput: 'DD/MM/YYYY',
     monthYearLabel: 'MMMM YYYY',
-    dateA11yLabel: 'DD/MM/YYYY',
+    dateA11yLabel: 'DD/MM/YYYY', // "accessibility"
     monthYearA11yLabel: 'MMMM YYYY',
   },
 };
