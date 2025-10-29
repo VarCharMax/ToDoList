@@ -1,5 +1,5 @@
 import { Component, inject, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { FormControl, FormGroup, FormGroupDirective, NgForm, ReactiveFormsModule, Validators} from '@angular/forms';
+import { FormControl, FormGroup, FormGroupDirective, ReactiveFormsModule, Validators} from '@angular/forms';
 import { DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE } from '@angular/material/core';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatInputModule } from '@angular/material/input';
@@ -51,7 +51,7 @@ export class HomeComponent implements OnInit, OnDestroy {
     private todoitem: ToDoItem = new ToDoItem();
     @ViewChild(FormGroupDirective) private formDirective!: FormGroupDirective;
     
-    minDate = new Date(Date.now()).removeTimeFromDate;
+    minDate = new Date(Date.now()).removeTimeFromDate();
     errorMessage = '';
 
     todoitemForm = new FormGroup({

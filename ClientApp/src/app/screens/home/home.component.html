@@ -4,7 +4,7 @@
 	
 <mat-form-field class="form-control" appearance="fill">
     <mat-label>Title</mat-label>
-    <input matInput placeholder="Buy groceries" formControlName="title">
+    <input matInput placeholder="Buy groceries" formControlName="title" >
     @if (todoitemForm.get('title')?.hasError('required') && todoitemForm.get('title')?.touched) {
       <mat-error>Title is required.</mat-error>
     }
@@ -14,7 +14,7 @@
 
   <mat-form-field class="form-control" appearance="fill">
   <mat-label>Due By</mat-label>
-    <input matInput [matDatepicker]="dueByPicker" [min]="minDate" placeholder="dd/M/yyyy" formControlName="dueBy">
+    <input matInput [matDatepicker]="dueByPicker" [min]="minDate" placeholder="dd/M/yyyy" formControlName="dueBy" >
     <mat-hint>dd/M/yyyy</mat-hint>
     <mat-datepicker-toggle matSuffix [for]="dueByPicker"></mat-datepicker-toggle>
     <mat-datepicker #dueByPicker></mat-datepicker>
