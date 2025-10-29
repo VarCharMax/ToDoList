@@ -1,23 +1,24 @@
-import { Component, inject, OnDestroy, OnInit } from '@angular/core';
-import { FormControl, FormGroup, ReactiveFormsModule, Validators} from '@angular/forms';
-import { DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE, MatNativeDateModule } from '@angular/material/core';
+import { Component, inject, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { FormControl, FormGroup, FormGroupDirective, NgForm, ReactiveFormsModule, Validators} from '@angular/forms';
+import { DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE } from '@angular/material/core';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatInputModule } from '@angular/material/input';
-import { MAT_MOMENT_DATE_ADAPTER_OPTIONS, MomentDateAdapter } from '@angular/material-moment-adapter';
+import { MomentDateAdapter, MAT_MOMENT_DATE_ADAPTER_OPTIONS } from '@angular/material-moment-adapter';
 import { Subscription } from 'rxjs';
 import { TodoItemsList} from '../../components/todo-items-list/todo-items-list';
 import { Repository } from '../../services/repository';
 import { ToDoItem } from 'src/app/models/todoitem.model';
 import { SharedItemEditService } from 'src/app/services/shared-edit.service';
+import { MatMomentDateModule } from '@angular/material-moment-adapter';
 
 export const CUSTOM_DATE_FORMAT = {
   parse: {
-    dateInput: 'L',
+    dateInput: 'DD/MM/YYYY',
   },
   display: {
-    dateInput: 'L',
+    dateInput: 'DD/MM/YYYY',
     monthYearLabel: 'MMMM YYYY',
-    dateA11yLabel: 'LL',
+    dateA11yLabel: 'DD/MM/YYYY',
     monthYearA11yLabel: 'MMMM YYYY',
   },
 };
@@ -29,14 +30,13 @@ export const CUSTOM_DATE_FORMAT = {
     ReactiveFormsModule, 
     MatDatepickerModule,
     MatInputModule,
-    MatNativeDateModule
+    MatMomentDateModule
   ],
   providers: [
       { provide: MAT_DATE_LOCALE, useValue: 'en-AU' },
       { provide: MAT_DATE_FORMATS, useValue: CUSTOM_DATE_FORMAT },
-      { provide: DateAdapter, useClass: MomentDateAdapter, 
-        deps: [MAT_DATE_LOCALE, MAT_MOMENT_DATE_ADAPTER_OPTIONS] },
-      { provide: MAT_MOMENT_DATE_ADAPTER_OPTIONS, useValue: { useUtc: true } },
+      { provide: DateAdapter, useClass: MomentDateAdapter },
+      { provide: MAT_MOMENT_DATE_ADAPTER_OPTIONS, useValue: { useUtc: true } }
     ],
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.css'],
@@ -48,7 +48,8 @@ export class HomeComponent implements OnInit, OnDestroy {
     private repo: Repository = inject(Repository);
     private editService: SharedItemEditService = inject(SharedItemEditService);
     private todoitem: ToDoItem = new ToDoItem();
-
+    @ViewChild('formDirective') private formDirective!: NgForm;
+    
     minDate = new Date(Date.now()).removeTimeFromDate;
     errorMessage = '';
 
@@ -60,6 +61,7 @@ export class HomeComponent implements OnInit, OnDestroy {
     ngOnInit() {
       this.todoitemListChanged = this.repo.todoitemsChanged.subscribe((item) => {
         this.todoitemForm.reset();
+        this.formDirective.resetForm();
       }); 
     
       this.errorsChanged = this.repo.errorsChanged.subscribe(message => {
@@ -67,7 +69,7 @@ export class HomeComponent implements OnInit, OnDestroy {
         let err = '';
         Object.keys(message).forEach(key => {
           if (key !== '') {
-            err += `${message[key].join('\n')}`;
+              err += `${message[key].join('\n')}`;
             } 
           });
 
@@ -79,7 +81,7 @@ export class HomeComponent implements OnInit, OnDestroy {
       });
     }
 
-    addToDoItem() {
+    addToDoItem() : void {
       this.editService.emitErrorsResetEvent();
       
       this.todoitem = new ToDoItem(
