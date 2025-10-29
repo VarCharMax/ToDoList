@@ -17,6 +17,6 @@ export class ToDoItem implements ToDoItemInfo {
     }
 
     get isOverdue(): boolean {
-        return !this.isCompleted && (this.dueBy! < new Date());
+        return !this.isCompleted && (this.dueBy!.removeTimeFromDate() < new Date().removeTimeFromDate());
     }
 }
