@@ -2,11 +2,11 @@
 
 - You will need to supply an AutoMapper API key under
   `{"AutoMapper": {
-      "Key": "1234"
+      "Key": "<1234>"
     }
   }` 
 in `appSettings.json`.
-Run the following commands:
+- Run the following commands:
     * dotnet dev-certs https --clean
     * dotnet dev-certs https --trust
 - From the ClientApp folder run `npm install` to install node_modules.
