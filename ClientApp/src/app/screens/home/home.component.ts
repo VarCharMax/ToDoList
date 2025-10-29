@@ -3,13 +3,14 @@ import { FormControl, FormGroup, FormGroupDirective, NgForm, ReactiveFormsModule
 import { DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE } from '@angular/material/core';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatInputModule } from '@angular/material/input';
-import { MomentDateAdapter, MAT_MOMENT_DATE_ADAPTER_OPTIONS } from '@angular/material-moment-adapter';
+import { MomentDateAdapter, MatMomentDateModule, MAT_MOMENT_DATE_ADAPTER_OPTIONS } from '@angular/material-moment-adapter';
 import { Subscription } from 'rxjs';
 import { TodoItemsList} from '../../components/todo-items-list/todo-items-list';
 import { Repository } from '../../services/repository';
 import { ToDoItem } from 'src/app/models/todoitem.model';
 import { SharedItemEditService } from 'src/app/services/shared-edit.service';
-import { MatMomentDateModule } from '@angular/material-moment-adapter';
+import { noPastDatesValidator } from 'src/app/helpers/functions';
+
 
 export const CUSTOM_DATE_FORMAT = {
   parse: {
@@ -55,7 +56,7 @@ export class HomeComponent implements OnInit, OnDestroy {
 
     todoitemForm = new FormGroup({
       title: new FormControl(null, Validators.required),
-      dueBy: new FormControl(null, Validators.required)
+      dueBy: new FormControl(null, [Validators.required, noPastDatesValidator])
     });
     
     ngOnInit() {
