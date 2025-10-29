@@ -4,7 +4,6 @@ using DBServer.Interfaces;
 using Microsoft.AspNetCore.Mvc.NewtonsoftJson;
 using Microsoft.AspNetCore.SpaServices.AngularCli;
 using System.Reflection;
-using System.Text.Json.Serialization;
 using ToDoList.Server.Helpers;
 
 namespace ToDoList.Server
@@ -13,20 +12,14 @@ namespace ToDoList.Server
   {
     private readonly IConfigurationRoot Configuration = new ConfigurationBuilder()
             .SetBasePath(env.ContentRootPath)
-            .AddJsonFile("appSettings.json", optional: false, true)
-            .AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true, true)
-            .AddUserSecrets(Assembly.GetExecutingAssembly())
+            .AddJsonFile("appSettings.json", false, true)
+            .AddJsonFile($"appsettings.{env.EnvironmentName}.json", true, true)
+            .AddUserSecrets(Assembly.GetExecutingAssembly(), true)
             .AddEnvironmentVariables()
             .Build();
 
     public void ConfigureServices(IServiceCollection services)
     {
-      string? connectionstring = Configuration["ConnectionStrings:DefaultConnection"];
-      if (string.IsNullOrEmpty(connectionstring))
-      {
-        throw new InvalidOperationException("Connection string 'DefaultConnection' is not configured.");
-      }
-
       var builder = WebApplication.CreateBuilder();
 
       var cnfLog = Configuration.GetSection("Logging");
