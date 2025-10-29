@@ -51,7 +51,7 @@ export class HomeComponent implements OnInit, OnDestroy {
     private todoitem: ToDoItem = new ToDoItem();
     @ViewChild(FormGroupDirective) private formDirective!: FormGroupDirective;
     
-    minDate = new Date(Date.now()).removeTimeFromDate();
+    minDate = new Date().removeTimeFromDate();
     errorMessage = '';
 
     todoitemForm = new FormGroup({
