@@ -35,28 +35,23 @@ namespace ToDoList.Server
             {
               options.InputFormatters.Insert(0, MyJPIF.GetJsonPatchInputFormatter()); //Support for PATCH method.
               options.ModelMetadataDetailsProviders.Add(new NewtonsoftJsonValidationMetadataProvider()); //Use JSON property names in validation errors
-              options.MaxModelValidationErrors = 5;
-              options.ModelBindingMessageProvider.SetValueMustNotBeNullAccessor(
-                  _ => "The field is required.");
-              options.Filters.Add(new ValidateModelAttribute());
+              options.MaxModelValidationErrors = 2;
             }
        )
        .AddJsonOptions(opts =>
             {
-              opts.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull; //Ignore null values.
-              opts.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles; //Prevent circular references.
+              // opts.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull; //Ignore null values.
+              // opts.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles; //Prevent circular references.
             }
        )
        .AddNewtonsoftJson();
 
-      // services.Configure<ApiBehaviorOptions>(options => options.SuppressModelStateInvalidFilter = true);
-
       services.AddSingleton<IConfiguration>(Configuration);
+
       services.AddSqlite<DataContext>("DataSource=webApi.db", 
         x => x.MigrationsAssembly("DBServer"));
       services.AddScoped<IToDoListRepository, ToDoListRepository>();
 
-      services.AddSingleton<IConfiguration>(Configuration);
       services.AddAutoMapper(cfg =>
       {
         cfg.LicenseKey = builder.Configuration["AutoMapper:Key"];
