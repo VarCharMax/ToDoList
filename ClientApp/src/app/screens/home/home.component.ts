@@ -48,7 +48,7 @@ export class HomeComponent implements OnInit, OnDestroy {
     private repo: Repository = inject(Repository);
     private editService: SharedItemEditService = inject(SharedItemEditService);
     private todoitem: ToDoItem = new ToDoItem();
-    @ViewChild('formDirective') private formDirective!: NgForm;
+    @ViewChild(FormGroupDirective) private formDirective!: FormGroupDirective;
     
     minDate = new Date(Date.now()).removeTimeFromDate;
     errorMessage = '';
