@@ -9,6 +9,7 @@
   <PropertyGroup>
     <PrepareForBuildDependsOn>BundleMinify;$(PrepareForBuildDependsOn)</PrepareForBuildDependsOn>
     <UserSecretsId>0b4aa815-7940-4e43-b15e-d63154dad38c</UserSecretsId>
+    <StartupObject>ToDoList.Server.Program</StartupObject>
   </PropertyGroup>
   
   <ItemGroup>

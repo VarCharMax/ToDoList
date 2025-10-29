@@ -3,6 +3,7 @@ using DBServer.Helpers;
 using DBServer.Interfaces;
 using Microsoft.AspNetCore.Mvc.NewtonsoftJson;
 using Microsoft.AspNetCore.SpaServices.AngularCli;
+using System.Reflection;
 using System.Text.Json.Serialization;
 using ToDoList.Server.Helpers;
 
@@ -14,6 +15,7 @@ namespace ToDoList.Server
             .SetBasePath(env.ContentRootPath)
             .AddJsonFile("appSettings.json", optional: false, true)
             .AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true, true)
+            .AddUserSecrets(Assembly.GetExecutingAssembly())
             .AddEnvironmentVariables()
             .Build();
 
