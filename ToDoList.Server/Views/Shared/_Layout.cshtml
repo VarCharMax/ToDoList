@@ -20,29 +20,18 @@
 </head>
 <body class="mat-typography">
     <header>
-        <div class="navbar navbar-inverse navbar-fixed-top">
-            <div class="container  header-content">
-
-                <div class="navbar-collapse collapse container-fluid" style="height:110px !important">
-
-                    <div class="nav navbar-nav navbar-right">
-                    </div>
-                </div>
-            </div>
-        </div>
     </header>
     <div class="container">
         <main role="main" class="pb-3">
-            <h4>TODO List</h4>
+            <h2 class="bg-dark text-white p-2">ToDo List</h2>
             @RenderBody()
         </main>
     </div>
 
     <footer class="border-top footer text-muted">
         <div class="container footer-content">
-            <hr />
             <div class="col-md-3">
-                <span class="app_version float-right">Version 0.0.9</span>
+                <span class="app_version float-right">Version 1.0.0</span>
             </div>
         </div>
     </footer>
@@ -50,3 +39,4 @@
     @RenderSection("Scripts", required: false)
 </body>
 </html>
+    
