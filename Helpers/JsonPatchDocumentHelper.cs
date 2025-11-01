@@ -54,6 +54,7 @@ namespace Helpers
       var currentModelInstance = Activator.CreateInstance<TModel>() ?? 
         throw new Exception("Could not create an instance of the current model.");
 
+      //These tests should return immediately.
       if (patch.Operations.Count > numAllowedOperations)
       {
         model.AddModelError("PatchError", $"Patch document operations count ({patch.Operations.Count}) exceeds permissible operations ({numAllowedOperations}).");
@@ -74,15 +75,16 @@ namespace Helpers
           return;
         }
 
+        //These tests can return lists of validation failures.
         switch (operation.op)
         {
           case "add":
-            IsValidForProperty(model, currentModelInstance, operation.path, operation.value);
-            IsPropertyInRange(model, currentModelInstance, operation.path, operation.value);
-            break;
           case "replace":
             IsValidForProperty(model, currentModelInstance, operation.path, operation.value);
-            IsPropertyInRange(model, currentModelInstance, operation.path, operation.value);
+            if (model.IsValid == true)
+            {
+              IsPropertyInRange(model, currentModelInstance, operation.path, operation.value);
+            }
             break;
         }
       }
@@ -98,8 +100,7 @@ namespace Helpers
 
       if (success == false)
       {
-        model.AddModelError($"{property.Name}", $"Value type {val} is not valid for property {property.Name}.");
-        return;
+        model.AddModelError($"{property.Name}", $"Value type '{val}' is not valid for property '{property.Name}'.");
       }
     }
 
