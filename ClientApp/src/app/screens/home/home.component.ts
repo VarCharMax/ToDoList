@@ -83,6 +83,7 @@ export class HomeComponent implements OnInit, OnDestroy {
           });
 
           // This is probably not the ideal way of doing this now, but I just wanted to demonstrate it.
+          // Also, I kinda thought this would be easier to do.
           if (err) {
             this.dynamicHtmlContent = this.sanitizer.bypassSecurityTrustHtml(err);
             this.hasErrorMessage = true;
