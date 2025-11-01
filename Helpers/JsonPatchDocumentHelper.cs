@@ -110,7 +110,14 @@ namespace Helpers
 
       foreach (var item in property!.GetCustomAttributes(false).OfType<ValidationAttribute>())
       {
-        item.Validate(val, new ValidationContext(currentModel));
+        try
+        {
+          item.Validate(val, new ValidationContext(currentModel));
+        }
+        catch (InvalidOperationException ex)
+        {
+          model.AddModelError("PatchError", ex.Message);
+        }
 
         /*
         // TODO: Can we just call Validate() on all Validation types?

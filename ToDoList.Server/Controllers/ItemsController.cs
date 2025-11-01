@@ -74,7 +74,7 @@ namespace ToDoList.Server.Controllers
 
       if (newItemId == 0)
       {
-        ModelState.AddModelError("Error", "Unknown error adding ToDo list to database.");
+        ModelState.AddModelError("Error", "Unknown error.");
         return NotFound(ModelState);
       }
 
@@ -126,7 +126,15 @@ namespace ToDoList.Server.Controllers
       catch (Exception)
       {
         ModelState.AddModelError("Error", "Internal Error");
-        
+        return BadRequest(ModelState);
+      }
+
+      //Create new patch object to avoid exposing binding targets to repository.
+      JsonPatchDocument<ToDoItem>? patchUpdate = JsonPatchDocumentHelper.CreateCopyOfOperations<ToDoItemData, ToDoItem>(patch, ["ToDoItem"]);
+
+      if (patchUpdate == null)
+      {
+        ModelState.AddModelError("PatchError", "Patch type does not match internal type.");
         return BadRequest(ModelState);
       }
 
@@ -134,23 +142,18 @@ namespace ToDoList.Server.Controllers
 
       try
       {
-        //Create new patch object to avoid exposing binding targets to repository.
-        JsonPatchDocument<ToDoItem>? patchUpdate = JsonPatchDocumentHelper.CreateCopyOfOperations<ToDoItemData, ToDoItem>(patch, ["ToDoItem"]);
-
-        if (patchUpdate == null)
-        {
-          ModelState.AddModelError("PatchError", "Patch type does not match internal type.");
-
-          return BadRequest(ModelState);
-        }
-
         //You could return the updated object here and run further model validation on it if needed, but we just return success/failure for simplicity.
         result = await repos.UpdateItemAsync(id, patchUpdate);
       }
       catch (DataException)
       {
         ModelState.AddModelError("DBError", "A database error occurred.");
+        return BadRequest(ModelState);
+      }
 
+      if (result == false)
+      {
+        ModelState.AddModelError("DBError", "An internal error occurred.");
         return BadRequest(ModelState);
       }
 
@@ -168,21 +171,17 @@ namespace ToDoList.Server.Controllers
       }
       catch (DataException)
       {
-        ModelState.AddModelError("Error", "A database error occurred.");
-
+        ModelState.AddModelError("DBError", "A database error occurred.");
         return BadRequest(ModelState);
       }
 
-      if (result == true)
-      {
-        return Ok(result);
-      }
-      else
+      if (result == false)
       {
         ModelState.AddModelError("Error", "Unknown error deleteing item.");
-
         return BadRequest(ModelState);
       }
+
+      return Ok(result);
     }
   }
 }
