@@ -70,7 +70,7 @@ export class HomeComponent implements OnInit, OnDestroy {
         let err = '';
         Object.keys(message).forEach(key => {
           if (key !== '') {
-              err += `${message[key].join('\n')}`;
+              err += `${key}: ${message[key].join('\n')}`;
             } 
           });
 

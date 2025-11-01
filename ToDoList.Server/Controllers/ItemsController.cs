@@ -26,7 +26,9 @@ namespace ToDoList.Server.Controllers
       }
       catch (Exception)
       {
-        return BadRequest("Error returning ToDo list");
+        ModelState.AddModelError("Error", "Error retrieving ToDo list from database.");
+
+        return BadRequest(ModelState);
       }
 
       return new JsonResult(items.ToList());
@@ -43,7 +45,8 @@ namespace ToDoList.Server.Controllers
       }
       catch (Exception)
       {
-        return BadRequest("Error returning player list");
+        ModelState.AddModelError("Error", "Error retrieving ToDo list from database.");
+        return BadRequest(ModelState);
       }
 
       if (item is null)
@@ -65,12 +68,14 @@ namespace ToDoList.Server.Controllers
       }
       catch (DataException)
       {
-        return BadRequest("message: a database error occurred.");
+        ModelState.AddModelError("Error", "Error adding ToDo item to database.");
+        return BadRequest(ModelState);
       }
 
       if (newItemId == 0)
       {
-        return BadRequest("message: a database error occurred.");
+        ModelState.AddModelError("Error", "Unknown error adding ToDo list to database.");
+        return NotFound(ModelState);
       }
 
       //The framework returns JSON by default, but might return XML in some situations (which is the REST standard), so we use an explicit wrapper.
@@ -90,12 +95,14 @@ namespace ToDoList.Server.Controllers
       }
       catch (Exception)
       {
-        return BadRequest("message: a database error occurred.");
+        ModelState.AddModelError("Error", "Error updating ToDo item in database.");
+        return BadRequest(ModelState);
       }
 
       if (resultCount != 1)
       {
-        return BadRequest("message: update operation failed.");
+        ModelState.AddModelError("Error", "Update operation failed.");
+        return BadRequest(ModelState);
       }
 
       return Ok(true);
@@ -103,7 +110,7 @@ namespace ToDoList.Server.Controllers
 
     [HttpPatch("{id}")]
     public async Task<ActionResult<bool>> UpdateItem(long id, [FromBody] JsonPatchDocument<ToDoItemData> patch)
-    {
+    {      
       try
       {
         //Patch operations are efficient from a database point of view, but pose a security risk, because anyone with knowlege of the backend can potentially
@@ -113,9 +120,15 @@ namespace ToDoList.Server.Controllers
       }
       catch (InvalidOperationException ex)
       {
-        return BadRequest($"{ex.Message}");
+        //Note: While it's technically possible to add multiple ModelErrors, only the first will get returned to the client.
+        //If you add more, all that will happen is that there will be an empty key added with the message "The input was invalid".
+        ModelState.AddModelError("Error", $"{ex.Message}");
+        
+        return BadRequest(ModelState);
       }
-      
+
+      ModelState.AddModelError("Error", $"Test");
+
       bool result;
 
       try
@@ -125,7 +138,9 @@ namespace ToDoList.Server.Controllers
 
         if (patchUpdate == null)
         {
-          return BadRequest("Patch type does not match internal type.");
+          ModelState.AddModelError("Error", "Patch type does not match internal type.");
+
+          return BadRequest(ModelState);
         }
 
         //You could return the updated object here and run further model validation on it if needed, but we just return success/failure for simplicity.
@@ -133,7 +148,9 @@ namespace ToDoList.Server.Controllers
       }
       catch (DataException)
       {
-        return BadRequest("A database error occurred.");
+        ModelState.AddModelError("Error", "A database error occurred.");
+
+        return BadRequest(ModelState);
       }
 
       return Ok(result);
@@ -148,9 +165,11 @@ namespace ToDoList.Server.Controllers
       {
         result = await repos.DeleteItemAsync(id);
       }
-      catch
+      catch (DataException)
       {
-        return BadRequest("message: error deleting item");
+        ModelState.AddModelError("Error", "A database error occurred.");
+
+        return BadRequest(ModelState);
       }
 
       if (result == true)
@@ -159,7 +178,9 @@ namespace ToDoList.Server.Controllers
       }
       else
       {
-        return BadRequest("message: error deleting item");
+        ModelState.AddModelError("Error", "Unknown error deleteing item.");
+
+        return BadRequest(ModelState);
       }
     }
   }

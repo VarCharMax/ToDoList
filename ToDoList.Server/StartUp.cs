@@ -35,11 +35,12 @@ namespace ToDoList.Server
        )
        .AddJsonOptions(opts =>
             {
+              // BUG: These don't have any effect when using AddNewtonsoftJson().
               // opts.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull; //Ignore null values.
               // opts.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles; //Prevent circular references.
             }
        )
-       .AddNewtonsoftJson();
+       .AddNewtonsoftJson(); // Needed for PATCH method support.
 
       services.AddSingleton<IConfiguration>(Configuration);
 
