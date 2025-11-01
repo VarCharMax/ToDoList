@@ -116,16 +116,19 @@ namespace ToDoList.Server.Controllers
         //Patch operations are efficient from a database point of view, but pose a security risk, because anyone with knowlege of the backend can potentially
         //post an arbitrary collection of patch operations to it.
         //Therefore we implement some guards - e.g. the maximum number and type of operations, allowed paths, run validation, etc.
-        JsonPatchDocumentHelper.ValidatePatch(patch, 2, OperationType.Replace);
+        JsonPatchDocumentHelper.ValidatePatch(ModelState, patch, 2, OperationType.Replace);
+
+        if (ModelState.IsValid == false)
+        {
+          return BadRequest(ModelState);
+        }
       }
-      catch (InvalidOperationException ex)
+      catch (Exception)
       {
-        ModelState.AddModelError("Error", $"{ex.Message}");
+        ModelState.AddModelError("Error", "Internal Error");
         
         return BadRequest(ModelState);
       }
-
-      ModelState.AddModelError("Error", $"Test");
 
       bool result;
 
@@ -136,7 +139,7 @@ namespace ToDoList.Server.Controllers
 
         if (patchUpdate == null)
         {
-          ModelState.AddModelError("Error", "Patch type does not match internal type.");
+          ModelState.AddModelError("PatchError", "Patch type does not match internal type.");
 
           return BadRequest(ModelState);
         }
@@ -146,7 +149,7 @@ namespace ToDoList.Server.Controllers
       }
       catch (DataException)
       {
-        ModelState.AddModelError("Error", "A database error occurred.");
+        ModelState.AddModelError("DBError", "A database error occurred.");
 
         return BadRequest(ModelState);
       }

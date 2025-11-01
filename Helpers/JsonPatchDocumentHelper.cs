@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.JsonPatch.Operations;
 using System.ComponentModel.DataAnnotations;
 using System.Reflection;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace Helpers
 {
@@ -49,39 +50,47 @@ namespace Helpers
     /// <exception cref="InvalidOperationException"></exception>
     /// <example>JsonPatchDocumentHelper.ValidatePatch(patch, typeof(MyClass), 2, OperationType.Replace);</example>
     /// <returns>void</returns>
-    public static void ValidatePatch<TModel>(JsonPatchDocument<TModel> patch, int numAllowedOperations, OperationType curOperation) 
+    public static void ValidatePatch<TModel>(ModelStateDictionary model, JsonPatchDocument<TModel> patch, int numAllowedOperations, OperationType curOperation) 
       where TModel : class
     {
       var currentModelInstance = Activator.CreateInstance<TModel>() ?? 
-        throw new InvalidOperationException("Could not create an instance of the current model.");
+        throw new Exception("Could not create an instance of the current model.");
 
-      if (patch.Operations.Count > numAllowedOperations || patch.Operations.Any(p => p.OperationType != curOperation))
+      if (patch.Operations.Count > numAllowedOperations)
       {
-        throw new InvalidOperationException($"Invalid patch document.");
+        model.AddModelError("PatchError", $"Patch document operations count ({patch.Operations.Count}) exceeds permissible operations ({numAllowedOperations}).");
+        return;
+      }
+
+      if (patch.Operations.Any(p => p.OperationType != curOperation))
+      {
+        model.AddModelError("PatchError", $"Invalid Patch operation.");
+        return;
       }
 
       foreach (var operation in patch.Operations)
       {
         if (!PathExists(currentModelInstance, operation.path))
         {
-          throw new InvalidOperationException($"Specified path: {operation.path} does not exist.");
+          model.AddModelError("PatchError", $"Invalid patch document: no match found for specified path: {operation.path}.");
+          return;
         }
 
         switch (operation.op)
         {
           case "add":
-            IsValidForProperty(currentModelInstance, operation.path, operation.value);
-            IsPropertyInRange(currentModelInstance, operation.path, operation.value);
+            IsValidForProperty(model, currentModelInstance, operation.path, operation.value);
+            IsPropertyInRange(model, currentModelInstance, operation.path, operation.value);
             break;
           case "replace":
-            IsValidForProperty(currentModelInstance, operation.path, operation.value);
-            IsPropertyInRange(currentModelInstance, operation.path, operation.value);
+            IsValidForProperty(model, currentModelInstance, operation.path, operation.value);
+            IsPropertyInRange(model, currentModelInstance, operation.path, operation.value);
             break;
         }
       }
     }
 
-    private static void IsValidForProperty<TModel>(TModel currentModel, string path, object? val) where TModel : class
+    private static void IsValidForProperty<TModel>(ModelStateDictionary model, TModel currentModel, string path, object? val) where TModel : class
     {
       var property = currentModel.GetType().GetProperty(path, BindingFlags.Instance | BindingFlags.Public | BindingFlags.IgnoreCase);
 
@@ -95,7 +104,7 @@ namespace Helpers
       }
     }
 
-    private static void IsPropertyInRange<TModel>(TModel currentModel, string path, object? val) where TModel : class
+    private static void IsPropertyInRange<TModel>(ModelStateDictionary model, TModel currentModel, string path, object? val) where TModel : class
     {
       var property = currentModel.GetType().GetProperty(path, BindingFlags.Instance | BindingFlags.Public | BindingFlags.IgnoreCase);
 
