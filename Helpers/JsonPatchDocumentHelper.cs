@@ -97,8 +97,9 @@ namespace Helpers
       var success = propertyType.IsAssignableFrom(val!.GetType());
 
       if (success == false)
-      { 
-        throw new InvalidOperationException("Value type is not valid for property.");
+      {
+        model.AddModelError($"{property.Name}", $"Value type {val} is not valid for property {property.Name}.");
+        return;
       }
     }
 
