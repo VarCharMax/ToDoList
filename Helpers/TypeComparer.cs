@@ -9,10 +9,13 @@ namespace Helpers
       Type typeSource = typeof(TSource);
       Type typeTarget = typeof(TTarget);
 
-      // Exclude any properties with JSONDocumentPropertyAttribute.Copy == false.
+      // Exclude any properties with JSONDocumentPropertyAttribute.Copy == false:
+      // Get properties that either don't have a JSONDocumentProperty Attribute, or if they do,
+      // its Copy parameter is not set to 'false'.
       PropertyInfo[] propertiesSource = [.. typeSource
           .GetProperties(BindingFlags.Public | BindingFlags.Instance)
-          .Where(p => (p.CustomAttributes == null) ||
+          .Where(p => (p.GetCustomAttributes(typeof(JSONDocumentPropertyAttribute), true)
+              .OfType<JSONDocumentPropertyAttribute>() == null) ||
             (!p.GetCustomAttributes(typeof(JSONDocumentPropertyAttribute), true)
               .OfType<JSONDocumentPropertyAttribute>()
               .Any(a => a.Copy == false))

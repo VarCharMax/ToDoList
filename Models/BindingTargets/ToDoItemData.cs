@@ -1,7 +1,7 @@
-﻿using Models.Attributes;
+﻿using Helpers;
+using Models.Attributes;
 using Models.DTO;
 using System.ComponentModel.DataAnnotations;
-using Helpers;
 
 namespace Models.BindingTargets
 {
