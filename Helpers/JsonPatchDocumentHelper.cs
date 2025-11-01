@@ -114,70 +114,10 @@ namespace Helpers
         {
           item.Validate(val, new ValidationContext(currentModel));
         }
-        catch (InvalidOperationException ex)
+        catch (ValidationException ex)
         {
-          model.AddModelError("PatchError", ex.Message);
+          model.AddModelError(path, ex.Message);
         }
-
-        /*
-        // TODO: Can we just call Validate() on all Validation types?
-        if (item is RangeAttribute attr)
-        {
-          ValidateRange(attr, val);
-        }
-        else if (item is ValidationAttribute att)
-        {
-          att.Validate(val, new ValidationContext(currentModel));
-        }
-        */
-      }
-    }
-
-    private static void ValidateRange(RangeAttribute attr, object? val)
-    {
-      bool result = true;
-      
-      if (val is int intValue)
-      {
-        if (attr.Minimum is int min && attr.Maximum is int max)
-        {
-          if (intValue < min || intValue > max)
-          {
-            result = false;
-          }
-        }
-      }
-      else if (val is long lngValue)
-      {
-        if (attr.Minimum is long min && attr.Maximum is long max)
-        {
-          if (lngValue < min || lngValue > max)
-          {
-            result = false;
-          }
-        }
-      }
-      else if (val is double dblVal)
-      {
-        if (attr.Minimum is double min && attr.Maximum is double max)
-        {
-          if (dblVal < min || dblVal > max)
-          {
-            result = false;
-          }
-        }
-      }
-      else if (val is DateTime dateTimeValue)
-      {
-        if (dateTimeValue == default)
-        {
-          result = false;
-        }
-      }
-
-      if (result == false)
-      {
-        throw new InvalidOperationException("Value is out of range.");
       }
     }
 

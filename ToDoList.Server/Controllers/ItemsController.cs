@@ -117,7 +117,7 @@ namespace ToDoList.Server.Controllers
         //post an arbitrary collection of patch operations to it.
         //Therefore we implement some guards - e.g. the maximum number and type of operations, allowed paths, run validation, etc.
         JsonPatchDocumentHelper.ValidatePatch(ModelState, patch, 2, OperationType.Replace);
-
+        
         if (ModelState.IsValid == false)
         {
           return BadRequest(ModelState);
