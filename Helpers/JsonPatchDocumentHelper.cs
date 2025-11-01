@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.JsonPatch.Operations;
-using Models.Attributes;
 using System.ComponentModel.DataAnnotations;
 using System.Reflection;
 
@@ -71,34 +70,18 @@ namespace Helpers
         switch (operation.op)
         {
           case "add":
-            // Check if value type is incorrect.
-            if (!IsValidForProperty(currentModelInstance, operation.path, operation.value))
-            {
-              throw new InvalidOperationException($"Value supplied for path: {operation.path} is not correct type.");
-            }
+            IsValidForProperty(currentModelInstance, operation.path, operation.value);
+            IsPropertyInRange(currentModelInstance, operation.path, operation.value);
             break;
           case "replace":
-            // If property is required, check that it has at least some value.
-            if (!IsRequiredPropertyPresent(currentModelInstance, operation.path, operation.value))
-            {
-              throw new InvalidOperationException($"Value for required property at path: {operation.path} not supplied.");
-            }
-            // Check if value type is correct for property type.
-            if (!IsValidForProperty(currentModelInstance, operation.path, operation.value))
-            {
-              throw new InvalidOperationException($"Value supplied for path: {operation.path} is not correct type.");
-            }
-            // If property has a range, check that value is within range.
-            if (!IsPropertyInRange(currentModelInstance, operation.path, operation.value))
-            {
-              throw new InvalidOperationException($"Value for property at path: {operation.path} is out of range.");
-            }
+            IsValidForProperty(currentModelInstance, operation.path, operation.value);
+            IsPropertyInRange(currentModelInstance, operation.path, operation.value);
             break;
         }
       }
     }
 
-    private static bool IsValidForProperty<TModel>(TModel currentModel, string path, object? val) where TModel : class
+    private static void IsValidForProperty<TModel>(TModel currentModel, string path, object? val) where TModel : class
     {
       var property = currentModel.GetType().GetProperty(path, BindingFlags.Instance | BindingFlags.Public | BindingFlags.IgnoreCase);
 
@@ -106,65 +89,65 @@ namespace Helpers
 
       var success = propertyType.IsAssignableFrom(val!.GetType());
 
-      return success;
+      if (success == false)
+      { 
+        throw new InvalidOperationException("Value type is not valid for property.");
+      }
     }
 
-    private static bool IsPropertyInRange<TModel>(TModel currentModel, string path, object? val) where TModel : class
+    private static void IsPropertyInRange<TModel>(TModel currentModel, string path, object? val) where TModel : class
     {
       var property = currentModel.GetType().GetProperty(path, BindingFlags.Instance | BindingFlags.Public | BindingFlags.IgnoreCase);
 
-      //Handle custom range attributes.
-      var dueByDateRange = property!.GetCustomAttributes(false)
-          .OfType<DueByDateRangeAttribute>()
-          .SingleOrDefault();
-
-      try
+      foreach (var item in property!.GetCustomAttributes(false).OfType<ValidationAttribute>())
       {
-        dueByDateRange?.Validate(val, new ValidationContext(currentModel));
+        item.Validate(val, new ValidationContext(currentModel));
+
+        /*
+        // TODO: Can we just call Validate() on all Validation types?
+        if (item is RangeAttribute attr)
+        {
+          ValidateRange(attr, val);
+        }
+        else if (item is ValidationAttribute att)
+        {
+          att.Validate(val, new ValidationContext(currentModel));
+        }
+        */
       }
-      catch (ValidationException)
-      {
-        return false;
-      }
+    }
 
-      //Handle standard Range attribute.
-      var range = property!.GetCustomAttributes(false)
-          .OfType<RangeAttribute>()
-          .SingleOrDefault();
-
-      //If there's no Range attribute, just return true for convenience.
-      if (range is null)
+    private static void ValidateRange(RangeAttribute attr, object? val)
+    {
+      bool result = true;
+      
+      if (val is int intValue)
       {
-        return true;
-      }
-
-      if (val is int intValue && range != null)
-      {
-        if (range.Minimum is int min && range.Maximum is int max)
+        if (attr.Minimum is int min && attr.Maximum is int max)
         {
           if (intValue < min || intValue > max)
           {
-            return false;
+            result = false;
           }
         }
       }
-      else if (val is long lngValue && range != null)
+      else if (val is long lngValue)
       {
-        if (range.Minimum is long min && range.Maximum is long max)
+        if (attr.Minimum is long min && attr.Maximum is long max)
         {
           if (lngValue < min || lngValue > max)
           {
-            return false;
+            result = false;
           }
         }
       }
-      else if (val is double dblVal && range != null)
+      else if (val is double dblVal)
       {
-        if (range.Minimum is double min && range.Maximum is double max)
+        if (attr.Minimum is double min && attr.Maximum is double max)
         {
           if (dblVal < min || dblVal > max)
           {
-            return false;
+            result = false;
           }
         }
       }
@@ -172,40 +155,14 @@ namespace Helpers
       {
         if (dateTimeValue == default)
         {
-          return false;
+          result = false;
         }
       }
 
-      return true;
-    }
-
-    private static bool IsRequiredPropertyPresent<TModel>(TModel currentModel, string path, object? val) where TModel : class
-    {
-      var property = currentModel.GetType().GetProperty(path, BindingFlags.Instance | BindingFlags.Public | BindingFlags.IgnoreCase);
-
-      var req = property!.GetCustomAttributes(false)
-          .OfType<RequiredAttribute>()
-          .SingleOrDefault();
-
-      //If there's no Required attribute, just return true for convenience.
-      if (req is null) return true;
-
-      if (val is null)
+      if (result == false)
       {
-        return false;
+        throw new InvalidOperationException("Value is out of range.");
       }
-      else if (val is string strValue)
-      {
-        if (req.AllowEmptyStrings == false)
-        {
-          if (String.IsNullOrEmpty(strValue))
-          {
-            return false;
-          }
-        }
-      }
-
-      return true;
     }
 
     private static bool PathExists<TModel>(TModel currentModel, string path) where TModel : class

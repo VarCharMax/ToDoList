@@ -4,6 +4,7 @@ using DBServer.Interfaces;
 using Microsoft.AspNetCore.Mvc.NewtonsoftJson;
 using Microsoft.AspNetCore.SpaServices.AngularCli;
 using System.Reflection;
+using System.Text.Json.Serialization;
 using ToDoList.Server.Helpers;
 
 namespace ToDoList.Server
@@ -30,17 +31,15 @@ namespace ToDoList.Server
             {
               options.InputFormatters.Insert(0, MyJPIF.GetJsonPatchInputFormatter()); //Support for PATCH method.
               options.ModelMetadataDetailsProviders.Add(new NewtonsoftJsonValidationMetadataProvider()); //Use JSON property names in validation errors
-              options.MaxModelValidationErrors = 2;
+              // options.MaxModelValidationErrors = 25;
             }
        )
-       .AddJsonOptions(opts =>
-            {
-              // BUG: These don't have any effect when using AddNewtonsoftJson().
-              // opts.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull; //Ignore null values.
-              // opts.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles; //Prevent circular references.
-            }
-       )
-       .AddNewtonsoftJson(); // Needed for PATCH method support.
+       .AddNewtonsoftJson(options =>
+       {
+         options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
+         options.SerializerSettings.NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore;
+
+       }); // Needed for PATCH method support.
 
       services.AddSingleton<IConfiguration>(Configuration);
 

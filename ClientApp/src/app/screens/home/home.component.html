@@ -29,7 +29,8 @@
 
 <div>
   <br />
-  <span style="color: red;">{{errorMessage}}</span>
+  <ul style="color: red;" [innerHTML]="dynamicHtmlContent" [hidden]="!hasErrorMessage">
+  </ul>
 </div>
 </section>
 <hr />

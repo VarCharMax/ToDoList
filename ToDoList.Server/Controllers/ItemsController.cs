@@ -110,7 +110,7 @@ namespace ToDoList.Server.Controllers
 
     [HttpPatch("{id}")]
     public async Task<ActionResult<bool>> UpdateItem(long id, [FromBody] JsonPatchDocument<ToDoItemData> patch)
-    {      
+    {
       try
       {
         //Patch operations are efficient from a database point of view, but pose a security risk, because anyone with knowlege of the backend can potentially
@@ -120,8 +120,6 @@ namespace ToDoList.Server.Controllers
       }
       catch (InvalidOperationException ex)
       {
-        //Note: While it's technically possible to add multiple ModelErrors, only the first will get returned to the client.
-        //If you add more, all that will happen is that there will be an empty key added with the message "The input was invalid".
         ModelState.AddModelError("Error", $"{ex.Message}");
         
         return BadRequest(ModelState);

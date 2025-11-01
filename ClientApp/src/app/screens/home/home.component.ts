@@ -1,4 +1,5 @@
 import { Component, inject, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { FormControl, FormGroup, FormGroupDirective, ReactiveFormsModule, Validators} from '@angular/forms';
 import { DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE } from '@angular/material/core';
 import { MatDatepickerModule } from '@angular/material/datepicker';
@@ -10,7 +11,6 @@ import { Repository } from '../../services/repository';
 import { ToDoItem } from 'src/app/models/todoitem.model';
 import { SharedItemEditService } from 'src/app/services/shared-edit.service';
 import { noPastDatesValidator } from 'src/app/helpers/functions';
-
 
 export const CUSTOM_DATE_FORMAT = {
   parse: {
@@ -49,10 +49,14 @@ export class HomeComponent implements OnInit, OnDestroy {
     private repo: Repository = inject(Repository);
     private editService: SharedItemEditService = inject(SharedItemEditService);
     private todoitem: ToDoItem = new ToDoItem();
+    dynamicHtmlContent: SafeHtml = "";
     @ViewChild(FormGroupDirective) private formDirective!: FormGroupDirective;
     
+     constructor(private sanitizer: DomSanitizer) {}
+
     minDate = new Date().removeTimeFromDate();
-    errorMessage = '';
+    
+    hasErrorMessage = false;
 
     todoitemForm = new FormGroup({
       title: new FormControl(null, Validators.required),
@@ -67,18 +71,27 @@ export class HomeComponent implements OnInit, OnDestroy {
     
       this.errorsChanged = this.repo.errorsChanged.subscribe(message => {
 
+        this.hasErrorMessage = false;
+
         let err = '';
         Object.keys(message).forEach(key => {
           if (key !== '') {
-              err += `${key}: ${message[key].join('\n')}`;
-            } 
+              message[key].forEach(el => {
+                err +=`<li>${el}</li>`;
+              })
+            }
           });
 
-        this.errorMessage = err;
-      });
+          // This is probably not the ideal way of doing this now, but I just wanted to demonstrate it.
+          if (err) {
+            this.dynamicHtmlContent = this.sanitizer.bypassSecurityTrustHtml(err);
+            this.hasErrorMessage = true;
+          } else {
+            this.hasErrorMessage = false;
+          }
+        });
 
-      this.resetErrors = this.editService.resetErrorsEvent$.subscribe(() => {
-        this.errorMessage ='';
+        this.resetErrors = this.editService.resetErrorsEvent$.subscribe(() => {
       });
     }
 
