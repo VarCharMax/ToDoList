@@ -4,7 +4,6 @@ using DBServer.Interfaces;
 using Microsoft.AspNetCore.Mvc.NewtonsoftJson;
 using Microsoft.AspNetCore.SpaServices.AngularCli;
 using System.Reflection;
-using System.Text.Json.Serialization;
 using ToDoList.Server.Helpers;
 
 namespace ToDoList.Server
@@ -21,11 +20,11 @@ namespace ToDoList.Server
 
     public void ConfigureServices(IServiceCollection services)
     {
-      var builder = WebApplication.CreateBuilder();
+      services.AddSingleton<IConfiguration>(Configuration);
 
-      var cnfLog = Configuration.GetSection("Logging");
-      builder.Logging.AddConfiguration(cnfLog);
-      builder.Logging.AddConsole();
+      services.AddSqlite<DataContext>("DataSource=webApi.db",
+        x => x.MigrationsAssembly("DBServer"));
+      services.AddScoped<IToDoListRepository, ToDoListRepository>();
 
       services.AddControllersWithViews(options =>
             {
@@ -41,15 +40,9 @@ namespace ToDoList.Server
 
        }); // Needed for PATCH method support.
 
-      services.AddSingleton<IConfiguration>(Configuration);
-
-      services.AddSqlite<DataContext>("DataSource=webApi.db", 
-        x => x.MigrationsAssembly("DBServer"));
-      services.AddScoped<IToDoListRepository, ToDoListRepository>();
-
       services.AddAutoMapper(cfg =>
       {
-        cfg.LicenseKey = builder.Configuration["AutoMapper:Key"];
+        cfg.LicenseKey = Configuration["AutoMapper:Key"];
 
       }, typeof(MappingProfile));
 
@@ -98,6 +91,8 @@ namespace ToDoList.Server
         }
       }
 
+      app.UseHttpsRedirection();
+      app.UseStaticFiles();
       app.UseRouting();
       app.UseDefaultFiles();
 
