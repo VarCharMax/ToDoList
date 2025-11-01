@@ -8,13 +8,11 @@ namespace Helpers
 {
   public class JsonPatchDocumentHelper
   {
-    public static JsonPatchDocument<TModelTarget>? CreateCopyOfOperations<TModelSource, TModelTarget>(JsonPatchDocument<TModelSource> sourcePatchDocument, string[]? excludedProperties = null)
+    public static JsonPatchDocument<TModelTarget>? CreateCopyOfOperations<TModelSource, TModelTarget>(JsonPatchDocument<TModelSource> sourcePatchDocument)
     where TModelSource : class
     where TModelTarget : class
     {
-      excludedProperties ??= [];
-
-      if (TypeComparer.HaveSameProperties<TModelSource, TModelTarget>(excludedProperties))
+      if (TypeComparer.HaveSameProperties<TModelSource, TModelTarget>())
       {
         var newPatchDocument = new JsonPatchDocument<TModelTarget>();
 

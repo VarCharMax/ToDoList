@@ -1,6 +1,7 @@
 ﻿using Models.Attributes;
 using Models.DTO;
 using System.ComponentModel.DataAnnotations;
+using Helpers;
 
 namespace Models.BindingTargets
 {
@@ -41,6 +42,7 @@ namespace Models.BindingTargets
       set => ToDoItem.IsCompleted = value; 
     }
 
+    [JSONDocumentProperty(Copy = false)]
     public ToDoItem ToDoItem { get; set; } = new ToDoItem();
   }
 }

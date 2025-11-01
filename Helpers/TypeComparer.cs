@@ -4,15 +4,19 @@ namespace Helpers
 {
   public static class TypeComparer
   {
-    public static bool HaveSameProperties<TSource, TTarget>(string[] excludedSourceProperties)
+    public static bool HaveSameProperties<TSource, TTarget>()
     {
       Type typeSource = typeof(TSource);
       Type typeTarget = typeof(TTarget);
 
-      // Exclude any properties that are in the excluded list.
+      // Exclude any properties with JSONDocumentPropertyAttribute.Copy == false.
       PropertyInfo[] propertiesSource = [.. typeSource
-        .GetProperties(BindingFlags.Public | BindingFlags.Instance)
-        .Where(p => !excludedSourceProperties.Contains(p.Name))];
+          .GetProperties(BindingFlags.Public | BindingFlags.Instance)
+          .Where(p => (p.CustomAttributes == null) ||
+            (!p.GetCustomAttributes(typeof(JSONDocumentPropertyAttribute), true)
+              .OfType<JSONDocumentPropertyAttribute>()
+              .Any(a => a.Copy == false))
+          )];
 
       PropertyInfo[] propertiesTarget = typeTarget.GetProperties(BindingFlags.Public | BindingFlags.Instance);
 
