@@ -14,11 +14,10 @@ namespace Helpers
       // its Copy parameter is not set to 'false'.
       PropertyInfo[] propertiesSource = [.. typeSource
           .GetProperties(BindingFlags.Public | BindingFlags.Instance)
-          .Where(p => (p.GetCustomAttributes(typeof(JSONDocumentPropertyAttribute), true)
-              .OfType<JSONDocumentPropertyAttribute>() == null) ||
-            (!p.GetCustomAttributes(typeof(JSONDocumentPropertyAttribute), true)
+          .Where(p => 
+            !p.GetCustomAttributes(typeof(JSONDocumentPropertyAttribute), true)
               .OfType<JSONDocumentPropertyAttribute>()
-              .Any(a => a.Copy == false))
+              .Any(a => a.Copy == false)
           )];
 
       PropertyInfo[] propertiesTarget = typeTarget.GetProperties(BindingFlags.Public | BindingFlags.Instance);

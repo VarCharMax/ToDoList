@@ -42,11 +42,12 @@ namespace Helpers
     /// <summary>
     /// Guard for patch operations.
     /// </summary>
+    /// <param name="model">ModelState dictionary.</param>
     /// <param name="patch">Strongly-typed JsonPatchDocument.</param>
     /// <param name="numAllowedOperations">Number of permissible operations.</param>
     /// <param name="curOperation">Type of allowed operation.</param>
-    /// <exception cref="InvalidOperationException"></exception>
-    /// <example>JsonPatchDocumentHelper.ValidatePatch(patch, typeof(MyClass), 2, OperationType.Replace);</example>
+    /// <exception cref="Exception"></exception>
+    /// <example>JsonPatchDocumentHelper.ValidatePatch(model, patch, typeof(MyClass), 2, OperationType.Replace);</example>
     /// <returns>void</returns>
     public static void ValidatePatch<TModel>(ModelStateDictionary model, JsonPatchDocument<TModel> patch, int numAllowedOperations, OperationType curOperation) 
       where TModel : class
