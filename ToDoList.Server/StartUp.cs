@@ -30,11 +30,12 @@ namespace ToDoList.Server
             {
               options.InputFormatters.Insert(0, MyJPIF.GetJsonPatchInputFormatter()); //Support for PATCH method.
               options.ModelMetadataDetailsProviders.Add(new NewtonsoftJsonValidationMetadataProvider()); //Use JSON property names in validation errors
-              // options.MaxModelValidationErrors = 25;
             }
        )
        .AddNewtonsoftJson(options =>
        {
+         // 1. Prevent circular serialisation of properties.
+         // 2. Suppress null stubs that result from 1.
          options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
          options.SerializerSettings.NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore;
 
