@@ -3,7 +3,6 @@ using Helpers;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.JsonPatch.Operations;
 using Microsoft.AspNetCore.Mvc;
-using Models.BindingTargets;
 using Models.DTO;
 using System.Data;
 
@@ -58,13 +57,18 @@ namespace ToDoList.Server.Controllers
     }
 
     [HttpPost]
-    public async Task<ActionResult<long>> PostItem([FromBody]ToDoItemData item)
+    public async Task<ActionResult<long>> PostItem([FromBody]ToDoItem item)
     {
       long newItemId;
 
+      if (ModelState.IsValid == false)
+      {
+        return BadRequest(ModelState);
+      }
+
       try
       {
-        newItemId = await repos.AddItemAsync(item.ToDoItem);
+        newItemId = await repos.AddItemAsync(item);
       }
       catch (DataException)
       {
@@ -83,15 +87,19 @@ namespace ToDoList.Server.Controllers
     }
 
     [HttpPut("{id}")]
-    public async Task<ActionResult<bool>> ReplaceItem(int id, [FromBody]ToDoItemData item)
+    public async Task<ActionResult<bool>> ReplaceItem(int id, [FromBody]ToDoItem item)
     {
       int resultCount;
-      ToDoItem updateItem = item.ToDoItem;
-      updateItem.Id = id;
+      ToDoItem updateItem = item;
+
+      if (ModelState.IsValid == false)
+      {
+        return BadRequest(ModelState);
+      }
 
       try
       {
-        resultCount = await repos.ReplaceItemAsync(id, updateItem);
+        resultCount = await repos.ReplaceItemAsync(id, item);
       }
       catch (Exception)
       {
@@ -109,7 +117,7 @@ namespace ToDoList.Server.Controllers
     }
 
     [HttpPatch("{id}")]
-    public async Task<ActionResult<bool>> UpdateItem(long id, [FromBody] JsonPatchDocument<ToDoItemData> patch)
+    public async Task<ActionResult<bool>> UpdateItem(long id, [FromBody] JsonPatchDocument<ToDoItem> patch)
     {
       try
       {
@@ -129,21 +137,12 @@ namespace ToDoList.Server.Controllers
         return BadRequest(ModelState);
       }
 
-      //Create new patch object to avoid exposing binding targets to repository.
-      JsonPatchDocument<ToDoItem>? patchUpdate = JsonPatchDocumentHelper.CreateCopyOfOperations<ToDoItemData, ToDoItem>(patch);
-
-      if (patchUpdate == null)
-      {
-        ModelState.AddModelError("PatchError", "Patch type does not match internal type.");
-        return BadRequest(ModelState);
-      }
-
       bool result;
 
       try
       {
         //You could return the updated object here and run further model validation on it if needed, but we just return success/failure for simplicity.
-        result = await repos.UpdateItemAsync(id, patchUpdate);
+        result = await repos.UpdateItemAsync(id, patch);
       }
       catch (DataException)
       {
