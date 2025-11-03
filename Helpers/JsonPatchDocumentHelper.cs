@@ -64,7 +64,7 @@ namespace Helpers
 
       if (patch.Operations.Any(p => p.OperationType != curOperation))
       {
-        model.AddModelError("PatchError", $"Invalid Patch operation: {patch.Operations.Where(p => p.OperationType != curOperation).First().op}.");
+        model.AddModelError("PatchError", $"Invalid Patch operation: '{patch.Operations.Where(p => p.OperationType != curOperation).First().op}'.");
         return;
       }
 

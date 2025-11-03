@@ -79,7 +79,7 @@ namespace ToDoList.Server.Controllers
       }
 
       //The framework returns JSON by default, but might return XML in some situations (which is the REST standard), so we use an explicit wrapper.
-      return new JsonResult(newItemId);
+      return Ok(newItemId);
     }
 
     [HttpPut("{id}")]
