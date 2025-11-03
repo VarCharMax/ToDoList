@@ -1,17 +1,24 @@
-﻿namespace Models.DTO
+﻿using Models.Attributes;
+using System.ComponentModel.DataAnnotations;
+
+namespace Models.DTO
 {
   public record ToDoItem
   {
     public long Id { get; set; }
 
-    public string Title { get; set; } = string.Empty;
+    [Required(ErrorMessage = "Title is required.")]
+    public string Title { get; set; } = String.Empty;
 
-    public DateTime CreationDate { get; set; }
+    [Required]
+    public DateTime CreationDate { get; set; } = DateTime.Now.Date;
 
-    public DateTime? CompletedDate { get; set; } = null;
+    public DateTime? CompletedDate { get; set; }
 
+    [Required]
+    [DueByDateRange]
     public DateTime DueBy { get; set; }
 
-    public bool IsCompleted { get; set; } = false;
+    public bool IsCompleted { get; set; }
   }
 }

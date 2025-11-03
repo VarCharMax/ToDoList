@@ -1,20 +1,20 @@
- <section class="results">
-    <table class="table table-striped table-hover">
-        <thead style="display: table-header-group">
-            <tr>
-                <th>Title</th>
-                <th>Creation Date</th>
-                <th>Due By</th>
-                <th>Completed</th>
-                <th>Edit</th>
-                <th>Delete</th>
-            </tr>
-        </thead>
-        <tbody>
-            @for(item of todoitemList; track item.id) {
-                <tr app-todo-item [todoItem]="item" [class.statusComplete]="item.isCompleted == true" [class.statusOverdue]="item.isOverdue == true"></tr>
-        }
-        </tbody>
-    </table>
-
+<section class="results">
+  <table class="table table-striped table-hover">
+    <thead style="display: table-header-group">
+      <tr>
+        <th>Title</th>
+        <th>Creation Date</th>
+        <th>Due By</th>
+        <th>Completed</th>
+        <th>Edit</th>
+        <th>Delete</th>
+      </tr>
+    </thead>
+    <tbody>
+      @for(item of todoitemList; track item.id) {
+      <tr app-todo-item [todoItem]="item" [class.statusComplete]="item.isCompleted == true"
+        [class.statusOverdue]="item.isOverdue == true"></tr>
+      }
+    </tbody>
+  </table>
 </section>

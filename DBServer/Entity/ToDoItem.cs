@@ -1,5 +1,4 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using System.Diagnostics.CodeAnalysis;
 
 namespace DBServer.Entity
 {
@@ -8,18 +7,16 @@ namespace DBServer.Entity
     [Key]
     public long Id { get; set; }
 
-    [NotNull]
-    public string Title { get; set; }
+    [MaxLength(50)]
+    public string Title { get; set; } = String.Empty;
 
-    [NotNull]
-    public DateTime CreationDate { get; set; }
+    [Required]
+    public DateTime CreationDate { get; set; } = DateTime.Now.Date;
 
     public DateTime? CompletedDate { get; set; }
 
-    [NotNull]
     public DateTime DueBy { get; set; }
 
-    [NotNull]
     public bool IsCompleted { get; set; }
   }
 }

@@ -38,7 +38,7 @@ namespace DBServer
     {
       bool success = false;
 
-      ToDoItem item = context.ToDoItems.Find(id);
+      ToDoItem? item = context.ToDoItems.Find(id);
 
       if (item != null)
       {
@@ -78,9 +78,9 @@ namespace DBServer
       return list;
     }
 
-    public async Task<Models.DTO.ToDoItem> GetItemByIdAsync(long id)
+    public async Task<Models.DTO.ToDoItem?> GetItemByIdAsync(long id)
     {
-      ToDoItem result = await context.ToDoItems
+      ToDoItem? result = await context.ToDoItems
                .FirstOrDefaultAsync(p => p.Id == id);
       
       var model = _mapper.Map<Models.DTO.ToDoItem >(result);
@@ -116,7 +116,7 @@ namespace DBServer
     {
       //Convert the patch document from DTO to Entity type.
       //It is possible to apply patch by mapping the entity to DTO, applying the patch, and mapping back to entity, but this is neater.
-      JsonPatchDocument<ToDoItem> patchUpdate = JsonPatchDocumentHelper.CreateCopyOfOperations<Models.DTO.ToDoItem, ToDoItem>(patch);
+      JsonPatchDocument<ToDoItem>? patchUpdate = JsonPatchDocumentHelper.CreateCopyOfOperations<Models.DTO.ToDoItem, ToDoItem>(patch);
 
       try
       {
