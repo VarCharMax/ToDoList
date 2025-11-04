@@ -1,12 +1,12 @@
 import { Component, inject, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
-import { FormControl, FormGroup, FormGroupDirective, ReactiveFormsModule, Validators} from '@angular/forms';
+import { FormControl, FormGroup, FormGroupDirective, ReactiveFormsModule, Validators } from '@angular/forms';
 import { DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE } from '@angular/material/core';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatInputModule } from '@angular/material/input';
 import { MomentDateAdapter, MatMomentDateModule, MAT_MOMENT_DATE_ADAPTER_OPTIONS } from '@angular/material-moment-adapter';
 import { Subscription } from 'rxjs';
-import { TodoItemsList} from '../../components/todo-items-list/todo-items-list';
+import { TodoItemsList } from '../../components/todo-items-list/todo-items-list';
 import { Repository } from '../../services/repository';
 import { ToDoItem } from 'src/app/models/todoitem.model';
 import { SharedItemEditService } from 'src/app/services/shared-edit.service';
@@ -28,92 +28,92 @@ export const CUSTOM_DATE_FORMAT = {
   selector: 'app-home',
   imports: [
     TodoItemsList,
-    ReactiveFormsModule, 
+    ReactiveFormsModule,
     MatDatepickerModule,
     MatInputModule,
     MatMomentDateModule
   ],
   providers: [
-      { provide: MAT_DATE_LOCALE, useValue: 'en-AU' },
-      { provide: MAT_DATE_FORMATS, useValue: CUSTOM_DATE_FORMAT },
-      { provide: DateAdapter, useClass: MomentDateAdapter },
-      { provide: MAT_MOMENT_DATE_ADAPTER_OPTIONS, useValue: { useUtc: true } }
-    ],
+    { provide: MAT_DATE_LOCALE, useValue: 'en-AU' },
+    { provide: MAT_DATE_FORMATS, useValue: CUSTOM_DATE_FORMAT },
+    { provide: DateAdapter, useClass: MomentDateAdapter },
+    { provide: MAT_MOMENT_DATE_ADAPTER_OPTIONS, useValue: { useUtc: true } }
+  ],
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.css'],
 })
 export class HomeComponent implements OnInit, OnDestroy {
-    private errorsChanged: Subscription = new Subscription();
-    private todoitemListChanged: Subscription = new Subscription();
-    private resetErrors: Subscription = new Subscription();
-    private repo: Repository = inject(Repository);
-    private editService: SharedItemEditService = inject(SharedItemEditService);
-    private todoitem: ToDoItem = new ToDoItem();
-    dynamicHtmlContent: SafeHtml = "";
-    @ViewChild(FormGroupDirective) private formDirective!: FormGroupDirective;
-    
-     constructor(private sanitizer: DomSanitizer) {}
+  private errorsChanged: Subscription = new Subscription();
+  private todoitemListChanged: Subscription = new Subscription();
+  private resetErrors: Subscription = new Subscription();
+  private repo: Repository = inject(Repository);
+  private editService: SharedItemEditService = inject(SharedItemEditService);
+  private todoitem: ToDoItem = new ToDoItem();
+  dynamicHtmlContent: SafeHtml = "";
+  @ViewChild(FormGroupDirective) private formDirective!: FormGroupDirective;
 
-    minDate = new Date().removeTimeFromDate();
-    
-    hasErrorMessage = false;
+  constructor(private sanitizer: DomSanitizer) { }
 
-    todoitemForm = new FormGroup({
-      title: new FormControl(null, Validators.required),
-      dueBy: new FormControl(null, [Validators.required, noPastDatesValidator])
+  minDate = new Date().removeTimeFromDate();
+
+  hasErrorMessage = false;
+
+  todoitemForm = new FormGroup({
+    title: new FormControl(null, Validators.required),
+    dueBy: new FormControl(null, [Validators.required, noPastDatesValidator])
+  });
+
+  ngOnInit() {
+    this.todoitemListChanged = this.repo.todoitemsChanged.subscribe((item) => {
+      this.todoitemForm.reset();
+      this.formDirective.resetForm();
     });
-    
-    ngOnInit() {
-      this.todoitemListChanged = this.repo.todoitemsChanged.subscribe((item) => {
-        this.todoitemForm.reset();
-        this.formDirective.resetForm();
-      }); 
-    
-      this.errorsChanged = this.repo.errorsChanged.subscribe(message => {
 
-        this.hasErrorMessage = false;
+    this.errorsChanged = this.repo.errorsChanged.subscribe(message => {
 
-        let err = '';
-        Object.keys(message).forEach(key => {
-          if (key !== '') {
-              message[key].forEach(el => {
-                err +=`<li>${el}</li>`;
-              })
-            }
-          });
+      this.hasErrorMessage = false;
 
-          // This is probably not the ideal way of doing this now, but I just wanted to demonstrate it.
-          // Also, I kinda thought this would be easier to do.
-          if (err) {
-            this.dynamicHtmlContent = this.sanitizer.bypassSecurityTrustHtml(err);
-            this.hasErrorMessage = true;
-          } else {
-            this.hasErrorMessage = false;
-          }
-        });
-
-        this.resetErrors = this.editService.resetErrorsEvent$.subscribe(() => {
+      let err = '';
+      Object.keys(message).forEach(key => {
+        if (key !== '') {
+          message[key].forEach(el => {
+            err += `<li>${el}</li>`;
+          })
+        }
       });
-    }
 
-    addToDoItem() : void {
-      this.editService.emitErrorsResetEvent();
-      
-      this.todoitem = new ToDoItem(
-        undefined,
-        this.todoitemForm.value.title!,
-        new Date().removeTimeFromDate(),
-        new Date(this.todoitemForm.value.dueBy!).removeTimeFromDate(),
-        null,
-        false
-      );
-      
-      this.repo.createToDoItem(this.todoitem);
-    }
+      // This is probably not the ideal way of doing this now, but I just wanted to demonstrate it.
+      // Also, I kinda thought this would be easier to do.
+      if (err) {
+        this.dynamicHtmlContent = this.sanitizer.bypassSecurityTrustHtml(err);
+        this.hasErrorMessage = true;
+      } else {
+        this.hasErrorMessage = false;
+      }
+    });
 
-     ngOnDestroy() {
-        this.todoitemListChanged.unsubscribe();
-        this.resetErrors.unsubscribe();
-        this.errorsChanged.unsubscribe();
-    }
+    this.resetErrors = this.editService.resetErrorsEvent$.subscribe(() => {
+    });
+  }
+
+  addToDoItem(): void {
+    this.editService.emitErrorsResetEvent();
+
+    this.todoitem = new ToDoItem(
+      undefined,
+      this.todoitemForm.value.title!,
+      new Date().removeTimeFromDate(),
+      new Date(this.todoitemForm.value.dueBy!).removeTimeFromDate(),
+      null,
+      false
+    );
+
+    this.repo.createToDoItemAsync(this.todoitem);
+  }
+
+  ngOnDestroy() {
+    this.todoitemListChanged.unsubscribe();
+    this.resetErrors.unsubscribe();
+    this.errorsChanged.unsubscribe();
+  }
 }

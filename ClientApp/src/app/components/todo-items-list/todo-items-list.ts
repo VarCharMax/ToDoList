@@ -13,38 +13,38 @@ import { ToDoItem } from 'src/app/models/todoitem.model';
   encapsulation: ViewEncapsulation.None
 })
 export class TodoItemsList implements OnInit, OnDestroy {
-    private todoitemsListChanged: Subscription = new Subscription();
-    private todoitemChanged: Subscription = new Subscription();
-    private itemEventSubscription: Subscription = new Subscription();
-    private repo: Repository = inject(Repository);
-    private editService: SharedItemEditService = inject(SharedItemEditService);
+  private todoitemsListChanged: Subscription = new Subscription();
+  private todoitemChanged: Subscription = new Subscription();
+  private itemEventSubscription: Subscription = new Subscription();
+  private repo: Repository = inject(Repository);
+  private editService: SharedItemEditService = inject(SharedItemEditService);
 
-    todoitemList: ToDoItem[] = [];
+  todoitemList: ToDoItem[] = [];
 
-    constructor() { }                     
+  constructor() { }
 
-    ngOnInit() {
+  ngOnInit() {
 
-      this.itemEventSubscription = this.editService.itemEditEvent$.subscribe(id => {
-        this.editService.emitListEvent(id);
-      });
-      
-      this.todoitemsListChanged = this.repo.todoitemsChanged.subscribe((itemList) => {
-        this.todoitemList = itemList.DBSort();
-      });
+    this.itemEventSubscription = this.editService.itemEditEvent$.subscribe(id => {
+      this.editService.emitListEvent(id);
+    });
 
-      this.todoitemChanged = this.repo.todoitemChanged.subscribe((item) => {
-        let updateItemIndex: number = this.todoitemList.findIndex((i) => i.id == item.id);
-        this.todoitemList[updateItemIndex] = item;
-        this.todoitemList = this.todoitemList.DBSort(); // Item status might have changed.
-      });
+    this.todoitemsListChanged = this.repo.todoitemsChanged.subscribe((itemList) => {
+      this.todoitemList = itemList.DBSort();
+    });
 
-      this.repo.getToDoItems();
-    }
+    this.todoitemChanged = this.repo.todoitemChanged.subscribe((item) => {
+      let updateItemIndex: number = this.todoitemList.findIndex((i) => i.id == item.id);
+      this.todoitemList[updateItemIndex] = item;
+      this.todoitemList = this.todoitemList.DBSort(); // Item status might have changed.
+    });
 
-    ngOnDestroy() {
-        this.todoitemsListChanged.unsubscribe();
-        this.todoitemChanged.unsubscribe();
-        this.itemEventSubscription.unsubscribe();
-    }
+    this.repo.getToDoItemsAsync();
+  }
+
+  ngOnDestroy() {
+    this.todoitemsListChanged.unsubscribe();
+    this.todoitemChanged.unsubscribe();
+    this.itemEventSubscription.unsubscribe();
+  }
 }
